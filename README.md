@@ -4,6 +4,7 @@ This project came out of lazyness to translate codepuzzles from www.codingame.co
 So, it will be somewhat restricted to what is required to do there (at first), but I might expand it beyond that.
 
 The ProjectFolder "Common" is just a collection of general purpose code I wrote together during earlier projects.
+It is linked with the main Project in a way that it generates a dll into the main's execution directory, therefore "Common" is not required for development (but as there is still no DocXml, it's pretty useless without the sources...)
 
 ########
 ## Code
