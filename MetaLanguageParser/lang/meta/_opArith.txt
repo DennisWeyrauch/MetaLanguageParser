@@ -1,0 +1,12 @@
+﻿§§Unary
+PreInc	§preInc
+PostInc	§postInc
+PreDec	§preDec
+PostDec	§postDec
+§§Binary
+Add	+
+Sub	-
+Multi	*
+Div	/
+Modulo	%
+Assign	=

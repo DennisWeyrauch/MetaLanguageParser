@@ -1,0 +1,3 @@
+§main {
+	$$code::readCode$$
+}

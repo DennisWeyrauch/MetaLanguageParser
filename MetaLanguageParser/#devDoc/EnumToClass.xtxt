@@ -1,0 +1,106 @@
+    public enum ConditionalType
+    {
+        _And,
+        _Or,
+        AndAlso,
+        OrElse,
+        Equal,
+        GreaterThan,
+        LessThan,
+        NotEqual,
+        GreaterThanOrEqual,
+        LessThanOrEqual,
+        Constant,
+        Negate,
+    }
+###
+enum (\w+)\s*\{\}?|[ \t\r\n]*(\w+),?
+(?1class $1 \{	
+	public string Name {get; private set;}
+	public string Description {get; private set;}
+	private $${1}(string name, string description) {
+		Name = name;
+		Description = description;
+    }
+	public class MyEnum {} // To rename the fields
+)(?{2}\r\n\tpublic static MyEnum $${2} = new MyEnum("$${2}", "");)
+/****/ } /**/
+#####
+[ \t\r\n]*(\w+),?|public enum (\w+)\s*\{\}?
+(?1public class $1 \{\r\n\tpublic string Name {get; private set;}\r\n\tpublic string Description {get; private set;}\r\n\tprivate ${1}\(string name, string description\) {\r\n\t\tName = name;\r\n\t\tDescription = description;\r\n    }\r\n\tpublic class MyEnum {} // To rename the fields)(?{2}\r\n\tpublic static MyEnum ${2} = new MyEnum("${2}", "");)
+
+/****/ } /**/
+
+
+[ \t\r\n]*(\w+),?
+	\r\n\tpublic static MyEnum ${1} = new MyEnum\("${1}", Invalid\);
+
+//// Changed stuff: Swap numbers in regex
+public class Action {
+	// Add eOperator as kind of Union. Class will be for Inheritance
+	// Maybe multiple Enums to also have only ConditionalTypes?
+    public string Name {get; private set;}
+    //public string Description {get; private set;} Comes into DevComment
+	// To be able to switch on them
+    public eOperator operator {get; private set;}
+	// Also add TypeOf(bool) for Cond, etc.
+	// And the ResourceGetter
+
+    private Action(string name, string description) {
+        Name = name;
+        Description = description;
+    }
+
+    public static Action DoIt = new Action("Do it", "This does things");
+    public static Action StopIt = new Action("Stop It", "This stops things");
+	// Add implicit converter to and from enum(With Reflection+nameof)
+	// ToString() => this.resStr;
+}
+
+
+public enum ConditionalType
+{
+
+	public static MyEnum _And = new MyEnum("_And", Invalid);
+	public static MyEnum _Or = new MyEnum("_Or", Invalid);
+	public static MyEnum AndAlso = new MyEnum("AndAlso", Invalid);
+	public static MyEnum OrElse = new MyEnum("OrElse", Invalid);
+	public static MyEnum Equal = new MyEnum("Equal", Invalid);
+	public static MyEnum GreaterThan = new MyEnum("GreaterThan", Invalid);
+	public static MyEnum LessThan = new MyEnum("LessThan", Invalid);
+	public static MyEnum NotEqual = new MyEnum("NotEqual", Invalid);
+	public static MyEnum GreaterThanOrEqual = new MyEnum("GreaterThanOrEqual", Invalid);
+	public static MyEnum LessThanOrEqual = new MyEnum("LessThanOrEqual", Invalid);
+	public static MyEnum Constant = new MyEnum("Constant", Invalid);
+	public static MyEnum Negate = new MyEnum("Negate", Invalid);
+}
+
+
+Own:
+	enum eOperatorType {	} // Contains all
+	enum eConditionalType {} // The existing one
+	enum eArithmetic {} // + - * / ....
+	abstract class OperatorType {}
+	class ConditionalType
+	class ArithmeticType
+###
+private enum Base
+{
+    A, B, C
+}
+
+private enum Consume
+{
+    A = Base.A,
+    B = Base.B,
+    C = Base.C,
+    D,
+    E
+}
+public static class Extensions
+{
+    public static T As<T>(this Consume c) where T : struct
+    {
+        return (T)System.Enum.Parse(typeof(T), c.ToString(), false);
+    }
+}

@@ -1,0 +1,128 @@
+### FormatRules:
+#Any Order may be allowed
+#Some are required as absolute minimum
+#LineComment with '#' (only start of line)
+#LineRegEx:
+#	([A-Za-z_]+)\t+"((?:\"|[^"]*)+)"[\r\n]+
+########
+#### Conditional
+## Nonary
+True	"true"
+False	"false"
+## Unary
+Negate	"!{0}"
+Invert	"~{0}"
+## Binary
+BitwiseAnd	"{0} & {1}"
+BitwiseOr	"{0} | {1}"
+BitwiseXor	"{0} ^ {1}"	// CHECK
+AndAlso	"{0} && {1}"
+OrElse	"{0} || {1}"
+
+Equal	"{0} == {1}"
+Identity	"{0} == {1}"
+NotEqual	"{0} != {1}"
+GreaterThan	"{0} > {1}"
+LessThan	"{0} < {1}"
+GreaterEqual	"{0} >= {1}"
+LessEqual	"{0} <= {1}"
+## Ternary
+Ternary	"(({0}) ? {1} : {2})"
+#### Arithmetic
+## Unary
+Pos	"+{0}"
+Neg	"-{0}"
+PreInc	"++{0}"
+PostInc	"{0}++"
+PreDec	"--{0}"
+PostDec	"{0}--"
+## Binary
+Add	"{0} + {1}"
+Subtract	"{0} - {1}"
+Multiply	"{0} * {1}"
+Divide	"{0} / {1}"
+Modulo	"{0} % {1}"
+Assign	"{0} = {1}"
+LShift	"{0} << {1}"
+RShift	"{0} >> {1}"
+
+#### Extras (CSharp/Dev)
+AddAssign	"{0} += {1}"
+SubAssign	"{0} -= {1}"
+MulAssign	"{0} *= {1}"
+DivAssign	"{0} /= {1}"
+ModAssign	"{0} %= {1}"
+
+AddAssign	"{0} &= {1}"
+OrAssign	"{0} |= {1}"
+XorAssign	"{0} ^= {1}"
+
+LShiftAssign	"{0} <<= {1}"
+RShiftAssign	"{0} >>= {1}"
+
+NullCoalesce	"{0} ?? {1}" // if ({0}!= null) then {0} else {1}
+Lambda			"{0} => {1}"
+MemberAccess	"{0}.{1}"
+Indexing		"{0}[{1}]"
+ObjectCreation	"new {0}"
+Cast			"({0}){1}"
+CastWithAccess:	"(({0}){1}).{2}"
+
+## TypeInformation
+????	"{0} as {1}" // Attempts silent cast, else null
+????	"{0} is {1}" // Conditional CastSuccess
+????	"typeof({0})"
+SizeOf	"sizeof({0})"
+????	"nameof({0})"
+????	"{0} is {1}"
+#########
+###### Don't know if this should go into own file...
+###### But hey, the stuffs can be defined that way without code.
+#### Other stuff
+String escape
+Strings	'\"{0}\"'
+EscapeSequence	"\\"
+Chars	"'{0}'"
+Verbatim	"@\"{0}\""
+VerbatimEscape	"\"\""
+
+## Enum 	keyword 	WrapperClass
+Int8	sbyte	System.SByte
+Int16	short	System.Int16
+Int32	int 	System.Int32
+Int64	long	System.Int64
+UInt8	byte	System.Byte
+UInt16	ushort	System.UInt16
+Uint32	uint	System.UInt32
+Uint64	ulong	System.UInt64
+Decimal	decimal	System.Decimal
+Single	float	System.Single
+Double	double	System.Double
+Boolean	bool	System.Boolean
+Chars	char	System.Char
+String	string	System.String
+Enum	enum	System.Enum
+
+## Special Types (Left Side 	RightSide)
+Array	'{type}[]'
+
+FktPointer	'delegate {methSig};'
+	{methSig}	'{TypeNamePair}({argsList})'
+	{argsList}
+		''
+		{argsNonEmpty}
+	{argsNonEmpty}
+		{TypeNamePair}
+		{TypeNamePair}, {argsNonEmpty}
+	{TypeNamePair}
+		{type} {identifier}
+
+## Special Values
+
+Array	'new {type}[{size}];'
+Array	'new {type}[] \{{collectionInit}\};'
+Array	'new[] \{{collectionInit}\};'
+AnnoMethod	'delegate({args})\{ {code} \};'
+Lambda	'({callArgs}) => {expr};'
+Lambda	'({callArgs}) => \{{code}\};'
+

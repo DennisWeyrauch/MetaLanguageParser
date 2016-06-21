@@ -1,0 +1,11 @@
+_operator_bool
+
+_operator_arith
+
+## Language Definition
+MyLang := LanguageCode
+Looks for folder "/lang/mylang"
+Inside, reads following files:
+1. "mylang" for configuration stuff
+2. "_op_bool" for conditional operators
+3. "_op_arith" for .... rest?

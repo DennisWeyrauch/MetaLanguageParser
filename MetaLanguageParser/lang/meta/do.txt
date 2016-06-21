@@ -1,0 +1,3 @@
+do {
+	$$code::readCode$$
+} while ($$cond::readConditional$$)

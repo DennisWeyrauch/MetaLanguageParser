@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dictionary type="Arithmetic">
+  <unary>
+    <entry name="§preInc">PreInc</entry>
+    <entry name="§postInc">PostInc</entry>
+    <entry name="§preDec">PreDec</entry>
+    <entry name="§postDec">PostDec</entry>
+  </unary>
+  <binary>
+    <entry name="+">Add</entry>
+    <entry name="-">Sub</entry>
+    <entry name="*">Multi</entry>
+    <entry name="/">Div</entry>
+    <entry name="%">Modulo</entry>
+    <entry name="=">Assign</entry>
+  </binary>
+</dictionary>

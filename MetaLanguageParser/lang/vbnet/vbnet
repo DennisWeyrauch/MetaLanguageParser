@@ -1,0 +1,7 @@
+FileSuffix	vb
+Block_Init	§EOF
+Block_Close	End
+Statement_Close	;
+Indent	\t
+is_Closure_Like_Init	true
+has_Syntactic_Whitespace	true

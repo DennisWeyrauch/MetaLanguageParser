@@ -1,0 +1,17 @@
+$$scope$$ $$modifier$$ $$retType$$ $$name$$$$generic$$($$args$$) {
+	$$code$$
+}
+
+##Scope##
+Public	public
+	private
+	protected
+	internal
+None	""
+
+static
+abstract
+sealed
+new
+override
+virtual

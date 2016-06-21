@@ -1,0 +1,32 @@
+## 2016-05-25
+Transformed fuzzy parts of Compiler into base code
+
+## 2016-05-26
+Finished base code
+# 2
+Made a full run fixing all errors
+## 2016-06-04
+Added full code to add arbitary keywords as metaDef-File, using them in .mcode, and printing them in correct and okey'ish looking C#-Code.
+## 2016-06-05
+Non-IDE changes like adding #warnings at some places and stuff
+## 2016-06-13
+After some shitty hours with the ResourceManagementSystem of .NET I retreated to Serializable Dictionaries. Well, that works now. And you can specify the language via command line
+## 2016-06-14
+Cleaned up Builder Code
+ResourceSaving/Loading works now the way I want.
+Can specify language with ProgArgument
+## 2016-06-18
+Fully working Operator Reader/Writer
+#Appendix (00:30 AM)
+... Almost. TwoChar Operators have to be added to the tokenizer before they work.
+
+### Todo
+//Fixing the lone newLine in Indent
+//readParameterList just skips the parameters
+//Rewrite SerializeableDictionary<string,string> to display as <entry name="myKey">myValue</entry>
+--> Codefile via arg as well
+(!) Add more operators (you can't do everything with '>' after all :P)
+(!!) Add proper method/class structure (at least Main/Programm) to allow executing the code
+//(!!!) making CustomInformation work, so that different types of ProgLang will work
+--> ResourceManager
+(!!!) Typing model

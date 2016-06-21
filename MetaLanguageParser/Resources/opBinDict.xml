@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dictionary type="Boolean">
+  <unary>
+    <entry name="!">Negate</entry>
+  </unary>
+  <binary>
+    <entry name="&amp;">And</entry>
+    <entry name="|">Or</entry>
+    <entry name="==">Equal</entry>
+    <entry name="!=">NotEqual</entry>
+    <entry name="&gt;">GreaterThan</entry>
+    <entry name="&lt;">LessThan</entry>
+    <entry name="&gt;=">GreaterThanOrEqual</entry>
+    <entry name="&lt;=">LesserThanOrEqual</entry>
+  </binary>
+</dictionary>

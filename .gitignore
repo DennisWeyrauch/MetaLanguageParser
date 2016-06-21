@@ -1,0 +1,6 @@
+*.pdb
+*.7z
+Common/obj/*
+MetaLanguageParser/obj/*
+Common/bin/Debug/*
+MetaLanguageParser/bin/Debug/oldCode

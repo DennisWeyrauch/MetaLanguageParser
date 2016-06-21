@@ -1,0 +1,11 @@
+## Java
+Delegates / FunctionPointer
+§addInner := add InnerType
+§addMember
+§addMethod
+§locDef
+§lambdas
+
+## VB.NET
+SwitchCases
+§forEach() in DestFiles

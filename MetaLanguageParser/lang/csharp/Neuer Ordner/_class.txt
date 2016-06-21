@@ -1,0 +1,14 @@
+$$scope$$ $$modifier$$ class $$name$$$$generic$$ {
+	$$code$$
+}
+
+##Scope##
+Public	public
+	private
+	protected
+	internal
+None	""
+
+static
+abstract
+sealed

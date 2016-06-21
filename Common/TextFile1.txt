@@ -1,0 +1,30 @@
+﻿Multi Instance Logger
+
+final string logDir;
+	_logName
+	logName
+	logSuffix
+
+        const string logDir = "lwLogs";
+        const string _logName = "log_listwalker";
+        string logName = _logName;
+        const string logSuffix = ".log";
+        string logFile => logName + logSuffix;
+###
+public static void deleteLogs() {
+            try {
+                if (System.IO.Directory.Exists(logDir) && instanceId == 1) {
+                    System.IO.Directory.Delete(logDir, true);
+                }
+                Directory.GetFiles(".", _logName+"*").ToList().ForEach(s => File.Delete(s));
+                //else System.IO.Directory.CreateDirectory(logDir);
+            } catch (DirectoryNotFoundException dnfe) {} // Don't worry when dir doesn't exist
+        }
+		public void createDir() => System.IO.Directory.CreateDirectory(logDir);
+###
+Set the parts via cctor (through cctor of Caller)
+Request an instance that adds an instID to the file
+	That also creates an FileStream and StreamWriter
+At best, it extends StreamWriter and IDisposeable
+	and in the own dtor calls the FileStreams Dispose (before or after own?)
+so that it can be used in an using-with-resources

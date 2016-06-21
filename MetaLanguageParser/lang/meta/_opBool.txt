@@ -1,0 +1,11 @@
+§§Unary
+Negate	!
+§§Binary
+And	&
+Or	|
+Equal	==
+NotEqual	!=
+GreaterThan	>
+LessThan	<
+GreaterThanOrEqual	>=
+LesserThanOrEqual	<=

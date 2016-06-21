@@ -1,0 +1,3 @@
+﻿(while($$cond$$)§inc
+  (do§inc
+    $$code$$ §dec§dec))

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dictionary>
+  <item>
+    <key>
+      <string>__FILESUFFIX</string>
+    </key>
+    <value>
+      <string>cs</string>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>__BLOCK_INIT</string>
+    </key>
+    <value>
+      <string>{</string>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>__BLOCK_CLOSE</string>
+    </key>
+    <value>
+      <string>}</string>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>__STATEMENT_CLOSE</string>
+    </key>
+    <value>
+      <string>;</string>
+    </value>
+  </item>
+  <item>
+    <key>
+      <string>__INDENT</string>
+    </key>
+    <value>
+      <string>\t</string>
+    </value>
+  </item>
+</dictionary>

@@ -1,0 +1,25 @@
+### Conditional
+##Unary
+Negate	!{0}
+##Binary
+And	{0} & {1}
+Or	{0} | {1}
+Equal	{0} == {1}
+NotEqual	{0} != {1}
+GreaterThan	{0} > {1}
+LessThan	{0} < {1}
+GreaterThanOrEqual	{0} >= {1}
+LesserThanOrEqual	{0} <= {1}
+### Arithmetic
+##Unary
+PreInc	++{0}
+PostInc	{0}++
+PreDec	--{0}
+PostDec	{0}--
+##Binary
+Add	{0} + {1}
+Sub	{0} - {1}
+Multi	{0} * {1}
+Div	{0} / {1}
+Modulo	{0} % {1}
+Assign	{0} = {1}

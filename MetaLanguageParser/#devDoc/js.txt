@@ -1,0 +1,29 @@
+##Javascript:
+VarDecl:
+	*implicit* via use
+	var $$name$$ = $$value$$;
+Imports: (example: IO)
+	var fs = require('fs');
+Strings:
+	'$$text$$'
+	"$$text$$"
+Scopes: None, TopDown
+Lambda: function ($$args$$) {$$code$$}
+Map:
+	{'$$text$$' : $$value$$} := entry
+	{$$entry$$, $$entries$$}
+Switch:
+	switch($$filter$$) { $$cases$$ }
+	$$cases$$ := 
+		case $$case$$: $$code$$ $$break$$
+		default: $$code$$ $$break$$
+	$$break$$ := 
+		$$return$$;
+		continue;
+		break;
+		
+if($$cond$$) {$$code$$}
+	false, 0, null --> FALSE
+	true, != 0, != null --> TRUE
+WRITE
+	console.log($$args$$);

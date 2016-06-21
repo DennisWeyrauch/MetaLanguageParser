@@ -1,0 +1,34 @@
+§addType(eType.Class, "Player")
+§addMain
+§vardecl(Int32, "lightX");
+§vardecl(Int32, "lightY");
+§vardecl(Int32, "posX");
+§vardecl(Int32, "posY");
+§readLine(lightX, lightY, posX, posY); // §readLine_chain if found, else §readLine
+while (true) {
+	§vardecl(Int32, "remainingTurns");
+	§readLine("remainingTurns");
+	//////
+	char msg[] = "";//,c2[] = "";
+	if(posY<lightY){posY++; strcat(msg,"S");}
+	if(posY>lightY){posY--; strcat(msg,"N");}
+	if(posX<lightX){posX++; strcat(msg,"E");}
+	if(posX>lightX){posX--; strcat(msg,"W");}
+	
+	//fprintf(stderr, "%s\n", c1);
+	printf("%s\n", msg); // A single line providing the move to be made: N NE E SE S SW W or NW
+}
+	
+	
+	§writeLine(idx);
+}
+§endMain
+§endType
+
+###############
+§vardecl()	string enemy1;
+§readLine()
+	§addUsing("System");
+	§if(§§TYPE == Int32§§)
+	§then int.Parse(Console.ReadLine())
+	§else Console.ReadLine()
