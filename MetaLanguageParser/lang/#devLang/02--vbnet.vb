@@ -77,6 +77,10 @@ Sub Branches
 		$$code$$
 	End if
 End Sub
+
+$$$$ OPTION-->NonStackingIf
+	Else/Elseif deletes a previous added End if
+
 Sub SwitchCase
 	'' Filter := Integer / String
 	Select Case $$filter$$§inc
@@ -110,19 +114,19 @@ End Sub
 
 Module DevComments
 
-##Define SwitchCase
+##Define SwitchCase	[switch.txt]
 switch ($$filter$$) {§inc
 	$$cases$$§dec
 }
-##Define Case
+##Define Case	[case.txt]
 case $$value$$§inc
 	$$code$$
 	break;
-##Define MultiCase (Fall through)
-case $$value,value,value,...$$
+##Define MultiCase (Fall through)	[cases.txt]
+cases $$§list($$values$$,$$)$$	''value,value,value,...
 	$$code$$
 	break;
-##Define Default Case
+##Define Default Case	[default.txt]
 default:
 	$$code$$
 	break;
@@ -163,7 +167,9 @@ Do Until $$cond$$ §inc	'Do until True --> while false
 Do while $$cond$$ §inc	'Do until false --> while true
 	$$code$$ §dec
 Loop
-$$$$ OPTION-->OnlyLiteralsAsForCondition
+$$$$ OPTION-->OnlyLiteralsInForCondition
+	
+
 Dim a as Integer
 For a = 0 To 10
 	$$code$$

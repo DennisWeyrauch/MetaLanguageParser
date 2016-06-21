@@ -1,4 +1,4 @@
-## Java
+## Java ##
 Delegates / FunctionPointer
 §addInner := add InnerType
 §addMember
@@ -6,6 +6,12 @@ Delegates / FunctionPointer
 §locDef
 §lambdas
 
-## VB.NET
+## VB.NET ##
 SwitchCases
 §forEach() in DestFiles
+OPTION-->NonStackingIf
+	Else/Elseif deletes a previous added End if
+OPTION-->OnlyLiteralsInForCondition
+	Instead of BooleanConditionals, only {typeOf_Counter}-Literals are allowed
+#
+Need some ParseCommand for acting different on specific options
