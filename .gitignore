@@ -1,5 +1,6 @@
 *.pdb
 *.7z
+*.lnk
 Common/obj/*
 MetaLanguageParser/obj/*
 Common/bin/Debug/*

@@ -82,13 +82,24 @@ namespace MetaLanguageParser
                     writer.Write(str);
                    // if(list.isClosure)
                 }
+			
             } catch (Exception e)
                     when (e is InvalidSyntaxException || e is InvalidOperationException) { 
 					#warning INFO:: Added Catch to printErrors on highest layer
                     list.printError();
 					hasThrown = true;
             } finally {
-                try { File.WriteAllText($"Results.{__FILESUFFIX}", output.ToString()); } catch (Exception) { Logger.logData("Could not write to OutputFile!"); }
+				string resCode = output.ToString();
+				if(Regex.IsMatch(resCode, @"§retract\(\d+\)")){
+					int hitPos = 0;
+					foreach(var item in Extensions.matchHelper(resCode, @"§retract\((\d+)\)")){
+						hitPos = resCode.IndexOf("§retract", hitPos);
+						hitPos -= int.Parse(item);
+                        int nextEnd = resCode.IndexOf(')', hitPos);
+                        resCode = resCode.Remove(hitPos, nextEnd - hitPos+1);
+                    }
+				}
+                try { File.WriteAllText($"Results.{__FILESUFFIX}", resCode); } catch (Exception) { Logger.logData("Could not write to OutputFile!"); }
 				if (hasThrown) list.printError(finalize: true);
                 writer?.Dispose();
                 output?.Dispose();
@@ -113,11 +124,18 @@ namespace MetaLanguageParser
             ICode ce = new CodeExample();
             var output = new StringWriter();
             var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, "\t");
-            
+            string previous;
             while (true) {
                 try {
                     elem = list.getCurrent();
                     if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
+					/*{
+						var str = ce.parse(ref eb, ref pos);
+						if(str.startsWith("§retract")){//End If
+							int sub = str.IndexOfAny(')');//"§retract".Length;
+							string[] arr = 
+						}
+					} writer.Write();//*/
                     /**///else if (Type.GetType(elem, false) != null) kw["void"].Invoke(ref eb, ref list.Index);
                     else if (list.isAtEnd()) {
                         //if (list.isClosure()) list.Index++;

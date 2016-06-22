@@ -54,7 +54,7 @@ namespace MetaLanguageParser.Resources
 
                 var value = this[key];
                 if (value.Contains(" ")) {
-                    value = value.Replace(" ", "&#160;");
+                    value = value.Replace(" ", "&#20;");
                     writer.WriteRaw(value);
                 } else writer.WriteString(value);
 

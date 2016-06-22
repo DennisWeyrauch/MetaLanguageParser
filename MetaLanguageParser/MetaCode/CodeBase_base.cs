@@ -127,19 +127,29 @@ namespace MetaLanguageParser.MetaCode
                  "while (", "cond", ") {", "§inc", "§n", "code", "§dec", "§n", "}"
             };//*/
 
-            if (((CodeExample)this).FileName.Equals("§main")) {
+            if (((CodeExample)this).FileName.Equals("else")) {
                 new Object(); // DebugHook
             }
+            bool isRetract = false;
 
             using (var output = new System.IO.StringWriter())
             using (var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT)) {
                 writer.Indent = ebInt;
                 foreach (var item in readin) {
                     //System.IO.File.WriteAllText($"myLog_{((CodeExample)this).FileName}.txt", output.ToString()); // Prints Steps
+                    if(isRetract) {
+                        if (item.Contains(')')) isRetract = false;
+                        writer.Write(item);
+                        continue;
+                    }
                     switch (item) {
                         case "§inc": writer.Indent++; continue;
                         case "§dec": writer.Indent--; continue;
                         case "§n": writer.WriteLine(); continue;
+                        case "§retract":
+                            writer.Write(item);
+                            isRetract = true;
+                            continue;
 #warning INFO:: Add new custom functions like §addMember (like Method for ToCharArray in JS)
                     }
                     string s = "";
@@ -152,9 +162,9 @@ namespace MetaLanguageParser.MetaCode
                                 indent = __INDENT.ConcatTimes(writer.Indent);
                                 break;
                         }
+                        // Apply the indent recursive to every code line
                         var str = Regex.Replace(s, "([\r\n]+(?:" + indent + ")*)", "${1}"+indent);
                         if (str.IsNotNOE()) writer.Write(str);
-                        //if (str.EndsWith(__BLOCK_INIT) || str.EndsWith(__BLOCK_CLOSE) || str.EndsWith(__STATEMENT_CLOSE)) writer.WriteLine();
                     } else writer.Write(item);
                 }
 

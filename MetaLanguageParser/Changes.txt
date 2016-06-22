@@ -25,4 +25,7 @@ Uploaded to GitHub!
 Some small changes to ExeBuilder's future use (also threw out Scoping Stuff)
 Also renamed all langCode files to respective filesuffix
 And seperated Changes/Todo
+#Later....
+Moved around stuff, deleted unneeded ones, added readme to ResxDir
+Also made VB.net work (excluding options)
 

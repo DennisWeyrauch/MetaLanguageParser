@@ -11,7 +11,7 @@ namespace MetaLanguageParser
         static void Main(string[] args)
         {
             string code;
-            code = (args.Length != 0) ? args[0] : "csharp";
+            code = (args.Length != 0) ? args[0] : "vbnet";
             Logger.resetLog();
             if (args.Length == 0) {
                 new MetaLanguageParser.Parser().execute("codefile.txt", code);

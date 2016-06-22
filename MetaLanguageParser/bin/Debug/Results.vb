@@ -4,7 +4,7 @@ Module Module1
             Do While (((i = i + 1)) < 15) 
                 Console.Write(i) 
             Loop
-        End IfElse 
+        Else 
             Do 
                 Console.Write(i) 
             Loop While (i > 0)
