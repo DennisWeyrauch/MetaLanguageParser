@@ -1,0 +1,24 @@
+### Todo
+Supply Codefile via arg as well
+(!!) Add proper method/class structure (at least Main/Programm) to allow executing the code
+(!!!) Typing model
+(!) Gradually build Memberstructure (see #dev02#)
+Put the Tokenizer after the reading of Operators, and somehow include them in the splitting
+Don't forget to collect the files via ResxExtension now.
+
+
+
+### Commands
+Add a proper File explaining all commands 
+(#) CodeCommands
+ -- §addType
+ -- §addMember
+(#) DefParseCommands
+ -- §checkOption --> see devFile
+(#) DestParseCommands
+ -- §forEach // For SwitchCases
+ -- §addImport
+ -- §addMethod(){
+	// Checks if a method with this signature already exists or generates if not, and inserts a MethodCall at the current pos.
+	Example: toCharArray() has to be defined in Javascript
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dictionary>
+  <entry name="__FILESUFFIX">vb</entry>
+  <entry name="__BLOCK_INIT">§EOF</entry>
+  <entry name="__BLOCK_CLOSE">End</entry>
+  <entry name="__STATEMENT_CLOSE">&#160;</entry>
+  <entry name="__INDENT">&#160;&#160;&#160;&#160;</entry>
+  <entry name="__isClosureLikeInit">true</entry>
+  <entry name="__hasSyntacticWhitespace">true</entry>
+</dictionary>

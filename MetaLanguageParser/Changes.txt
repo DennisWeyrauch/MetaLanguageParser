@@ -21,21 +21,8 @@ Fully working Operator Reader/Writer
 ... Almost. MultiChar Operators have to be added to the tokenizer before they work.
 ## 2016-06-21
 Uploaded to GitHub!
+## 2016-06-22
+Some small changes to ExeBuilder's future use (also threw out Scoping Stuff)
+Also renamed all langCode files to respective filesuffix
+And seperated Changes/Todo
 
-### Todo
-Supply Codefile via arg as well
-(!!) Add proper method/class structure (at least Main/Programm) to allow executing the code
-(!!!) Typing model
-Add a proper File explaining all commands 
-(#) CodeCommands
- -- §addType
- -- §addMember
-(#) DefParseCommands
- -- §checkOption --> see devFile
-(#) DestParseCommands
- -- §forEach // For SwitchCases
- -- §addImport
- -- §addMethod(){
-	// Checks if a method with this signature already exists or generates if not, and inserts a MethodCall at the current pos.
-	Example: toCharArray() has to be defined in Javascript
-}

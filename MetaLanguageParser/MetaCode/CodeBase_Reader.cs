@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static MetaLanguageParser.Resources.ResourceReader;
 
 namespace MetaLanguageParser.MetaCode
 {
@@ -128,8 +129,7 @@ namespace MetaLanguageParser.MetaCode
         {
             string elem = "";
             var output = new System.IO.StringWriter();
-#warning CUSTOM:: Indent, BlockTerminator
-            var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, "\t");
+            var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
             var par = Parser.getInstance;
             while (!eb.list.isCurrent('}')) writer.Write(par.execStatement(ref eb, ref pos));
             elem = output.ToString();

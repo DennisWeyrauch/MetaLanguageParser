@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dictionary>
+  <entry name="Negate">NOT {0}</entry>
+  <entry name="And">{0} AND {1}</entry>
+  <entry name="Or">{0} OR {1}</entry>
+  <entry name="Equal">{0} = {1}</entry>
+  <entry name="NotEqual">NOT {0} = {1}</entry>
+  <entry name="GreaterThan">{0} &gt; {1}</entry>
+  <entry name="LessThan">{0} &lt; {1}</entry>
+  <entry name="GreaterThanOrEqual">{0} &gt;= {1}</entry>
+  <entry name="LesserThanOrEqual">{0} &lt;= {1}</entry>
+  <entry name="PreInc">({0} = {0} + 1)</entry>
+  <entry name="Add">{0} + {1}</entry>
+  <entry name="Sub">{0} - {1}</entry>
+</dictionary>

@@ -24,10 +24,10 @@ namespace MetaLanguageParser.Resources
                 if (Directory.Exists(path)) {
                     path += "/" + value;
                     bool file = File.Exists(path);
-                    bool fileExt = File.Exists(path+getFileSuffix());
+                    bool fileExt = File.Exists(path+".txt");
                     if (file) _lang = value;
                     else if (fileExt) {
-                        File.Move(path + getFileSuffix(), path);
+                        File.Move(path + ".txt", path);
                         _lang = value;
                     } else throw new FileNotFoundException($"No config file '{value}' found!");
                 } else throw new DirectoryNotFoundException($"Language Directory '{value}' does not exist.");
@@ -45,7 +45,7 @@ namespace MetaLanguageParser.Resources
         /// Returns the path to the given file in the current LanguageDirectory.
         /// </summary>
         /// <returns></returns>
-        internal static string getLangPath(string file) => new StringBuilder(basePath).Append($"/{_lang}/{file}").Append(getFileSuffix()).ToString();
+        internal static string getLangPath(string file) => new StringBuilder(basePath).Append($"/{_lang}/{file}.{langSuffix}").ToString();
         /// <summary>
         /// Retrieves the main configfile for the language
         /// </summary>
@@ -70,7 +70,7 @@ namespace MetaLanguageParser.Resources
         /// </summary>
         /// <returns></returns>
         internal static string getMetaPath(string file)
-            => new StringBuilder(getMetaPath()).Append($"/{file}").Append(getFileSuffix()).ToString();
+            => new StringBuilder(getMetaPath()).Append($"/{file}").Append(metaSuffix).ToString();
 
         /// <summary>Returns the path to the MetaDirectory</summary>
         internal static string getResourcePath() => new StringBuilder(basePath).Append("/../Resources").ToString();
@@ -83,7 +83,12 @@ namespace MetaLanguageParser.Resources
         /// <summary>{resx}/opDestDict.<paramref name="lang"/>.xml</summary>
         internal static string getDestinationDict(string lang) => getResourcePath() + "/opDestDict." + lang + ".xml";
 
-        public static string getFileSuffix() => ".txt";
+        /// <summary>Value: .txt</summary><value>.txt</value>
+        public static string configSuffix => ".txt";
+        /// <summary>Value: .txt</summary><value>.txt</value>
+        public static string metaSuffix => ".txt";
+        /// <summary><see cref="ResourceReader.__FILESUFFIX"/></summary>
+        public static string langSuffix => ResourceReader.__FILESUFFIX;
 
 
     }

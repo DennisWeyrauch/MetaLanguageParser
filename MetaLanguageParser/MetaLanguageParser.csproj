@@ -13,6 +13,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,11 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Common_partials.cs" />
-    <Compile Include="Resources\LangConfig.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LangConfig.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Common\ConfigurationDictionary.cs" />
+    <Compile Include="MetaType.cs" />
     <Compile Include="MetaCode\CodeBase_base.cs" />
     <Compile Include="MetaCode\CodeBase_Reader.cs" />
     <Compile Include="Parser\ExeBuilder.cs" />
@@ -62,7 +74,6 @@
     <Compile Include="Parser\Tokenizer.cs" />
     <Compile Include="Common\OperatorDictionary.cs" />
     <Compile Include="Resources\ResourceReader.cs" />
-    <Compile Include="Resources\Resources.cs" />
     <Compile Include="Resources\ResxFiles.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,12 +86,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\LangConfig.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LangConfig.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

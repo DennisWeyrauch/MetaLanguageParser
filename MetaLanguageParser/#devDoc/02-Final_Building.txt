@@ -1,0 +1,44 @@
+StorageField:
+imports
+	it's a list of "USING_keyword PATH;"
+Types
+	Either
+		A big fat finished string
+	Or
+		A collection of MemberStrings (Fields, Methods, etc.)
+		That will be build below with indent regarding an eventual namespace §inc
+package/namespace/module IN the Types
+In the highest abstraction loop (that is, execute()) build it together
+Option for multiple top-level classes, and default for seperate? <-- Java
+Or Option for the reverse case? <-- C#
+If (merge)
+	Write the Imports, Module, and then the types in sequence
+Else
+	Create new file per Type (named like the TypeName), with its own Module and all imports
+### Later...
+Concrete:
+Use ExeBuilder for storing the TypeData/Lists
+	maybe even rename it, and also consider CodeStyle(Singleton getInstance vs. ArgumentCarry)
+
+List of Usings
+Declared Types, containing
+ -- Scope, evt. Modifier, Name, Classification (class, struct, interface, enum, ...)
+ -- Namespace Name
+ -- List of Fields
+	Scope, Modifier, Type, Name, hasInit, initval
+ -- List of Methods
+	Scope, Modifier, retType, Name, List<Args>, List<Loc>, Code
+	Optional Specifics: Generics + "where T is ...", Managed Exceptions, Assertions
+ -- etc.
+Maybe building a MemberTree?
+Member
+	Field
+		Property
+		EventHandler
+		Delegate
+	Method
+		EntryMethod
+		ctor
+			cctor
+			dtor
+	InnerTypes

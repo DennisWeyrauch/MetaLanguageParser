@@ -1,18 +1,18 @@
 ### Conditional
 ##Unary
-Negate	!{0}
+Negate	NOT {0}
 ##Binary
-And	{0} & {1}
-Or	{0} | {1}
-Equal	{0} == {1}
-NotEqual	{0} != {1}
+And	{0} AND {1}
+Or	{0} OR {1}
+Equal	{0} = {1}
+NotEqual	NOT {0} = {1}
 GreaterThan	{0} > {1}
 LessThan	{0} < {1}
 GreaterThanOrEqual	{0} >= {1}
 LesserThanOrEqual	{0} <= {1}
 ### Arithmetic
 ##Unary
-PreInc	++{0}
+PreInc	({0} = {0} + 1)
 ##Binary
 Add	{0} + {1}
 Sub	{0} - {1}

@@ -45,12 +45,22 @@ namespace MetaLanguageParser.Resources
                     return;
                 }
             }
+            bool options = false;
             foreach (var entry in readFile(path)) {
-                entry[0] = "__" + entry[0].ToUpper();
-                resxDict.Add(entry[0], entry[1]);
+                if (entry[0].Equals("§§Options§§")) {
+                    options = true;
+                    continue;
+                }
+                entry[0] = "__" + entry[0];
+                if (options) {
+                    resxDict.Add(entry[0], "true");
+                } else {
+                    resxDict.Add(entry[0].ToUpper(), entry[1]);
+                }
             }
             Common.Serializer.SerializeFile(resxDict, resxPath);
         }
+        // public static bool containsField(string name) { }
 
 
         public static OperatorDictionary opBinDict = new OperatorDictionary(eOpDictType.Boolean);
@@ -126,82 +136,22 @@ namespace MetaLanguageParser.Resources
         /// Describes if the BlockClosure is consists of <see cref="__BLOCK_CLOSE"/> and an Individual Keyword introducing the Structure. <para/>
         /// State: Not implemented
         /// </summary>
-        internal static bool __IS_CLOSURE_LIKE_INIT => resxDict.TryGetValue(nameof(__IS_CLOSURE_LIKE_INIT), out outDummy);
+        internal static bool __IsClosureLikeInit => resxDict.TryGetValue(nameof(__IsClosureLikeInit), out outDummy);
         /// <summary>
         /// Describes whether or not WhiteSpace like NewLines and Indent is important and defines Syntax Elenments. <para/>
         /// State: Not implemented
         /// </summary>
-        internal static bool __HAS_SYNTATCTIC_WHITESPACE => resxDict.TryGetValue(nameof(__HAS_SYNTATCTIC_WHITESPACE), out outDummy);
+        internal static bool __HasSyntacticWhitespace => resxDict.TryGetValue(nameof(__HasSyntacticWhitespace), out outDummy);
         /// <summary>
         /// Describes whether or not Newlines are part of the syntax. <para/>
         /// State: Not implemented
         /// </summary>
-        internal static bool __HAS_SYNTATCTIC_NEWLINES => resxDict.TryGetValue(nameof(__HAS_SYNTATCTIC_NEWLINES), out outDummy);
+        internal static bool __HasSyntacticNewlines => resxDict.TryGetValue(nameof(__HasSyntacticNewlines), out outDummy);
         /// <summary>
         /// Describes whether or not If-elseIf-else can be stacked <para/>
         /// State: Not implemented
         /// </summary>
-        internal static bool __NON_STACKING_IFS => resxDict.TryGetValue(nameof(__NON_STACKING_IFS), out outDummy);
+        internal static bool __NonStackingIfs => resxDict.TryGetValue(nameof(__NonStackingIfs), out outDummy);
 
-    }
-    public static class rootExtensions
-    {
-
-#if false
-        public static void checkResx(string lang)
-        {
-            string path = ExeBuilder.getLangPath() + "/" + lang;
-            string resxPath = ExeBuilder.getResourcePath() + "/" + lang + ".resx";
-            if(!File.Exists(path)) throw new FileNotFoundException($"No config file '{lang}' found!");
-            if (File.Exists(resxPath)) {
-                var src = File.GetLastWriteTime(path);
-                var dst = File.GetLastWriteTime(resxPath);
-                if (dst >= src) return;
-            }
-            //*/
-            var root = new Resources.root();
-            root.AddDefaults();
-            //*/
-            using (ResourceWriter resx = new ResourceWriter(resxPath)) {
-                foreach (var entry in File.ReadAllLines(path)) {
-                    var kv = entry.Split('\t');
-                    resx.AddResource(kv[0], kv[1]);
-                    root.Items.Add(new rootData() { name = kv[0], value = kv[1] });
-                }
-            }
-            Common.Serializer.SerializeFile(root, resxPath);
-            //*/
-        }
-
-        public static void readResx(string lang)
-        {
-            string resxPath = ExeBuilder.getResourcePath() + "/" + lang + ".resx";
-            Stream stream = File.OpenRead(resxPath);
-            try {
-                using (ResourceReader resx = new ResourceReader(stream)) {
-                    foreach (DictionaryEntry entry in resx) {
-                        resxDict.Add((string)entry.Key, (string)entry.Value);
-                    }
-                }
-            } catch (ArgumentException) {
-                var x = Common.Serializer.DeserializeFromStream<root>(ref stream);
-                foreach (var item in x.Items) {
-                    if(item is rootData) {
-                        var i = (rootData) item;
-                        resxDict.Add(i.name, i.value);
-                    }
-                }
-            }
-        }
-#endif
-        public static void AddDefaults(this root r)
-        {
-            var mime = new rootResheader() {name = "resmimetype", value = "text/microsoft-resx" };
-            var version = new rootResheader() {name = "version", value = "2.0" };
-            var reader = new rootResheader() {name = "reader", value = "System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" };
-            var writer = new rootResheader() {name = "writer", value = "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" };
-
-            r.Items = new List<object>() { mime, version, reader, writer };
-        }
     }
 }

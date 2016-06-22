@@ -185,3 +185,9 @@ For Each i In arr
     ' During each iteration of the For Each loop, i will assume one of three values:
     ' 1, 2, or 3 as integers.
 Next i
+#########
+Implicit Includes "System"-Namespace
+Increment/Decrement:
+	Preincrement makes no crash (just ignored as Twice UnaryPlus)
+	But (i += 1) in Conditional throws RunTimeError
+	Better add "i = i+1" below the while codeLine

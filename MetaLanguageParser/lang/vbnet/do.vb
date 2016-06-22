@@ -1,3 +1,3 @@
-﻿do §inc
+﻿Do §inc
 	$$code$$ §dec
-loop while ($$cond$$);
+Loop While ($$cond$$)

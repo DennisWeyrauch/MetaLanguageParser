@@ -257,7 +257,7 @@ namespace Common
                 }
                 Directory.GetFiles(".\\", _logName+".*").ToList().ForEach(s => File.Delete(s));
                 //else System.IO.Directory.CreateDirectory(logDir);
-            } catch (DirectoryNotFoundException dnfe) {} // Don't worry when dir doesn't exist
+            } catch (DirectoryNotFoundException) {} // Don't worry when dir doesn't exist
         }
 
         /// <summary>

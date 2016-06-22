@@ -59,19 +59,18 @@ namespace MetaLanguageParser
             }
             _running = true;
             int len; // Reserving Slots for locals.
-            var list = toker.execute(file); // Slot 3/4
+            ListWalker list = toker.execute(file); // Slot 3/4
             ExeBuilder eb = null;
 
             StringWriter output = new StringWriter();
-#warning CUSTOM:: Indent
+
             System.CodeDom.Compiler.IndentedTextWriter writer = null;
             try {
 
                 eb = new ExeBuilder(list, language); // Slot 4/4
                 Resources.ResourceReader.readConfiguration(language);
-                //Resources.MyResourceReader.readResx(language);
+                
                 writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
-
 
                 kw.AddRange(Directory.EnumerateFiles(Resources.ResxFiles.getMetaPath()).Select(Path.GetFileNameWithoutExtension));
                 //kwDict = new ParserStorage().fillLists();
@@ -88,8 +87,8 @@ namespace MetaLanguageParser
 					#warning INFO:: Added Catch to printErrors on highest layer
                     list.printError();
 					hasThrown = true;
-			} finally {
-                File.WriteAllText($"Results.{__FILESUFFIX}", output.ToString());
+            } finally {
+                try { File.WriteAllText($"Results.{__FILESUFFIX}", output.ToString()); } catch (Exception) { Logger.logData("Could not write to OutputFile!"); }
 				if (hasThrown) list.printError(finalize: true);
                 writer?.Dispose();
                 output?.Dispose();
@@ -185,8 +184,7 @@ namespace MetaLanguageParser
                 }
                  //depthCnt--;
             if (list.isCurrent(';')) {
-#warning CUSTOM:: Statement Terminator
-                str += ";";
+                str += __STATEMENT_CLOSE;
                 pos++;
             }
             //if (hasThrown && depthCnt == 0) list.printError(finalize: true);

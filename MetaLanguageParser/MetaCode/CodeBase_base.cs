@@ -130,9 +130,9 @@ namespace MetaLanguageParser.MetaCode
             if (((CodeExample)this).FileName.Equals("§main")) {
                 new Object(); // DebugHook
             }
-#warning CUSTOM:: Indent
+
             using (var output = new System.IO.StringWriter())
-            using (var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, "\t")) {
+            using (var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT)) {
                 writer.Indent = ebInt;
                 foreach (var item in readin) {
                     //System.IO.File.WriteAllText($"myLog_{((CodeExample)this).FileName}.txt", output.ToString()); // Prints Steps
@@ -144,7 +144,14 @@ namespace MetaLanguageParser.MetaCode
                     }
                     string s = "";
                     if (dict.TryGetValue(item, out s)) {
-                        var indent = __INDENT.ConcatTimes(writer.Indent);
+                        string indent;
+                        switch (writer.Indent) {
+                            case 0: indent = ""; break;
+                            case 1: indent = __INDENT; break;
+                            default:
+                                indent = __INDENT.ConcatTimes(writer.Indent);
+                                break;
+                        }
                         var str = Regex.Replace(s, "([\r\n]+(?:" + indent + ")*)", "${1}"+indent);
                         if (str.IsNotNOE()) writer.Write(str);
                         //if (str.EndsWith(__BLOCK_INIT) || str.EndsWith(__BLOCK_CLOSE) || str.EndsWith(__STATEMENT_CLOSE)) writer.WriteLine();
