@@ -53,9 +53,7 @@
     <Compile Include="MetaCode\CodeBase_base.cs" />
     <Compile Include="MetaCode\CodeBase_Reader.cs" />
     <Compile Include="Parser\ExeBuilder.cs" />
-    <Compile Include="ILangOptions.cs" />
     <Compile Include="MetaCode\ICode.cs" />
-    <Compile Include="MetaType.cs" />
     <Compile Include="Operands\Operands_Base.cs" />
     <Compile Include="Operands\Operands_Conditional.cs" />
     <Compile Include="Parser\Parser.cs" />

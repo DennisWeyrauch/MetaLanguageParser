@@ -1,0 +1,6 @@
+§addImport("java.util.List", "java.util.ArrayList")
+§decl(§§List<$$type$$> $$name$$§§)
+§init(§§new ArrayList<$$type$$>()§§)
+§getSize(§§.size()§§)
+§getElem(§§.get($$index$$)§§)
+§addElem(§§.add($$obj$$)§§)

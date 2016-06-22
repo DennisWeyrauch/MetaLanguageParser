@@ -1,0 +1,3 @@
+ catch (§forEach($$exceptions$$ | $$)) {
+	$$code$$
+}
