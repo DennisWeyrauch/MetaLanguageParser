@@ -9,10 +9,10 @@ Don't forget to collect the files via ResxExtension now.
 
 
 ### Commands
-Add a proper File explaining all commands 
 (#) CodeCommands
  -- §addType
  -- §addMember
+ -- §varDecl
 (#) DefParseCommands
  -- §checkOption --> see devFile
 (#) DestParseCommands
