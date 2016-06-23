@@ -18,6 +18,7 @@ namespace MetaLanguageParser.Resources
         public static void readConfiguration(string lang)
         {
             checkResx(lang);
+			// readMemberAttributes
             string path = getBinaryDict();
             if (!File.Exists(path)) throw new FileNotFoundException($"No config file '{lang}' found!");
             opBinDict = __readOpDict(path, getBinaryDict(lang), eOpDictType.Boolean);
@@ -60,7 +61,6 @@ namespace MetaLanguageParser.Resources
             }
             Common.Serializer.SerializeFile(resxDict, resxPath);
         }
-        // public static bool containsField(string name) { }
 
 
         public static OperatorDictionary opBinDict = new OperatorDictionary(eOpDictType.Boolean);

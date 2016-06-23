@@ -28,4 +28,6 @@ And seperated Changes/Todo
 #Later....
 Moved around stuff, deleted unneeded ones, added readme to ResxDir
 Also made VB.net work (excluding options)
+#Later again...
+Now the "NonStackingIf" works as well: Instead of an option, it is implemented via an Åòretract command used at the start of Dest Files
 

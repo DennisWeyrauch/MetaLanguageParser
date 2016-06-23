@@ -89,6 +89,7 @@ namespace MetaLanguageParser
                     list.printError();
 					hasThrown = true;
             } finally {
+                /// Rectract function
 				string resCode = output.ToString();
 				if(Regex.IsMatch(resCode, @"§retract\(\d+\)")){
 					int hitPos = 0;
@@ -129,13 +130,6 @@ namespace MetaLanguageParser
                 try {
                     elem = list.getCurrent();
                     if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
-					/*{
-						var str = ce.parse(ref eb, ref pos);
-						if(str.startsWith("§retract")){//End If
-							int sub = str.IndexOfAny(')');//"§retract".Length;
-							string[] arr = 
-						}
-					} writer.Write();//*/
                     /**///else if (Type.GetType(elem, false) != null) kw["void"].Invoke(ref eb, ref list.Index);
                     else if (list.isAtEnd()) {
                         //if (list.isClosure()) list.Index++;
@@ -168,7 +162,6 @@ namespace MetaLanguageParser
             if (!_running) throw new InvalidOperationException("Calling recursive Parser Method without init!");
             var list = eb.list;
             string elem = "";
-            //depthCnt++;
             FuncDel func;
 
             ICode ce = new CodeExample();
@@ -181,10 +174,7 @@ namespace MetaLanguageParser
                     elem = list.getCurrent();
 					#warning INFO:: Added Dictionary as else; add §varDecl, §lambda, etc. with different methods
                     if (kw.Contains(elem)) str = ce.parse(ref eb, ref pos);
-                    else if (list.isAtEnd()) {}/*// this is cheaper/faster than TryGetValue
-                        //elem = output.ToString();
-                        //break; // out cause no loop
-                    }//*/
+                    else if (list.isAtEnd()) {}
 					#warning INFO:: Add something for Assign/MethodCall to use X=y and X.Y instead of §assign and §call
 					//else if(varDict...) str = ... // Assignement/MethodCall
 					else if(kwDict.TryGetValue(elem, out func)) str = func.Invoke(ref eb, ref pos);

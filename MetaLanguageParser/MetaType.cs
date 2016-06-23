@@ -80,6 +80,55 @@ namespace MetaLanguageParser
             }
             set { _objName = value; }
         }
+
+        /// <summary>
+        /// Prints a full TypeName
+        /// </summary>
+        /// <param name="typeRef"></param>
+        /// <returns></returns>
+        public string GetTypeOutput(System.CodeDom.CodeTypeReference typeRef)
+        {
+            string s = String.Empty;
+
+            System.CodeDom.CodeTypeReference baseTypeRef = typeRef;
+            while (baseTypeRef.ArrayElementType != null) {
+                baseTypeRef = baseTypeRef.ArrayElementType;
+            }
+            s += GetBaseTypeOutput(baseTypeRef);
+
+            while (typeRef != null && typeRef.ArrayRank > 0) {
+                char [] results = new char [typeRef.ArrayRank + 1];
+                results[0] = '[';
+                results[typeRef.ArrayRank] = ']';
+                for (int i = 1; i < typeRef.ArrayRank; i++) {
+                    results[i] = ',';
+                }
+                s += new string(results);
+                typeRef = typeRef.ArrayElementType;
+            }
+
+            return s;
+        }
+        // returns the type name without any array declaration.
+        private string GetBaseTypeOutput(System.CodeDom.CodeTypeReference typeRef)
+        {
+            string s = typeRef.BaseType;
+            if (s.Length == 0) {
+                s = "void";
+                return s;
+            }
+
+            string lowerCaseString  = s.ToLower( System.Globalization.CultureInfo.InvariantCulture).Trim();
+            switch (lowerCaseString) {
+                case "system.int16":
+                    s = "short";
+                    break;
+                default:
+                    // Make it a globalReference: for(lengthOf BaseType)if '+' or '.', then add baseType/namespace # if '`' then add Generic
+                    break;
+            }
+            return "";
+        }
     }
 
 }

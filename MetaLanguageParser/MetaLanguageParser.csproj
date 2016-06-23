@@ -68,6 +68,7 @@
     <Compile Include="MetaCode\ICode.cs" />
     <Compile Include="Operands\Operands_Base.cs" />
     <Compile Include="Operands\Operands_Conditional.cs" />
+    <Compile Include="Parser\MethodData.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
