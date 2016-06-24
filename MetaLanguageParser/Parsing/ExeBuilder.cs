@@ -10,6 +10,7 @@ using MetaLanguageParser;
 using MetaLanguageParser.MetaCode;
 using System.IO;
 using static MetaLanguageParser.Resources.ResxFiles;
+using MetaLanguageParser.Parsing;
 
 namespace MetaLanguageParser
 {
@@ -71,9 +72,9 @@ namespace MetaLanguageParser
         /// <summary>
         /// Method-Dictionary with the arguments "MethodName", "ParameterTypes", "MethodInfo". Used for overload differentiation.
         /// </summary>
-        public Dictionary<string, Type[], MethodInfo> methDict;
+        public Dictionary<string, Type[], MethodInfo> methDict2;
         public Dictionary<string, string, MethodInfo> methDict_sig;
-        //public Dictionary<string, MethodBuilder> methDict = new Dictionary<string, MethodBuilder>();
+        public Dictionary<string, MethodData> methDict = new Dictionary<string, MethodData>();
         #endregion
         #region Constructors
 
@@ -126,11 +127,13 @@ namespace MetaLanguageParser
             /// Fill the dictionary
             // Also fill in Object, Null, Collections (with full path)
         }
-        
-        public static void readFile(string path){
-            // ....
-        }
 
+        public MethodData currentMethod { get; set; }
+        internal void AddMethod(MethodData data)
+        {
+            methDict.Add(data.Name, data);
+        }
+        
         #endregion
 
         #region Scope

@@ -14,9 +14,9 @@ namespace MetaLanguageParser.MetaCode
     public interface ICode
     {
         /// <include file='ICode.doc' path='ICode/Member[@name="parse"]/*' />
-        string Name { get; }
+        //string Name { get; }
         /// <include file='ICode.doc' path='ICode/Member[@name="FileName"]/*' />
-        string FileName { get; }
+        //string FileName { get; }
 
 
         // <include file='ICode.doc' path='ICode/Member[@name="parse"]/*' />

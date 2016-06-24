@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MetaLanguageParser
+namespace MetaLanguageParser.Parsing
 {
 
     public class MetaType
@@ -29,6 +29,8 @@ namespace MetaLanguageParser
             Float64, Double = Float64,
             Glyph, Char = Glyph,
             Text, String = Text,
+            WideGlyph, WChar = WideGlyph,
+            WideText, WString = WideText,
 
             Boolean, Bool = Boolean,
             /// <summary>Represents an ordered collection.</summary>
@@ -45,17 +47,6 @@ namespace MetaLanguageParser
         /// Contains Null, Object, DBNull, Bool, Char, int8,16,32,64+Float32/64 in signed/unsigned, Decimal, DateTime, String
         /// </summary>
         public TypeCode primitive = TypeCode.Object;
-
-        /// <summary>Representing the location/direction: Variable[default], In/Out/Inout, Return</summary>
-        public enum enumLocalType
-        {
-            Variable, In, Out, Inout, Return
-        }
-        /// <summary>Field holding the location/direction (default: Variable)</summary>
-        public enumLocalType dir = enumLocalType.Variable;
-
-        /// <summary>Whether or not current Type is unsigned. Only applied on Numbers.</summary>
-        public bool isUnsigned = false;
 
         /// <summary>Flag to determine if this is an array</summary>
         public bool isArray = false;

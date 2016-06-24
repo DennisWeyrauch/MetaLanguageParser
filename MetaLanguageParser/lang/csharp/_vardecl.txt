@@ -1,0 +1,3 @@
+§decl	$$type$$ $$name$$;
+§assign	$$name$$ = $$value$$;
+§def	$$type$$ $$name$$ = $$value$$;

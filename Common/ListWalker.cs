@@ -107,7 +107,6 @@ namespace Common
         /// <returns></returns>
         public bool whileTrue(ref string token, string para) => (token = this.getNext()).Equals(para);
         
-
         /// <summary>
         /// Increment Index, assign token, and return '<paramref name="para"/> != this[<see cref="Index"/>]'.
         /// <para/>
@@ -228,8 +227,10 @@ namespace Common
             }
             return retVal;
         }//*/
-        /// <summary> Returns if <see cref="isClosure"/> || <see cref="isEOF"/> </summary><returns>True/False</returns>
+        /// <summary> Returns <see cref="isClosure"/> || <see cref="isEOF"/> </summary><returns>True/False</returns>
         public bool isAtEnd() => isEOF() || isClosure();
+        /// <summary> Returns <see cref="isClosure"/> || <see cref="isEOF"/> || <see cref="this[int]"/>.Equals(<paramref name="str"/>) </summary><returns>True/False</returns>
+        public bool isAtEnd(string str) => isEOF() || isClosure() || (str.IsNotNOE()) ? this[Index].Equals(str) : false;
 
         #endregion
 

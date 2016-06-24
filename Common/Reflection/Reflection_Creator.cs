@@ -14,6 +14,9 @@ namespace Common.Reflection
     public partial class Reflection
     {
         #region 1-executeCCtor  (5117/5136 in 90)
+		
+		static int instanceCounter = 0;
+		
         /// <summary>
         /// Execute an embeddded constructor
         /// Possible Exceptions: FileNotFoundException (Invalid Code), 
@@ -30,7 +33,7 @@ namespace Common.Reflection
         /// <exception cref="System.IO.FileNotFoundException"><paramref name="code"/> is invalid or the specified entry point could not be found</exception>
         /// <param name="codeRaw">The code to execute</param>
         /// <param name="startType">The type that contains the constructor</param>
-        /// <param name="param">Array of method parameters</param>
+        /// <param name="param">Array of method parameters. Can only be literal values, no references (except static)</param>
         public object getInstance(string codeRaw, string startType, object[] param)
         {
             var sb = new System.Text.StringBuilder();
@@ -51,8 +54,10 @@ namespace Common.Reflection
             } else Namespace = "";
             //codeRaw = codeRaw + $" public class FooClass {{ public void Execute() {{ new CSharpTokenizer.{startType}(\"{startType}\", {sb.ToString()}).buildText();}} }}";
 
-            codeRaw = codeRaw + $" public class FooClass {{ public static object Execute() {{ return new {Namespace}{startType}({sb.ToString()});}} }}";
-            var type = compileCode(codeRaw).GetType("FooClass");
+			string execType = "FooClass_" + instanceCounter++;
+			
+            codeRaw = codeRaw + $" public class {execType} {{ public static object Execute() {{ return new {Namespace}{startType}({sb.ToString()});}} }}";
+            var type = compileCode(codeRaw).GetType(execType);
             return type.GetMethod("Execute").Invoke(null, new object[] { });
 
             //var type = compileCode(codeRaw).GetType(startType);

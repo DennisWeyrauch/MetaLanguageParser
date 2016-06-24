@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Common;
+using MetaLanguageParser.MetaCode;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
@@ -6,30 +8,129 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using static MetaLanguageParser.Parser.eMethodType;
+using static MetaLanguageParser.Parsing.eMethodType;
 using static MetaLanguageParser.Resources.ResourceReader;
 
 
-namespace MetaLanguageParser.Parser
+namespace MetaLanguageParser.Parsing
 {
     public enum eMethodType
     {
         Method, EntryMethod, Constructor, TypeConstructor, Destructor
     }
-    class MethodData
+    public class MethodData
     {
         eMethodType methodType;
-        MethodAttributes attr;
+        internal void setMain()
+        {
+            methodType = eMethodType.EntryMethod;
+        }
+
+
+        //MethodAttributes attr;
+        MemberAttributes attr;
+
+        internal void addLocal(LocalData data)
+        {
+            throw new NotImplementedException();
+        }
 
         bool hasReturn;
         MetaType retType;
 
-        string name;
+        public string Name { get; private set; }
         bool hasGeneric;
         MetaType generic;
 
         Dictionary<string, MetaType> args = new Dictionary<string, MetaType>();
-        Dictionary<string, MetaType> locals = new Dictionary<string, MetaType>();
+        Dictionary<string, LocalData> locals = new Dictionary<string, LocalData>();
+
+        string code;
+
+        public bool isSigOnly()
+        {
+            return (attr & MemberAttributes.Abstract) == MemberAttributes.Abstract;
+        }
+
+        internal void setCode(string code) {
+            if (code.IsNOE()) {
+                this.code = code;
+            } else throw new InvalidOperationException("Already added MethodCode of " + Name);
+        }
+
+
+        Dictionary<string, MemberAttributes> attrDict = new Dictionary<string, MemberAttributes>() {
+           {"assembly", MemberAttributes.Assembly },
+            {"internal", MemberAttributes.FamilyAndAssembly },
+            {"protected", MemberAttributes.Family },
+            {"shared", MemberAttributes.FamilyOrAssembly },
+            {"private", MemberAttributes.Private },
+            {"public", MemberAttributes.Public },
+            {"abstract", MemberAttributes.Abstract },
+            {"final", MemberAttributes.Final },
+            {"static", MemberAttributes.Static },
+            {"override", MemberAttributes.Override },
+            //{"virtual", MemberAttributes. },
+        };
+        Dictionary<string, MethodAttributes> attrDict2 = new Dictionary<string, MethodAttributes>() {
+           {"assembly", MethodAttributes.Assembly },
+            {"internal", MethodAttributes.FamANDAssem },
+            {"protected", MethodAttributes.Family },
+            {"shared", MethodAttributes.FamORAssem },
+            {"private", MethodAttributes.Private },
+            {"public", MethodAttributes.Public },
+            {"abstract", MethodAttributes.Abstract },
+            {"final", MethodAttributes.Final },
+            {"static", MethodAttributes.Static },
+            //{"override", MemberAttributes.Override },
+            {"virtual", MethodAttributes.Virtual },
+        };
+        public void readSignature(ref Common.ListWalker list, ref int pos)
+        {
+            string elem = list.getCurrent();
+
+            //MethodAttributes attr;
+            MemberAttributes attr;
+            while(attrDict.TryGetValue(elem, out attr)){
+                this.attr |= attr;
+                elem = list.getNext();
+            }
+            if(methodType != eMethodType.EntryMethod) {
+            // if elem.equals(declaringType.Name) then 
+            // if isStatic then cctor else ctor // or dtor? 
+            // else 
+                methodType = eMethodType.Method;
+            }
+            retType = readType(elem);//new LocalData(readType(elem), "<return>");
+            //retType.dir = MetaType.enumLocalType.Return;
+            Name = list.getNext();
+            list.assertPreInc("("); // On (
+            bool first = true;
+            while(list.whileNot(ref elem, ')')) { //1. On ( -> TYPE1 != ), go into loop
+                // 2nd: Name++ -> , != )
+                // 3rd: Name2++ -> ) == )
+                if (first) first = false;
+                else elem = list.assert(","); // 2. is , --> TYPE2
+                //FieldDirection parDir = ;//FieldDirection. // Readin Direction
+                // elem = list.getNext();
+                MetaType parType = readType(elem); // Read Type
+                // Assign that FieldDirection
+                string parName = list.getNext(); // list++, read Name
+                args.Add(parName, parType);
+            }
+            // List is on )
+            //* if InInterface OR abstract THEN 
+            if((attr & MemberAttributes.Abstract) == MemberAttributes.Abstract) {
+                list.assert(";");
+            } else {
+                //list.assert("{");
+            }
+        }
+        
+        private MetaType readType(string elem)
+        {
+            throw new NotImplementedException();
+        }
 
         public override string ToString()
         {
@@ -58,7 +159,7 @@ namespace MetaLanguageParser.Parser
         private string GenerateAsMethod()
         {
             /**
-            if not Class | Struct | Interface then return
+            if not Class | Struct | Interface then return // or throw exception?
             if list_customAttr.size > 0 THEN GenerateAttributes(custAttr)
             if list_retTypeCustAttr.size > 0 THEN GenerateAttributes(retTypeCustAttr)
             if (!IsCurrentInterface) {
@@ -114,6 +215,7 @@ namespace MetaLanguageParser.Parser
         {
             return "";
         }
+
     }
     public static class OutputHolder
     {
@@ -153,10 +255,7 @@ namespace MetaLanguageParser.Parser
                     Output.Write("public ");
                     break;
             }
-        }
 
-        public static void OutputMemberScopeModifier(MemberAttributes attributes)
-        {
             switch (attributes & MemberAttributes.ScopeMask) {
                 case MemberAttributes.Abstract:
                     Output.Write("abstract ");
@@ -184,6 +283,36 @@ namespace MetaLanguageParser.Parser
                     break;
             }
         }
+
+        /**public static void OutputMemberScopeModifier(MemberAttributes attributes)
+        {
+            switch (attributes & MemberAttributes.ScopeMask) {
+                case MemberAttributes.Abstract:
+                    Output.Write("abstract ");
+                    break;
+                case MemberAttributes.Final:
+                    Output.Write("");
+                    break;
+                case MemberAttributes.Static:
+                    Output.Write("static ");
+                    break;
+                case MemberAttributes.Override:
+                    Output.Write("override ");
+                    break;
+                default:
+                    switch (attributes & MemberAttributes.AccessMask) {
+                        case MemberAttributes.Family:
+                        case MemberAttributes.Public:
+                        case MemberAttributes.Assembly:
+                            Output.Write("virtual ");
+                            break;
+                        default:
+                            // nothing;
+                            break;
+                    }
+                    break;
+            }
+        }//*/
 
         public static void OutputFieldScopeModifier(MemberAttributes attributes)
         {
