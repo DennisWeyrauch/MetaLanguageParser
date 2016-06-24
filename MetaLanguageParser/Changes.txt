@@ -29,5 +29,6 @@ And seperated Changes/Todo
 Moved around stuff, deleted unneeded ones, added readme to ResxDir
 Also made VB.net work (excluding options)
 #Later again...
-Now the "NonStackingIf" works as well: Instead of an option, it is implemented via an ˜retract command used at the start of Dest Files
-
+Now the "NonStackingIf" works as well: Instead of an option, it is implemented via an ÂËœretract command used at the start of Dest Files
+## 2016-06-24
+Added some method stuff, like AddMethod, MethodData, LocalData
