@@ -1,11 +1,8 @@
-ClassScope  	public
-MethodScope 	public
-FieldScope  	protected
-Types
-	void
-	int
-	double
-	String
+##Types
+void
+int
+double
+String
 #
 	.equals({0})
 #

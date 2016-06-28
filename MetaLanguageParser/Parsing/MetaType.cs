@@ -9,6 +9,12 @@ namespace MetaLanguageParser.Parsing
 
     public class MetaType
     {
+        /*
+        CodeTypeReference = CTRef ArrayElementType, int ArrayRank, string baseType, CTRefOptions Options, CTRefCol TypeArguments
+            --> Type / string typeName / CTParam / Type, CTRefOp / strType, CtRefOpt / strType, params CTRef[] typeArgs / strBase, int rank / CTRef arrType, int Rank
+            Options --> Enum { Resolve from Global Root // Resolve from TypeArgument }
+    */
+
         public enum enumMetaTypes
         {
             /// <summary>Not yet defined type</summary>

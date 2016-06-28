@@ -1,0 +1,6 @@
+﻿## This file is for adding own src Files (?)
+## On the left the keyword, on the right the File containing the FuncDel-Signature Method
+#§main	AddEntry
+#§program	AddProgram
+#§varDecl	VarDecl
+#§addMethod	AddMethod

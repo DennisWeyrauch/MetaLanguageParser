@@ -18,8 +18,12 @@ namespace MetaLanguageParser.Parsing
     {
         Method, EntryMethod, Constructor, TypeConstructor, Destructor
     }
-    public class MethodData
+
+    public class MethodData : MetaData
     {
+//#warning Should the Type be stored here as well?
+        //TypeData enclosedType;
+
         eMethodType methodType;
         internal void setMain()
         {
@@ -28,22 +32,21 @@ namespace MetaLanguageParser.Parsing
 
 
         //MethodAttributes attr;
-        MemberAttributes attr;
 
-        internal void addLocal(LocalData data)
-        {
-            throw new NotImplementedException();
-        }
 
         bool hasReturn;
         MetaType retType;
 
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
         bool hasGeneric;
         MetaType generic;
 
         Dictionary<string, MetaType> args = new Dictionary<string, MetaType>();
         Dictionary<string, LocalData> locals = new Dictionary<string, LocalData>();
+        internal void addLocal(LocalData data)
+        {
+            throw new NotImplementedException();
+        }
 
         string code;
 
@@ -58,33 +61,6 @@ namespace MetaLanguageParser.Parsing
             } else throw new InvalidOperationException("Already added MethodCode of " + Name);
         }
 
-
-        Dictionary<string, MemberAttributes> attrDict = new Dictionary<string, MemberAttributes>() {
-           {"assembly", MemberAttributes.Assembly },
-            {"internal", MemberAttributes.FamilyAndAssembly },
-            {"protected", MemberAttributes.Family },
-            {"shared", MemberAttributes.FamilyOrAssembly },
-            {"private", MemberAttributes.Private },
-            {"public", MemberAttributes.Public },
-            {"abstract", MemberAttributes.Abstract },
-            {"final", MemberAttributes.Final },
-            {"static", MemberAttributes.Static },
-            {"override", MemberAttributes.Override },
-            //{"virtual", MemberAttributes. },
-        };
-        Dictionary<string, MethodAttributes> attrDict2 = new Dictionary<string, MethodAttributes>() {
-           {"assembly", MethodAttributes.Assembly },
-            {"internal", MethodAttributes.FamANDAssem },
-            {"protected", MethodAttributes.Family },
-            {"shared", MethodAttributes.FamORAssem },
-            {"private", MethodAttributes.Private },
-            {"public", MethodAttributes.Public },
-            {"abstract", MethodAttributes.Abstract },
-            {"final", MethodAttributes.Final },
-            {"static", MethodAttributes.Static },
-            //{"override", MemberAttributes.Override },
-            {"virtual", MethodAttributes.Virtual },
-        };
         public void readSignature(ref Common.ListWalker list, ref int pos)
         {
             string elem = list.getCurrent();
@@ -155,7 +131,9 @@ namespace MetaLanguageParser.Parsing
 
             return base.ToString();
         }
-
+        #region Generator Methods
+        // MemberAccess = public, private, protected, internal, public
+        // MemberScope = abstract, static, virtual, override
         private string GenerateAsMethod()
         {
             /**
@@ -201,6 +179,7 @@ namespace MetaLanguageParser.Parsing
 
         private string GenerateAsEntryMethod()
         {
+            // Probably plain text Sig?
             return "";
         }
         private string GenerateAsConstructor()
@@ -215,7 +194,7 @@ namespace MetaLanguageParser.Parsing
         {
             return "";
         }
-
+        #endregion
     }
     public static class OutputHolder
     {
@@ -344,6 +323,10 @@ namespace MetaLanguageParser.Parsing
                     break;
             }
         }
+
+        /*/
+        CodeParameterDeclarationExpression = FieldDirection dir, string Name, CodeTypeReference Type
+            //*/
 
         /// <summary>Generates code for the specified parameters.</summary>
         public static void OutputParameters(CodeParameterDeclarationExpressionCollection parameters)

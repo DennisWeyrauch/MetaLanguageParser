@@ -63,6 +63,7 @@
     <Compile Include="Common\ConfigurationDictionary.cs" />
     <Compile Include="MetaCode\AddMethod.cs" />
     <Compile Include="MetaCode\VarDecl.cs" />
+    <Compile Include="Parsing\MetaData.cs" />
     <Compile Include="Parsing\MetaType.cs" />
     <Compile Include="MetaCode\CodeBase_base.cs" />
     <Compile Include="MetaCode\CodeBase_Reader.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Parsing\LocalData.cs" />
     <Compile Include="Parsing\MethodData.cs" />
     <Compile Include="Parsing\Parser.cs" />
+    <Compile Include="Parsing\TypeData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parsing\Tokenizer.cs" />
@@ -100,6 +102,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MetaCode\TextFile1.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

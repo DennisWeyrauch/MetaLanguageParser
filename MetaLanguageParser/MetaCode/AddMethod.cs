@@ -15,14 +15,16 @@ namespace MetaLanguageParser.MetaCode
 
             // Isn't that §addMethod / §main here?
             if (eb.list[pos].Equals("§main")) data.setMain();
-#warning Also handle somehow the §main contents
+#warning Also handle somehow the §main contents (Maybe own Handler for that (and §program as well))
 #warning Called from destFiles, this should just take the lines as they are without parsing (until §endMethod)
             data.readSignature(ref eb.list, ref pos);
             if (!data.isSigOnly()) {
                 eb.currentMethod = data;
                 var ret = Parser.execRun(ref eb, ref pos, "§endMethod");
                 data.setCode(ret);
-                pos++;
+                pos++; // exec should return on §endMethod, so skip that
+
+                data = eb.currentMethod; // ??
                 eb.currentMethod = null;
             }
             eb.AddMethod(data);

@@ -1,10 +1,11 @@
-### Todo
+﻿### Todo
 Supply Codefile via arg as well
 (!!) Add proper method/class structure (at least Main/Programm) to allow executing the code
 (!!!) Typing model
 (!) Gradually build Memberstructure (see #dev02#)
 Put the Tokenizer after the reading of Operators, and somehow include them in the splitting
 Don't forget to collect the files via ResxExtension now.
+In the check of if main Config exists, also check (throw on flag) if operator, §progam and §main exist
 
 
 

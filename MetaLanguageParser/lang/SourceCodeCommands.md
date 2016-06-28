@@ -1,10 +1,15 @@
 This file should documentate ParserHooks useable in the codeFile or in the mDest Files.
 
-# CodeFile
+
+# CodeFile #
 -- none yet --
 
-# DestFiles
+# DefFiles #
+$$varName::parserHook$$
+
+# DestFiles #
 * NewLine -- Just make a linebreak
+** Or, §n if explicit (will be use the System's newline culture)
 * §inc -- Increment Indent
 * §dec -- Decrement Indent
 * §retract -- Retract SourcePos (Will be done right before printing Code to File)
