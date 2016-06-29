@@ -10,6 +10,7 @@ In the check of if main Config exists, also check (throw on flag) if operator, Â
 Make more stuff work with Local + Method
 Clean up the indentation mess
 Add Command Explaination to them
+ - Say that thing about _vardecl, and that removing Â§define always splits up the DeclarationAssignments
 
 
 ### Commands

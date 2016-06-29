@@ -42,10 +42,11 @@ namespace MetaLanguageParser.Resources
         public static string getLangPath() => $"{basePath}/{_lang}";//new StringBuilder(basePath).Append($"/{_lang}").ToString();
 
         /// <summary>
-        /// Returns the path to the given file in the current LanguageDirectory.
+        /// Returns the path to the given file in the current LanguageDirectory. == basePath/{_lang}/file.{langSuffix}
         /// </summary>
         /// <returns></returns>
         internal static string getLangPath(string file) => new StringBuilder(basePath).Append($"/{_lang}/{file}.{langSuffix}").ToString();
+        internal static string getLangPath(string file, bool hasSuffix) => new StringBuilder(basePath).Append($"/{_lang}/{file}").ToString();
         /// <summary>
         /// Retrieves the main configfile for the language
         /// </summary>

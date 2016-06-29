@@ -3,7 +3,7 @@
   <entry name="__FILESUFFIX">vb</entry>
   <entry name="__BLOCK_INIT">§EOF</entry>
   <entry name="__BLOCK_CLOSE">End</entry>
-  <entry name="__STATEMENT_CLOSE">&#20;</entry>
-  <entry name="__INDENT">&#20;&#20;&#20;&#20;</entry>
+  <entry name="__STATEMENT_CLOSE" xml:space="preserve"> </entry>
+  <entry name="__INDENT" xml:space="preserve">    </entry>
   <entry name="__hasSyntacticWhitespace">true</entry>
 </dictionary>

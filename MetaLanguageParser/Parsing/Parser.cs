@@ -160,7 +160,7 @@ namespace MetaLanguageParser//.Parsing
                     if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
                     else if (kwDict.TryGetValue(elem, out myfunc)) {
                         elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
-                        if (elem.IsNotNOE()) writer.Write(elem);
+                        if (elem.IsNotNOE()) writer.WriteLine(elem);
                     } else if (list.isAtEnd(terminator)) {
                         //if (list.isClosure()) list.Index++;
                         elem = output.ToString();

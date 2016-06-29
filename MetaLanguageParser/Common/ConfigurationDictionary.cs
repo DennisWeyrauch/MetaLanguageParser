@@ -20,28 +20,17 @@ namespace MetaLanguageParser.Resources
         {
             bool wasEmpty = reader.IsEmptyElement;
             reader.Read();
-
             if (wasEmpty) return;
             while (reader.NodeType != System.Xml.XmlNodeType.EndElement) {
                 var key = reader.GetAttribute("name"); // Read the attribute "name" of the current node
-                reader.ReadStartElement("entry"); // Assert a startElement called "entry"
+                    reader.ReadStartElement("entry"); // Assert a startElement called "entry"
                 string value = "<INVALID>";
                 value = reader.Value; // Read the Value of the current Node (CDATA-Node)
                 reader.Read(); // Walk to next Node
-                /*if (reader.NodeType == System.Xml.XmlNodeType.EntityReference) {
-
-                    try {
-                        reader.ResolveEntity();
-                        value += reader.Value; // Read the Value of the current Node (CDATA-Node)
-                        reader.Read(); // Walk to next Node
-                    } catch (Exception) {
-                        throw;
-                    }
-                }//*/
                 this.Add(key, value);
                 reader.ReadEndElement(); // Assert an EndElement called "entry"
                 reader.MoveToContent(); // Skip any intermediate non-data nodes
-            }
+                }
             reader.ReadEndElement();
         }
 
@@ -53,10 +42,12 @@ namespace MetaLanguageParser.Resources
                 writer.WriteAttributeString("name", key);
 
                 var value = this[key];
-                if (value.Contains(" ")) {
+                /*if (value.Contains(" ")) {
                     value = value.Replace(" ", "&#20;");
+#warning Also replace < and >
                     writer.WriteRaw(value);
-                } else writer.WriteString(value);
+                } else //*/
+                    writer.WriteString(value);
 
                 writer.WriteEndElement();
             }

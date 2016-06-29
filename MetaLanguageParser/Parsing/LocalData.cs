@@ -38,6 +38,13 @@ namespace MetaLanguageParser.Parsing
         /// <summary>Field holding the location/direction (default: Variable)</summary>
         public enumLocalType dir = enumLocalType.Variable;
 #warning CUSTOM:: Retrieve them
+        static LocalData()
+        {
+            var dict = Resources.ResourceReader.readAnyFile(Resources.ResxFiles.getLangPath("_vardecl.txt", true));
+            forStr_decl = dict["§decl"];
+            forStr_assign = dict["§assign"];
+            dict.TryGetValue("§define", out forStr_def);
+        }
         public static string forStr_decl = "{0} {1};";
         public static string forStr_def = "{0} {1} = {2};";
         public static string forStr_assign = "{0} = {1};";
@@ -45,13 +52,16 @@ namespace MetaLanguageParser.Parsing
         {
 #warning Also consider somehow the option "Seperate Decl and Assignment"
             if (hasValue) {
+                if (forStr_def == null) {
+                    return new StringBuilder().AppendFormat(forStr_decl, type, Name).AppendLine().AppendFormat(forStr_assign, Name, value).ToString();
+                } 
                 return string.Format(forStr_def, type, Name, value);
             } else return string.Format(forStr_decl, type, Name);
         }
 
         internal string getAssign()
         {
-            return string.Format(forStr_assign, Name, value);
+            return (hasValue) ? string.Format(forStr_assign, Name, value) : "";
         }
     }
 }

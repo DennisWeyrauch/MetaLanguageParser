@@ -56,6 +56,7 @@ namespace MetaLanguageParser.Parsing
         internal void setCode(string code) {
             if (code.IsNotNOE()) {
                 this.code = code;
+                if (code.EndsWith("\r\n\r\n")) code = code.Remove(code.Length - 2);
             } else throw new InvalidOperationException("Already added MethodCode of " + Name);
         }
 
@@ -120,7 +121,11 @@ namespace MetaLanguageParser.Parsing
                 if (false) {
                     foreach (var item in locals) sb.AppendLine(item.Value.getAssign());
                 }
-                code = sb.AppendLine(code).ToString();
+                code = sb.Append(code).ToString();
+                if (Program.printParts) {
+                    //Program.printer("method_"+Name, new StringBuilder(sb.ToString()).AppendLine().AppendLine("########").Append(code).ToString());
+                    Program.printer("method_" + Name, code);
+                }
             }
             switch (methodType) {
                 case eMethodType.Method:
@@ -187,7 +192,7 @@ namespace MetaLanguageParser.Parsing
         private string GenerateAsEntryMethod()
         {
             // Read §main Signature
-            return new CodeBase().buildCode(new CodeBase().readFile("§main"), new Dictionary<string, string>() { { "code", code }}, ref (ExeBuilder.Instance.Indent));
+            return new CodeBase().buildCode(new CodeBase().readFile("§main"), new Dictionary<string, string>() { { "code", code }});
         }
         private string GenerateAsConstructor()
         {

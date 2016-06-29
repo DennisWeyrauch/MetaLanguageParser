@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 namespace MetaLanguageParser
 {
-    class Program
-    {
+    class Program { 
+            
+        /// <summary>
+        /// Printer Flag to output the generator steps
+        /// </summary>
+        public static bool printParts = false;
+
+        public static void printer(string name, string output)
+        {
+            try { System.IO.File.WriteAllText($"myLog_{DateTime.Now.ToFileTime()}_{name}.txt", output); } catch (Exception) { }
+        }
+
         static void Main(string[] args)
         {
             string code;
-            code = (args.Length != 0) ? args[0] : "csharp";
+            code = (args.Length != 0) ? args[0] : "vbnet";
             Logger.resetLog();
             if (args.Length == 0) {
                 new MetaLanguageParser.Parser().execute("codefile.txt", code);

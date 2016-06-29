@@ -125,6 +125,15 @@ namespace MetaLanguageParser.Resources
             }
         }
 
+        public static Dictionary<string, string> readAnyFile(string path)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var entry in readFile(path)) {
+                dict.Add(entry[0], entry[1]);
+            }
+            return dict;
+        }
+
         internal static string __BLOCK_INIT => resxDict[nameof(__BLOCK_INIT)];
         internal static string __BLOCK_CLOSE => resxDict[nameof(__BLOCK_CLOSE)];
         internal static string __FILESUFFIX => resxDict[nameof(__FILESUFFIX)];

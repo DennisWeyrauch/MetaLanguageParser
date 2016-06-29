@@ -107,7 +107,7 @@ namespace MetaLanguageParser.MetaCode
         /// <param name="readin"></param>
         /// <param name="dict"></param>
         /// <returns></returns>
-        internal string buildCode(List<string> readin, Dictionary<string, string> dict, ref int ebInt)
+        internal string buildCode(List<string> readin, Dictionary<string, string> dict)
         {
             /*List<string> readin2 = new List<string>() {
                  "while (", "cond", ") {", "§inc", "§n", "code", "§dec", "§n", "}"
@@ -120,7 +120,6 @@ namespace MetaLanguageParser.MetaCode
 
             using (var output = new System.IO.StringWriter())
             using (var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT)) {
-                writer.Indent = ebInt;
                 foreach (var item in readin) {
                     //System.IO.File.WriteAllText($"myLog_{((CodeExample)this).FileName}.txt", output.ToString()); // Prints Steps
                     if(isRetract) {
@@ -153,10 +152,10 @@ namespace MetaLanguageParser.MetaCode
                         if (str.IsNotNOE()) writer.Write(str);
                     } else writer.Write(item);
                 }
-
-                ebInt = writer.Indent;
+                
                 dict.Clear();
-                //System.IO.File.WriteAllText($"myLog_{DateTime.Now.ToFileTime()}_{((CodeExample)this).FileName}.txt", output.ToString()); // Prints Iterations
+                // Prints Iterations
+                if (Program.printParts) try { Program.printer(((CodeExample)this).FileName, output.ToString()); } catch (Exception) { }
                 return output.ToString();
             }
         }

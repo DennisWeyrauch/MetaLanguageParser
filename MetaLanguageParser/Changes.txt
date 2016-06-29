@@ -35,4 +35,7 @@ Added some method stuff, like AddMethod, MethodData, LocalData
 ## 2016-06-29
 AddMethod, VarDecl, adn Assign work now.
 At least, for the main method; Int32; and Locals; resp.
+#Later.... (23:00+....)
+Made §varDecl dynamic so that it reads the format strings out of "_vardecl.txt"
+Fixed that indent problem, and it works without problems with Java and VB.Net as well.
 

@@ -101,7 +101,7 @@ while ($$cond$$) {
                 tokens.Index++;
             }
 
-            return buildCode(readin, dict, ref eb.Indent);
+            return buildCode(readin, dict);
         }
     }
 }

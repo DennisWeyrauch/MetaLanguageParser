@@ -1,0 +1,4 @@
+﻿## $$type$$ $$name$$
+§decl	Dim {1} As {0}
+## $$name$$ = $$value$$
+§assign	{0} = {1}

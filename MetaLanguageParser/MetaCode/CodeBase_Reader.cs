@@ -202,8 +202,8 @@ namespace MetaLanguageParser.MetaCode
             string elem = "";
             var output = new System.IO.StringWriter();
             var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
-            while (!eb.list.isCurrent('}')) writer.Write(Parser.execStatement(ref eb, ref pos));
-            elem = output.ToString();
+            while (!eb.list.isCurrent('}')) writer.WriteLine(Parser.execStatement(ref eb, ref pos));
+            elem = output.ToString().TrimEnd(' ', '\r', '\n');
             writer.Dispose();
             output.Dispose();
             return elem;
