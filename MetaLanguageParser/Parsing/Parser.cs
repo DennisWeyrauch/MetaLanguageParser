@@ -43,6 +43,8 @@ namespace MetaLanguageParser//.Parsing
         {
             kwDict = new Dictionary<string, FuncDel>();
             kwDict.Add("§addMethod", AddMethod.parse);
+            kwDict.Add("§vardecl", VarDecl.parse);
+            kwDict.Add("§assign", Assign.parse);
         }
 
         public Parser(bool debug = false)
@@ -82,7 +84,8 @@ namespace MetaLanguageParser//.Parsing
                 //kwDict = new ParserStorage().fillLists();
                 kw.Remove(language);
                 len = list.Count;
-
+#warning
+                //eb.currentMethod
                 while (list.Index < len) {
                     var str = execRun(ref eb, ref list.Index);
                     writer.Write(str);
@@ -96,7 +99,17 @@ namespace MetaLanguageParser//.Parsing
 					hasThrown = true;
             } finally {
                 /// Rectract function
-				string resCode = output.ToString();
+                //string resCode = // TypeArr.toString()...
+
+                var sb = new StringBuilder( );
+                //string resCode = "";
+#warning If CStyle with one pass, first go through methDict and add all signatures
+#warning Then go through the Types (which is missing currently)
+                foreach (var item in eb.methDict) {
+                    sb.AppendLine(item.Value.ToString());
+                }
+
+                string resCode = sb.ToString();//output.ToString();
 				if(Regex.IsMatch(resCode, @"§retract\(\d+\)")){
 					int hitPos = 0;
 					foreach(var item in Extensions.matchHelper(resCode, @"§retract\((\d+)\)")){
@@ -121,6 +134,13 @@ namespace MetaLanguageParser//.Parsing
 
         static bool hasThrown = false;
         static int depthCnt = 0;
+        /// <summary>
+        /// Recursive parserMethod to read MultiLineCodeblocks of Statements
+        /// </summary>
+        /// <param name="eb"></param>
+        /// <param name="pos"></param>
+        /// <param name="terminator"></param>
+        /// <returns></returns>
         public static string execRun(ref ExeBuilder eb, ref int pos, string terminator = "")
         {
             if (!_running) throw new InvalidOperationException("Calling recursive Parser Method without init!");
@@ -136,14 +156,16 @@ namespace MetaLanguageParser//.Parsing
             while (true) {
                 try {
                     elem = list.getCurrent();
+                    // Valid Statements: §vardecl, §assign, §pre/postinc/dec, §call, and keywords
                     if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
-                    else if (kwDict.TryGetValue(elem, out myfunc)) writer.Write(myfunc(ref eb, ref pos));
-                    else if (list.isAtEnd(terminator)) {
+                    else if (kwDict.TryGetValue(elem, out myfunc)) {
+                        elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                        if (elem.IsNotNOE()) writer.Write(elem);
+                    } else if (list.isAtEnd(terminator)) {
                         //if (list.isClosure()) list.Index++;
                         elem = output.ToString();
                         break;
-                    }
-                    else throw new InvalidSyntaxException("PARSER", elem, pos);
+                    } else throw new InvalidSyntaxException("PARSER", elem, pos);
                 } catch (Exception e)
                     when (e is InvalidSyntaxException || e is InvalidOperationException) {
                     if (doDebug) throw;
@@ -164,17 +186,22 @@ namespace MetaLanguageParser//.Parsing
             return elem;
         }
 
-        public string execStatement(ref ExeBuilder eb, ref int pos) // , bool isStatement = false
+        /// A Statement is one of the following things
+        /// - An Variable Declaration: "int tz" or "int a, b, c"
+        /// -- Optional chained with the Assignment of Expression(s)
+        /// - Assignment of any local, field, or property in scope, with varying levels of dereference
+        /// - Method Call
+        /// - new()-Calls
+        /// - Increment/Decrement
+        /// - Throw, Return, Break, Continue
+        /// - ControlFlow Structures like if, for, try/catch, etc.
+        public static string execStatement(ref ExeBuilder eb, ref int pos) // , bool isStatement = false
         {
-            if (!_running) throw new InvalidOperationException("Calling recursive Parser Method without init!");
+            if (!_running) throw new InvalidOperationException("Calling Statement Parser Method without init!");
             var list = eb.list;
             string elem = "";
             FuncDel func;
-
             ICode ce = new CodeExample();
-			#warning __Is this even required? It's just one simple string, so no indent is required anyway
-            //var output = new StringWriter();
-            //var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, "\t");
 			var str = "";
             //while (true) {
                 try {
@@ -198,6 +225,63 @@ namespace MetaLanguageParser//.Parsing
                     
                 }
                  //depthCnt--;
+            if (list.isCurrent(';')) {
+                str += __STATEMENT_CLOSE;
+                pos++;
+            }
+            //if (hasThrown && depthCnt == 0) list.printError(finalize: true);
+            /*elem = output.ToString();
+            writer.Dispose();
+            output.Dispose();//*/
+            return str;
+        }
+
+        /// Expression is one of the following things
+        /// - A Value, which can be
+        /// -- A literal (0, 2.0, -4, 'c', "text", true)
+        /// -- A Conditional expression resolving to a boolean value
+        /// -- An Arithmetic expression
+        /// -- A Ternary
+        /// -- A lambda expression
+        /// - A Reference
+        /// -- this, null, new(), or new[] {}
+        /// -- Method calls
+        /// -- Any Local/Field/Property in scope (or via Proxy)
+        /// - An Assignment with Closure and again an Expression of its own: (i = ....)
+        public static string execExpression(ref ExeBuilder eb, ref int pos) // , bool isStatement = false
+        {
+            if (!_running) throw new InvalidOperationException("Calling Expression Parser Method without init!");
+            var list = eb.list;
+            string elem = "";
+            FuncDel func;
+            ICode ce = new CodeExample();
+            var str = "";
+            //while (true) {
+            try {
+                elem = list.getCurrent();
+               
+
+
+               
+#warning INFO:: Added Dictionary as else; add §varDecl, §lambda, etc. with different methods
+                if (kw.Contains(elem)) str = ce.parse(ref eb, ref pos);
+                else if (list.isAtEnd()) { }
+#warning INFO:: Add something for Assign/MethodCall to use X=y and X.Y instead of §assign and §call
+                //else if(varDict...) str = ... // Assignement/MethodCall
+                else if (kwDict.TryGetValue(elem, out func)) str = func.Invoke(ref eb, ref pos);
+                else throw new InvalidSyntaxException("PARSER", elem, pos);
+            } catch (Exception e)
+                when (e is InvalidSyntaxException || e is InvalidOperationException) {
+                if (doDebug) throw;
+                if (e.Message.Contains("PARSER")) throw;
+                list.printError();
+                hasThrown = true;
+                str = "<<<ERROR>>>";
+#warning INFO:: Think of a solution
+                list.skipUntil(';');
+
+            }
+            //depthCnt--;
             if (list.isCurrent(';')) {
                 str += __STATEMENT_CLOSE;
                 pos++;

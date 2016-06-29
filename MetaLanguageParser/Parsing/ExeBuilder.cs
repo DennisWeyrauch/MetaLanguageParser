@@ -106,7 +106,13 @@ namespace MetaLanguageParser
         {
             list = lw;
             LangCode = langCode;
+            _instance = this;
         }
+        
+
+        static ExeBuilder _instance;
+        internal static ExeBuilder Instance => _instance ?? (_instance = new ExeBuilder(null));
+        internal static ExeBuilder getInstance() => _instance ?? (_instance = new ExeBuilder(null));
         #endregion
 
         #region Builder-Functions

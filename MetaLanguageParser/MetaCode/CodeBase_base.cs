@@ -52,14 +52,17 @@ namespace MetaLanguageParser.MetaCode
             System.IO.Directory.GetFiles(".", "myLog_*").ToList().ForEach(s => System.IO.File.Delete(s));
         }
 
+        static Dictionary<string, List<string>> exitDict = new Dictionary<string, List<string>>();
+
         /// <summary>
         /// Tokenize with METATYPE # Copy items: Remove $$, \r\n into §n, rest no changes
         /// </summary>
         /// <param name="eb"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        internal List<string> readFile(ref ExeBuilder eb, string fileName)
+        internal List<string> readFile(string fileName)
         {
+            if (exitDict.ContainsKey(fileName)) return exitDict[fileName];
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
             List<string> readin = new List<string>();
             string readin1 = "while ($$cond$$) { §inc\r\n\t$$code$$ §dec\r\n}";
@@ -82,30 +85,13 @@ namespace MetaLanguageParser.MetaCode
             List<string> readin3 = new List<string>() {
                  "while (", "cond", ") {", "§inc", "§n", "code", "§dec", "§n", "}"
             };
-
+            exitDict.Add(fileName, readin);
             return readin;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
         }
 #endregion
 
 
-        /// <see cref="Common.Extensions.IsNumeric(object)"/>
-        static internal Value parseNumeric(string elem)
-        {
-            int i;
-            long l;
-            //decimal dec;
-            float f;
-            double d;
-            bool b;
-            if (Int32.TryParse(elem, out i)) return new Value(i);
-            if (Int64.TryParse(elem, out l)) return new Value(l);
-            //if (Decimal.TryParse(elem, out dec)) return new Value(dec);
-            if (Double.TryParse(elem, out d)) return new Value(d);
-            if (Single.TryParse(elem, out f)) return new Value(f);
-            if (Boolean.TryParse(elem, out b)) return new Value(b);
-            throw new NotImplementedException("Invalid Numeric Type in parseNumeric");
-        }
 
         // If a name (local, argument, method/field/etc.) exists, return the full reference (method with () )
         // Stuff like "This", WRITE, READ is among that as well.
@@ -126,10 +112,10 @@ namespace MetaLanguageParser.MetaCode
             /*List<string> readin2 = new List<string>() {
                  "while (", "cond", ") {", "§inc", "§n", "code", "§dec", "§n", "}"
             };//*/
-
+            /*
             if (((CodeExample)this).FileName.Equals("else")) {
                 new Object(); // DebugHook
-            }
+            }//*/
             bool isRetract = false;
 
             using (var output = new System.IO.StringWriter())

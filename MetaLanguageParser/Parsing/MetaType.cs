@@ -15,6 +15,7 @@ namespace MetaLanguageParser.Parsing
             Options --> Enum { Resolve from Global Root // Resolve from TypeArgument }
     */
 
+        UInt16 i = new ushort();
         public enum enumMetaTypes
         {
             /// <summary>Not yet defined type</summary>
@@ -31,7 +32,11 @@ namespace MetaLanguageParser.Parsing
             Int32, Int = Int32,
             /// <summary></summary>
             Int64, Long = Int64,
-            Float32, Float = Float32,
+            UInt8, UByte = UInt8,
+            UInt16, UShort = UInt16,
+            UInt32, UInt = UInt32,
+            UInt64, ULong = UInt64,
+            Float32, Single = Float32,
             Float64, Double = Float64,
             Glyph, Char = Glyph,
             Text, String = Text,
@@ -77,6 +82,74 @@ namespace MetaLanguageParser.Parsing
             }
             set { _objName = value; }
         }
+
+        public static MetaType Factory(string s)
+        {
+            return new MetaType(resolvedTypes[s.ToLower()]);
+        }
+        public static MetaType Factory(enumMetaTypes mType)
+        {
+            return new MetaType(mType);
+        }
+
+        private MetaType(enumMetaTypes mType)
+        {
+            this.metaType = mType;
+        }
+
+
+        public override string ToString()
+        {
+            switch (metaType) {
+                case enumMetaTypes.Invalid:
+                    break;
+                case enumMetaTypes.Dynamic_Compile:
+                    break;
+                case enumMetaTypes.Dynamic_Runtime:
+                    break;
+                case enumMetaTypes.Int8:
+                    break;
+                case enumMetaTypes.Int16: return "short";
+                    break;
+                case enumMetaTypes.Int32: return "int";
+                    break;
+                case enumMetaTypes.Int64:
+                    break;
+                case enumMetaTypes.UInt8:
+                    break;
+                case enumMetaTypes.UInt16:
+                    break;
+                case enumMetaTypes.UInt32:
+                    break;
+                case enumMetaTypes.UInt64:
+                    break;
+                case enumMetaTypes.Float32:
+                    break;
+                case enumMetaTypes.Float64:
+                    break;
+                case enumMetaTypes.Char:
+                    break;
+                case enumMetaTypes.String:
+                    break;
+                case enumMetaTypes.WChar:
+                    break;
+                case enumMetaTypes.WString:
+                    break;
+                case enumMetaTypes.Boolean:
+                    break;
+                case enumMetaTypes.List:
+                    break;
+                case enumMetaTypes.Set:
+                    break;
+                case enumMetaTypes.Map:
+                    break;
+                case enumMetaTypes.Reference:
+                    break;
+                default: throw new NotImplementedException("MetaType.ToString(): Unimplemented case " + metaType.ToString());
+            }
+            throw new NotImplementedException("BLARG of " + metaType);
+        }
+
 
         /// <summary>
         /// Prints a full TypeName
@@ -126,6 +199,34 @@ namespace MetaLanguageParser.Parsing
             }
             return "";
         }
+
+
+        static Dictionary<string, enumMetaTypes> resolvedTypes = new Dictionary<string, enumMetaTypes>() {
+                /// Void
+                //{"void", typeof(void) },
+
+                /// Signed Integer
+                {"sbyte", enumMetaTypes.Int8 }, {"short", enumMetaTypes.Int16 }, {"int", enumMetaTypes.Int32 }, {"long", enumMetaTypes.Int64 },
+                {"int8", enumMetaTypes.Int8 }, {"int16", enumMetaTypes.Int16 }, {"int32", enumMetaTypes.Int32 }, {"int64", enumMetaTypes.Int64 },
+                //{"sbyte", typeof(sbyte) }, {"short", typeof(short) }, {"int32", typeof(int) }, {"long", typeof(long) },
+
+                /// Unsigned Integer
+                //{"byte", typeof(byte) }, {"ushort", typeof(ushort) }, {"uint", typeof(uint) }, {"ulong", typeof(ulong) },
+                //{"byte", typeof(byte) }, {"ushort", typeof(ushort) }, {"UInt32", typeof(uint) }, {"ulong", typeof(ulong) },
+
+                /// Signed decimal number (16 byte)
+                //{"decimal", typeof(decimal) },
+
+                /// Floating Point number
+               // {"float", typeof(float) }, {"double", typeof(double) },
+
+                /// Boolean
+                //{"bool", typeof(bool) },
+
+                /// Character literals
+                //{"char", typeof(char) }, {"string", typeof(string) },
+            };
+        
     }
 
 }

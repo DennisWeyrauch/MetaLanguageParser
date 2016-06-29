@@ -62,6 +62,7 @@
     <Compile Include="Common\Common_partials.cs" />
     <Compile Include="Common\ConfigurationDictionary.cs" />
     <Compile Include="MetaCode\AddMethod.cs" />
+    <Compile Include="MetaCode\Assign.cs" />
     <Compile Include="MetaCode\VarDecl.cs" />
     <Compile Include="Parsing\MetaData.cs" />
     <Compile Include="Parsing\MetaType.cs" />

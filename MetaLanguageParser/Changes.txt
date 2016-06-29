@@ -1,4 +1,4 @@
-## 2016-05-25
+﻿## 2016-05-25
 Transformed fuzzy parts of Compiler into base code
 
 ## 2016-05-26
@@ -32,3 +32,7 @@ Also made VB.net work (excluding options)
 Now the "NonStackingIf" works as well: Instead of an option, it is implemented via an ˜retract command used at the start of Dest Files
 ## 2016-06-24
 Added some method stuff, like AddMethod, MethodData, LocalData
+## 2016-06-29
+AddMethod, VarDecl, adn Assign work now.
+At least, for the main method; Int32; and Locals; resp.
+

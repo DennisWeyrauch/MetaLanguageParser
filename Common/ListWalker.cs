@@ -230,7 +230,7 @@ namespace Common
         /// <summary> Returns <see cref="isClosure"/> || <see cref="isEOF"/> </summary><returns>True/False</returns>
         public bool isAtEnd() => isEOF() || isClosure();
         /// <summary> Returns <see cref="isClosure"/> || <see cref="isEOF"/> || <see cref="this[int]"/>.Equals(<paramref name="str"/>) </summary><returns>True/False</returns>
-        public bool isAtEnd(string str) => isEOF() || isClosure() || (str.IsNotNOE()) ? this[Index].Equals(str) : false;
+        public bool isAtEnd(string str) => isEOF() | isClosure() | this[Index].Equals(str);
 
         #endregion
 

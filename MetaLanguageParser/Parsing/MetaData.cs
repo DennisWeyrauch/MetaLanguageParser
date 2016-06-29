@@ -3,6 +3,7 @@ using System.CodeDom; // MemberAttributes, FieldDirection
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection; // Type/Method/Field/Event/Parameter/GenParameter --Attributes
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,7 +56,12 @@ BeforeFieldInit  = 1-0100-0000-0000-0000-0000 = 1048576 // Calling static method
 
         ParameterAttributes paramAttr;  // Attributes of a Parameter
         FieldDirection fieldDir;        // Direction of parameter and argument declarations
-        GenericParameterAttributes genParAttr; // Constraints on GenericParam of Type/Method
+        public readonly GenericParameterAttributes genParAttr; // Constraints on GenericParam of Type/Method
+
+        class B : AttrDisplay
+        {
+            public readonly GenericParameterAttributes genParAttr;
+        }
 
         void mteh(AttributeTargets attrTarget)
         {
@@ -81,6 +87,48 @@ BeforeFieldInit  = 1-0100-0000-0000-0000-0000 = 1048576 // Calling static method
                 case AttributeTargets.All: break;
             }
         }
+    }
+
+
+    /// <Summary>Defines member attribute identifiers for class members.</Summary>
+    [ComVisible(true)]
+    public enum MemberAttributes
+    {
+        /// <Summary>An abstract member.</Summary>
+        Abstract = 1,
+        /// <Summary>A member that cannot be overridden in a derived class.</Summary>
+        Final = 2,
+        /// <Summary>A static member. In Visual Basic, this is equivalent to the Shared keyword.</Summary>
+        Static = 3,
+        /// <Summary>A member that overrides a base class member.</Summary>
+        Override = 4,
+        /// <Summary>A constant member.</Summary>
+        Const = 5,
+        /// <Summary>A scope mask.</Summary>
+        ScopeMask = 15,
+        /// <Summary>A new member.</Summary>
+        New = 16,
+        /// <Summary>A VTable mask.</Summary>
+        VTableMask = 240,
+        /// <Summary>An overloaded member. Some languages, such as Visual Basic, require overloaded
+        ///      members to be explicitly indicated.</Summary>
+        Overloaded = 256,
+        /// <Summary>A member that is accessible to any class within the same assembly.</Summary>
+        Assembly = 4096,
+        /// <Summary>A member that is accessible within its class, and derived classes in the same
+        ///      assembly.</Summary>
+        FamilyAndAssembly = 8192,
+        /// <Summary>A member that is accessible within the family of its class and derived classes.</Summary>
+        Family = 12288,
+        /// <Summary>A member that is accessible within its class, its derived classes in any assembly,
+        ///      and any class in the same assembly.</Summary>
+        FamilyOrAssembly = 16384,
+        /// <Summary>A private member.</Summary>
+        Private = 20480,
+        /// <Summary>A public member.</Summary>
+        Public = 24576,
+        /// <Summary>An access mask.</Summary>
+        AccessMask = 61440
     }
 
     public abstract class MetaData
@@ -112,13 +160,17 @@ AccessMask = 1111-0000-0000-0000 = 61440
            {"assembly", MemberAttributes.Assembly },
             {"internal", MemberAttributes.FamilyAndAssembly },
             {"protected", MemberAttributes.Family },
+            {"family", MemberAttributes.Family },
             {"shared", MemberAttributes.FamilyOrAssembly },
+            {"nonpublic", MemberAttributes.FamilyOrAssembly },
             {"private", MemberAttributes.Private },
             {"public", MemberAttributes.Public },
             {"abstract", MemberAttributes.Abstract }, // 1
             {"final", MemberAttributes.Final }, // 2
+            {"readonly", MemberAttributes.Final }, // 2
+            {"sealed", MemberAttributes.Final }, // 2
             {"static", MemberAttributes.Static }, // 3
-            {"readonly", MemberAttributes.Const }, // 5
+            {"const", MemberAttributes.Const }, // 5
             {"override", MemberAttributes.Override }, // 4
             {"virtual", MemberAttributes.Overloaded }, // 256
         };

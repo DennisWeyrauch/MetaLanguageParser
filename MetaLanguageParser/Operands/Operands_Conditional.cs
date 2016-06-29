@@ -21,7 +21,7 @@ namespace MetaLanguageParser.Operands
     //[System.Diagnostics.DebuggerDisplay("{this.GetType().Name} {_left?._nodeType}, {_right?._nodeType}, {_nodeType}")]
 
     /// <summary>
-    /// ConditionalBuilder to construct and emit expressions.
+    /// ExpressionBuilder to parse Unary and Binary Operations.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{getDebug()}")]
     public abstract class Operation : Op {
@@ -42,7 +42,14 @@ namespace MetaLanguageParser.Operands
         /// </summary>
         /// <returns></returns>
         public abstract string getXmlBase();
+        public abstract Operation getNew();
 
+        /// <summary>
+        /// Return the correct BaseType for the given "aryty" and opDictType
+        /// </summary>
+        /// <param name="aryty">The Arity to lookup. Can be either "unary" or "binary".</param>
+        /// <param name="opType"></param>
+        /// <returns></returns>
         public static Type getOpType(string aryty, eOpDictType opType)
         {
             switch (aryty) {
@@ -51,7 +58,6 @@ namespace MetaLanguageParser.Operands
                 default: throw new NotImplementedException("Operation.getOpType(): Unimplemented case " + aryty);
             }
         }
-        public abstract Operation getNew();
 
         // [_nodeType/_name =(_nodeType/_name)= _nodeType/_name]
         public string getDebug(bool unary = false)
@@ -123,16 +129,6 @@ namespace MetaLanguageParser.Operands
                 this._left = l;
             }
             public override string getXmlBase() => "unary";
-
-            /**
-            public override string ToString()
-            {
-                string s = ""; // get the thing from somewhere
-                _depth++;
-                string result = string.Format(s, _left.ToString());
-                _depth--;
-                return (_depth == 0) ? result : $"({result})";
-            }//*/
 #if DEBUG
             //public new void setRight(Op r) { throw new InvalidOperationException("Can't set the right side of an Unary operation"); }
 #endif

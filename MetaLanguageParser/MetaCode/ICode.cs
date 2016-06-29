@@ -43,9 +43,20 @@ while ($$cond$$) {
     $$code$$
 }";
 
+        /// <summary>
+        /// Storage Dictionary to save previously tokenized KeyWordFiles for reuse.
+        /// </summary>
         static Dictionary<string, List<string>> baseDict = new Dictionary<string, List<string>>();
+        public static List<string> getEntry(string elem)
+        {
+            if (baseDict.ContainsKey(elem)) return baseDict[elem];
+            else {
+                var tokens = Tokenizer.TokenizeFile(getMetaPath(elem), Tokenizer.enumType.MetaDef, false);
+                baseDict.Add(elem, tokens);
+                return tokens;
+            }
+        }
 
-        //public static Dictionary<,> dict;
         public string parse(ref ExeBuilder eb, ref int pos)
         {
             var list = eb.list;
@@ -58,12 +69,14 @@ while ($$cond$$) {
                 tokens = Tokenizer.TokenizeFile(getMetaPath(elem), Tokenizer.enumType.MetaDef, false);
                 baseDict.Add(elem, tokens);
             }
+            /*
+            // Debug Hook
             if (elem.Equals("§write")) {
                 new Object();
-            }
+            }//*/
 
             // Contains the metaDestination code
-            var readin = readFile(ref eb, FileName); // eb since it contains the current LangInstance
+            var readin = readFile(FileName); // eb since it contains the current LangInstance
             
             /*if(eb.codeBase.Count == 2) {
                 var obj = new Object();

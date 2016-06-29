@@ -11,15 +11,22 @@ namespace MetaLanguageParser.MetaCode
     {
         internal static string parse(ref ExeBuilder eb, ref int pos)
         {
-            LocalData data = new LocalData(null, "");
-            /*
-            data.readSignature(ref eb.list, ref pos); // Read Type + Name
-            if (!data.isSigOnly()) { // If next not ;
-                // assert '='
-                // Parser.readExpression(ref...)
-                add as Value    
+            // §vardecl($$Type$$ $$name$$);
+            // §vardecl($$Type$$ $$name$$) = $$value$$;
+            var list = eb.list;
+            list.assertC("§vardecl").assertC("(");
+            MetaType type = MetaType.Factory(list.getCurrent());
+            //list.assertC(")").assertC("(");
+            string name = list[++pos];
+            list.assertPreInc(")");
+            LocalData data = new LocalData(type, name);
+            if (list.nextIs("=")) {
+                pos++; // = --> {value}
+                data.setValue(CodeBase.readExpression(ref eb, ref pos));
+            }
+            list.assert(";");
 
-            }//*/
+
             eb.currentMethod.addLocal(data);
 
             return "";

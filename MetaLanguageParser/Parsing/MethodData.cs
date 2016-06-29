@@ -18,7 +18,7 @@ namespace MetaLanguageParser.Parsing
     {
         Method, EntryMethod, Constructor, TypeConstructor, Destructor
     }
-
+    // Debug: methodType + name + "( args:" + args.Count + ", local: " + local.Count +")"
     public class MethodData : MetaData
     {
 //#warning Should the Type be stored here as well?
@@ -28,6 +28,7 @@ namespace MetaLanguageParser.Parsing
         internal void setMain()
         {
             methodType = eMethodType.EntryMethod;
+            this.Name = "Main";
         }
 
 
@@ -43,10 +44,7 @@ namespace MetaLanguageParser.Parsing
 
         Dictionary<string, MetaType> args = new Dictionary<string, MetaType>();
         Dictionary<string, LocalData> locals = new Dictionary<string, LocalData>();
-        internal void addLocal(LocalData data)
-        {
-            throw new NotImplementedException();
-        }
+        internal void addLocal(LocalData data) => locals.Add(data.Name, data);
 
         string code;
 
@@ -56,7 +54,7 @@ namespace MetaLanguageParser.Parsing
         }
 
         internal void setCode(string code) {
-            if (code.IsNOE()) {
+            if (code.IsNotNOE()) {
                 this.code = code;
             } else throw new InvalidOperationException("Already added MethodCode of " + Name);
         }
@@ -110,15 +108,24 @@ namespace MetaLanguageParser.Parsing
 
         public override string ToString()
         {
-			// Also something about an OOP Option
+            // Also something about an OOP Option
             //var output = new StringWriter();
             //var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
-        
+
+            if (locals.Count > 0) {
+
+                var sb = new StringBuilder();
+                foreach (var item in locals) sb.AppendLine(item.Value.ToString());
+#warning If option "Seperate them" is true....
+                if (false) {
+                    foreach (var item in locals) sb.AppendLine(item.Value.getAssign());
+                }
+                code = sb.AppendLine(code).ToString();
+            }
             switch (methodType) {
                 case eMethodType.Method:
                     break;
-                case eMethodType.EntryMethod:
-                    break;
+                case eMethodType.EntryMethod: return GenerateAsEntryMethod();
                 case eMethodType.Constructor:
                     break;
                 case eMethodType.TypeConstructor:
@@ -179,8 +186,8 @@ namespace MetaLanguageParser.Parsing
 
         private string GenerateAsEntryMethod()
         {
-            // Probably plain text Sig?
-            return "";
+            // Read §main Signature
+            return new CodeBase().buildCode(new CodeBase().readFile("§main"), new Dictionary<string, string>() { { "code", code }}, ref (ExeBuilder.Instance.Indent));
         }
         private string GenerateAsConstructor()
         {

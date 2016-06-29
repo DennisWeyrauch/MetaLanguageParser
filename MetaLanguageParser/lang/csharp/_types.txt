@@ -1,0 +1,9 @@
+Int8	byte
+Int16	short
+Int32	int
+Int64	Long
+Single	float
+Double	double
+Char	char
+Text	string
+Boolean	bool
