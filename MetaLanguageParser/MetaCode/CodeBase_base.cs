@@ -138,10 +138,11 @@ namespace MetaLanguageParser.MetaCode
 #warning INFO:: Add new custom functions like §addMember (like Method for ToCharArray in JS)
                     }
                     string s = "";
-                    if (dict.TryGetValue(item, out s)) {
+                    // I don't have to assign an empty string, run a Regex on that, and then check if it's empty, when it was so to begin with!
+                    if (dict.TryGetValue(item, out s) && s.IsNotNOE()) {
                         string indent;
                         switch (writer.Indent) {
-                            case 0: indent = ""; break;
+                            case 0: writer.Write(s); continue;
                             case 1: indent = __INDENT; break;
                             default:
                                 indent = __INDENT.ConcatTimes(writer.Indent);

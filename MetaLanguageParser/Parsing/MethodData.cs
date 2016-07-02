@@ -19,8 +19,20 @@ namespace MetaLanguageParser.Parsing
         Method, EntryMethod, Constructor, TypeConstructor, Destructor
     }
     // Debug: methodType + name + "( args:" + args.Count + ", local: " + local.Count +")"
+    [System.Diagnostics.DebuggerDisplay("{methodType} - {retType} {Name}(): Loc({locals.Count})")]
     public class MethodData : MetaData
     {
+        string debugDisplay()
+        {
+            // MethodType
+
+            // ReturnType
+            // Name
+            // ( Arguments )
+            // : Locals(locals.Count)
+            return "";
+        }
+
 //#warning Should the Type be stored here as well?
         //TypeData enclosedType;
 
@@ -107,25 +119,44 @@ namespace MetaLanguageParser.Parsing
             throw new NotImplementedException();
         }
 
+        string getLocalOutput(bool option)
+        {
+            var sb = new StringBuilder();
+            foreach (var item in locals) sb.AppendLine(item.Value.ToString());
+#warning If option "Seperate them" is true....
+            if (option) {
+                foreach (var item in locals) {
+                    if(item.Value.hasValue)
+                        sb.AppendLine(item.Value.getAssign());
+                }
+            }
+
+            return sb.ToString();
+        }
+
         public override string ToString()
         {
             // Also something about an OOP Option
             //var output = new StringWriter();
             //var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
 
-            if (locals.Count > 0) {
-
+            if (locals.Count > 0) {//code = new StringBuilder(getLocalOutput(false)).AppendLine(code).ToString();
                 var sb = new StringBuilder();
                 foreach (var item in locals) sb.AppendLine(item.Value.ToString());
 #warning If option "Seperate them" is true....
                 if (false) {
-                    foreach (var item in locals) sb.AppendLine(item.Value.getAssign());
+                    foreach (var item in locals) {
+                        if (item.Value.hasValue)
+                            sb.AppendLine(item.Value.getAssign());
+                    }
                 }
+
                 code = sb.Append(code).ToString();
-                if (Program.printParts) {
-                    //Program.printer("method_"+Name, new StringBuilder(sb.ToString()).AppendLine().AppendLine("########").Append(code).ToString());
-                    Program.printer("method_" + Name, code);
-                }
+
+            }
+            if (Program.printParts) {
+                //Program.printer("method_"+Name, new StringBuilder(sb.ToString()).AppendLine().AppendLine("########").Append(code).ToString());
+                Program.printer("method_" + Name, code);
             }
             switch (methodType) {
                 case eMethodType.Method:

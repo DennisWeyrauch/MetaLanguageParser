@@ -9,18 +9,18 @@ namespace MetaLanguageParser.MetaCode
 {
     class AddMethod
     {
+        // §addMethod(§main)      /// Adds a EntryMethod
+        // §addMethod()(myMethod) /// Adds a method called "myMethod" with no modifiers or Parameters, + ReturnType = void
         internal static string parse(ref ExeBuilder eb, ref int pos)
         {
             MethodData data = new MethodData(); // Should be embedded Type
             var list = eb.list;
             pos++;
             list.assertC("(");
-            // Isn't that §addMethod / §main here?
-            if (eb.list[pos].Equals("§main")) {
+            if (list[pos].Equals("§main")) {
                 data.setMain();
                 pos++;
-                list.assertC(")");//.assertC("{");
-                eb.Indent++;
+                list.assertC(")");
             }
             else data.readSignature(ref eb.list, ref pos);
             // Put the indetn outside
@@ -36,7 +36,6 @@ namespace MetaLanguageParser.MetaCode
                 eb.currentMethod = null;
             }
             eb.AddMethod(data);
-            eb.Indent--;
 
             return "";
         }

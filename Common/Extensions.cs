@@ -168,9 +168,10 @@ namespace Common
                 return true;
 
             try {
-                if (Expression is string)
+                if (Expression is string) {
+                    if (Expression.Equals("true") || Expression.Equals("false")) return true;
                     Double.Parse(Expression as string);
-                else
+                } else
                     Double.Parse(Expression.ToString());
                 return true;
             } catch { } // just dismiss errors but return false
@@ -222,14 +223,17 @@ namespace Common
 
         public static bool EqualsChar(this string s, char c)
         {
-            if (s.Length == 1) return s.ToCharArray()[0] == c;
-            return s.Equals(c.ToString());
+            //if (s.Length == 1) return s.ToCharArray()[0] == c;
+            //return s.Equals(c.ToString());
+            return (s.Length == 1) ? s.ToCharArray()[0] == c : false;
         }
 
         public static T AsEnum<T>(this object ct) where T : struct
         {
             return (T)System.Enum.Parse(typeof(T), ct.ToString(), false);
         }
+
+        //public static implicit operator Array(List<T> list)  => list.ToArray();
 
     }/*
     public class CustomOperators

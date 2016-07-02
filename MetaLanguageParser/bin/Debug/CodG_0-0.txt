@@ -1,0 +1,16 @@
+§addType(§main)
+	§addMethod(§main)
+		while (true) {
+			§vardecl({String, enemy1, enemy2}, {Int32, dist1, dist2});
+			§readLine(enemy1);
+			§readLine(dist1);
+			§readLine(enemy2);
+			§readLine(dist2);
+			if (< dist1 dist2) {
+				§writeLine(enemy1);
+			} else {
+				§writeLine(enemy2);
+			}
+		}
+	§endMethod
+§endType

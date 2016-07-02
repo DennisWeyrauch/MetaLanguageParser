@@ -1,16 +1,22 @@
-Sub Main()
-    Dim i As int
-    Dim j As int
-    j = 0
-    If ((i < 15) AND (i > 0)) Then
-        Do While (i < 15) 
-            i = i + 1
-            Console.Write(i)
+Module Module1
+    Sub Main()
+        Dim enemy1 As String
+        Dim enemy2 As String
+        Dim dist1 As int
+        Dim dist2 As int
+        Do While (true) 
+            enemy1 = Console.ReadLine() 
+            dist1 = Console.ReadLine() 
+            enemy2 = Console.ReadLine() 
+            dist2 = Console.ReadLine() 
+            If (dist1 < dist2) Then
+                Console.WriteLine(enemy1)
+            End If
+      Else 
+                Console.WriteLine(enemy2)
+            End If
         Loop
-    Else 
-        Do 
-            i = i - 1
-            Console.Write(i)
-        Loop While (i > 0)
-    End If
-End Sub
+    End Sub
+    
+
+End Module

@@ -110,9 +110,7 @@ namespace MetaLanguageParser.Parsing
                 case enumMetaTypes.Int8:
                     break;
                 case enumMetaTypes.Int16: return "short";
-                    break;
                 case enumMetaTypes.Int32: return "int";
-                    break;
                 case enumMetaTypes.Int64:
                     break;
                 case enumMetaTypes.UInt8:
@@ -129,8 +127,7 @@ namespace MetaLanguageParser.Parsing
                     break;
                 case enumMetaTypes.Char:
                     break;
-                case enumMetaTypes.String:
-                    break;
+                case enumMetaTypes.String: return "String";
                 case enumMetaTypes.WChar:
                     break;
                 case enumMetaTypes.WString:
@@ -224,7 +221,7 @@ namespace MetaLanguageParser.Parsing
                 //{"bool", typeof(bool) },
 
                 /// Character literals
-                //{"char", typeof(char) }, {"string", typeof(string) },
+                {"char", enumMetaTypes.Char }, {"string", enumMetaTypes.String },
             };
         
     }

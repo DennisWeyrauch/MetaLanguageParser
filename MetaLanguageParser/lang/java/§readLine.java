@@ -1,0 +1,1 @@
+﻿$$args$$ = System.in.readln()

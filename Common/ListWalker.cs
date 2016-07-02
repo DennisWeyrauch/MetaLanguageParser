@@ -174,6 +174,50 @@ namespace Common
         #endregion
         #region Assert Methods
 
+        #region CharMethods
+
+        /// <summary>
+        /// Throws <see cref="InvalidSyntaxException"/> when current element is not <paramref name="c"/>.
+        /// </summary>
+        /// <param name="c"></param>
+        public void assertNoInc(char c)
+        {
+            if (!isCurrent(c)) throw new InvalidSyntaxException();
+        }
+        /// <summary>
+        /// Throws <see cref="InvalidSyntaxException"/> when current element is not <paramref name="c"/>.
+        /// Otherwise increments the Index and returns the next Element.
+        /// </summary>
+        /// <param name="c"></param>
+        public string assert(char c)
+        {
+            if (!isCurrent(c)) throw new InvalidSyntaxException();
+            return getNext();
+        }
+        /// <summary>
+        /// Throws <see cref="InvalidSyntaxException"/> when current element is not <paramref name="c"/>.
+        /// Otherwise increments the Index and returns the instance to allow chaining.
+        /// </summary>
+        /// <param name="c"></param>
+        public ListWalker assertC(char c)
+        {
+            if (!isCurrent(c)) throw new InvalidSyntaxException();
+            Index++;
+            return this;
+        }
+        /// <summary>
+        /// Throws <see cref="InvalidSyntaxException"/> if NEXT element is not <paramref name="c"/>.
+        /// Otherwise returns that Element (pos+1 relative to caller).
+        /// </summary>
+        /// <param name="c"></param>
+        public string assertPreInc(char c)
+        {
+            if (nextNot(c)) throw new InvalidSyntaxException();
+            return getCurrent();
+        }
+
+        #endregion
+        #region StringMethods
         /// <summary>
         /// Throws <see cref="InvalidSyntaxException"/> when current element is not <paramref name="s"/>.
         /// </summary>
@@ -213,6 +257,8 @@ namespace Common
             if (nextNot(s)) throw new InvalidSyntaxException();
             return getCurrent();
         }
+        #endregion
+
 
         /// <summary> Returns if this[Index] == '}'</summary><returns>True/Fals</returns>
         public bool isClosure() => this[Index].Equals("}");

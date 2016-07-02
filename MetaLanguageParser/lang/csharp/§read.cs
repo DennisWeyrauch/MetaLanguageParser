@@ -1,0 +1,1 @@
+﻿System.Console.Read($$args$$)

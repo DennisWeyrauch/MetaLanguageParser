@@ -34,7 +34,6 @@ namespace MetaLanguageParser
         public IndentedTextWriter writer;
         public int Indent = 0;
 
-
         /** Needs the following:
          -- List of Usings
          -- Declared Types, containing
@@ -56,14 +55,6 @@ namespace MetaLanguageParser
         string _typeName;
         public void invalidateTypeName() { _typeName = "<invalid-global-code>"; }
         
-        /// <summary>To validate whether or not outParameter exist and they've been assigned to. Before a method transfers control, it checks if all members are set to true, and throws Exception otherwise. <para/>
-        /// For convenience, any locals that are assigned to are added with true, while their absense says they're uninitialized.
-        ///</summary>
-        internal Dictionary<string, MetaType> args; // Required: Position
-        /// <summary>NAME -- Type</summary>
-        public Dictionary<string, MetaType> locals;
-
-
         // Name, MemberType, Reference;  last is null for overloads
         /// <summary>Dictionary holding references to all members.<para/>
         /// From Builder to callable Info: memberDict[name, memType].GetBaseDefinition(); // At least for methods</summary>
@@ -74,6 +65,10 @@ namespace MetaLanguageParser
         /// </summary>
         public Dictionary<string, Type[], MethodInfo> methDict2;
         public Dictionary<string, string, MethodInfo> methDict_sig;
+        public Dictionary<string, TypeData> typeDict = new Dictionary<string, TypeData>();
+        /// <summary>
+        /// MethodDictionary for Methods added in Destination Files (not working)
+        /// </summary>
         public Dictionary<string, MethodData> methDict = new Dictionary<string, MethodData>();
         #endregion
         #region Constructors
@@ -102,17 +97,18 @@ namespace MetaLanguageParser
              usings = new List<string>();
         }
         
-        public ExeBuilder(ListWalker lw, string langCode)//, IndentedTextWriter write)
+        private ExeBuilder(ListWalker lw, string langCode)//, IndentedTextWriter write)
         {
             list = lw;
             LangCode = langCode;
             _instance = this;
         }
-        
+
+        static ExeBuilder ThrowNoInstanceException() { throw new InvalidOperationException("Calling Instance Method without creating an Instance!"); }
 
         static ExeBuilder _instance;
-        internal static ExeBuilder Instance => _instance ?? (_instance = new ExeBuilder(null));
-        internal static ExeBuilder getInstance() => _instance ?? (_instance = new ExeBuilder(null));
+        internal static ExeBuilder Instance => _instance ?? ThrowNoInstanceException();
+        internal static ExeBuilder getInstance(ListWalker lw, string langCode) => _instance ?? (_instance = new ExeBuilder(lw, langCode));
         #endregion
 
         #region Builder-Functions
@@ -129,17 +125,49 @@ namespace MetaLanguageParser
             memberDict.Add(name, memType, member);
         }
         
-        void registerBasicDataTypes(){
-            /// Fill the dictionary
-            // Also fill in Object, Null, Collections (with full path)
+
+        public TypeData currentType { get; set; }
+        internal void AddType(TypeData data)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            try {
+                typeDict.Add(data.Name, data);
+            } catch (ArgumentException ae) { throw; }
         }
 
+
         public MethodData currentMethod { get; set; }
+        internal static void AddMethod_extern(MethodData data)
+        {
+            Instance.methDict.Add(data.Name, data);
+        }
         internal void AddMethod(MethodData data)
         {
-            methDict.Add(data.Name, data);
+            currentType.AddMethod(data);
         }
-        
+
+        internal static void AddLocal(LocalData local)
+        {
+            if (local == null) throw new ArgumentNullException(nameof(local));
+            try {
+                Instance.currentMethod.addLocal(local);
+            } catch (ArgumentException ae) { throw; }
+        }
+        //internal static void AddLocal(LocalData[] local)
+
+        internal static void AddLocal(List<LocalData> local)
+        {
+            if (local == null) throw new ArgumentNullException(nameof(local));
+            if (local.Count == 0) throw new ArgumentException(nameof(local), "Is Empty!");
+            //try {
+                foreach (var item in local) {
+                    Instance.currentMethod.addLocal(item);
+                }
+            //} catch (ArgumentException ae) { throw; }
+        }
+
+
+
         #endregion
 
         #region Scope

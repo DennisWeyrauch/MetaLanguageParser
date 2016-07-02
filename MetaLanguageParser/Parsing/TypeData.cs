@@ -28,24 +28,82 @@ namespace MetaLanguageParser.Parsing
         /// <summary>Enumeration (List of Name-value Pairs / Flags</summary>
         Enum,
     }
+
+
+    [System.Diagnostics.DebuggerDisplay("{typeType} - {Name}: Meth({methods.Count})")]
     public class TypeData
     {
+        string debugDisplay()
+        {
+
+
+            return "";
+        }
 
         eTypeType typeType;
-        string name;
+        public string Name { get; protected set; }
 
-        // Generics
+        public TypeData(eTypeType entryClass, string v)
+        {
+            this.typeType = entryClass;
+            this.Name = v;
+        }
 
-        // Some kind of option for C Style Output, etc...
+        internal static TypeData setMain()
+        {
+            return new TypeData(eTypeType.EntryClass, "Program");
+        }
+        string stuff;
+        internal void setStuff(string ret) => stuff = ret;
 
-        // Something holding the TypeLayout
-        // Order of Members
 
-        // List of Fields
-        // List of Methods (Ctors seperate?)
+        /// Generics
+        /// 
+        /// Some kind of option for C Style Output, etc...
+        /// Something holding the TypeLayout
+        /// 
+        /// Order of Members
+        /// 
+        /// List of Fields
+        /// List of Methods (Ctors seperate?)
         List<MethodData> methods = new List<MethodData>();
 
-        // InnerTypes?
+        internal void AddMethod(MethodData data)
+        {
+            methods.Add(data);
+        }
 
+
+
+        public override string ToString()
+        {
+            switch (typeType) {
+                //case eTypeType.Class: break;
+                case eTypeType.EntryClass: return buildAsEntryType();
+                //case eTypeType.Interface:  break;
+                //case eTypeType.Struct: break;
+                //case eTypeType.Enum:  break;
+                default: throw new NotImplementedException("TypeData.ToString(): Unimplemented case " + typeType.ToString());
+            }
+        }
+
+        string buildAsEntryType()
+        {
+            var dict = new Dictionary<string, string>();
+            var meth = new StringBuilder();
+            bool first = true;
+
+            /// Methods ///
+            foreach (var item in methods) {
+                if (first) first = false;
+                else meth.AppendLine();
+                meth.AppendLine(item.ToString());
+            }
+            dict.Add("methods", meth.ToString());
+
+
+            // Read §mainType Signature
+            return new CodeBase().buildCode(new CodeBase().readFile("§mainType"), dict);
+        }
     }
 }

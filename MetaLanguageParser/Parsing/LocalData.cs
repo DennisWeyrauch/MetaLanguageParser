@@ -14,11 +14,17 @@ namespace MetaLanguageParser.Parsing
             this.type = type;
             this.Name = name;
         }
+        public LocalData(MetaType type, string name, string v)
+        {
+            this.type = type;
+            this.Name = name;
+            this.Value = v;
+        }
 
         MetaType type;
         public string Name { get; internal set; }
-        bool hasValue;
-        string value;
+        public bool hasValue => Value != null;
+        string Value;
 
         /// <summary>Whether or not current Type is unsigned. Only applied on Numbers.</summary>
         public bool isUnsigned = false;
@@ -27,12 +33,6 @@ namespace MetaLanguageParser.Parsing
         public enum enumLocalType
         {
             Variable, In, Out, Inout, Return
-        }
-
-        internal void setValue(string v)
-        {
-            value = v;
-            hasValue = true;
         }
 
         /// <summary>Field holding the location/direction (default: Variable)</summary>
@@ -53,15 +53,15 @@ namespace MetaLanguageParser.Parsing
 #warning Also consider somehow the option "Seperate Decl and Assignment"
             if (hasValue) {
                 if (forStr_def == null) {
-                    return new StringBuilder().AppendFormat(forStr_decl, type, Name).AppendLine().AppendFormat(forStr_assign, Name, value).ToString();
+                    return new StringBuilder().AppendFormat(forStr_decl, type, Name).AppendLine().AppendFormat(forStr_assign, Name, Value).ToString();
                 } 
-                return string.Format(forStr_def, type, Name, value);
+                return string.Format(forStr_def, type, Name, Value);
             } else return string.Format(forStr_decl, type, Name);
         }
 
         internal string getAssign()
         {
-            return (hasValue) ? string.Format(forStr_assign, Name, value) : "";
+            return (hasValue) ? string.Format(forStr_assign, Name, Value) : "";
         }
     }
 }

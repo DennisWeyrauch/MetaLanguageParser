@@ -67,16 +67,16 @@ namespace MetaLanguageParser.MetaCode
             bool unary = false;
             bool binaryRight = false;
 
-            // Assign the operation type
-            if (elem.IsNumeric()) {
-                return parseNumeric(elem);
-            }
-            expr = readOperator(elem, lookup);
-            
-            condDepth++;
-            // Act depending on Nonary, Unary, or Binary operand
-            
             try {
+                condDepth++;
+                // Assign the operation type
+                if (elem.IsNumeric()) {
+                    return parseNumeric(elem);
+                }
+                expr = readOperator(elem, lookup);
+            
+                // Act depending on Nonary, Unary, or Binary operand
+            
                 // 0. Confirmed that Operator is not a literal
                 while (true) {
                     elem = list.getNext(); // Get the Operand
@@ -202,7 +202,10 @@ namespace MetaLanguageParser.MetaCode
             string elem = "";
             var output = new System.IO.StringWriter();
             var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
-            while (!eb.list.isCurrent('}')) writer.WriteLine(Parser.execStatement(ref eb, ref pos));
+            while (!eb.list.isCurrent('}')) {
+                elem = Parser.execStatement(ref eb, ref pos);
+                if (elem.IsNotNOE()) if (elem.EndsWith(";")) writer.WriteLine(elem); else writer.Write(elem);
+            }
             elem = output.ToString().TrimEnd(' ', '\r', '\n');
             writer.Dispose();
             output.Dispose();

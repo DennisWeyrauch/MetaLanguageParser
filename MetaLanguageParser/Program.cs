@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,24 +12,31 @@ namespace MetaLanguageParser
         /// <summary>
         /// Printer Flag to output the generator steps
         /// </summary>
-        public static bool printParts = false;
+        public static bool printParts = true;
 
         public static void printer(string name, string output)
         {
             try { System.IO.File.WriteAllText($"myLog_{DateTime.Now.ToFileTime()}_{name}.txt", output); } catch (Exception) { }
         }
+        enum Languages
+        {
+            CSharp, Java, VBNet
+        }
 
         static void Main(string[] args)
         {
             string code;
-            code = (args.Length != 0) ? args[0] : "vbnet";
+            code = (args.Length != 0) ? args[0] : Languages.Java.ToString().ToLower();
+
+            string codeFile = /**/"CodG_0-0.txt";/*/"codefile.txt";//*/
+
             Logger.resetLog();
             if (args.Length == 0) {
-                new MetaLanguageParser.Parser().execute("codefile.txt", code);
+                new MetaLanguageParser.Parser().execute(codeFile, code);
             } else {
 
                 try {
-                    new MetaLanguageParser.Parser().execute("codefile.txt", code);
+                    new MetaLanguageParser.Parser().execute(codeFile, code);
                 } catch (KeyNotFoundException knfe) {
 
                     Logger.logKeyException(knfe);
@@ -68,6 +76,15 @@ namespace MetaLanguageParser
             }
             logData(sb.ToString());
         }
+
+        public static void writeToFile(string path, string contents)
+        {
+            try { File.WriteAllText(path, contents); File.Delete("WriteError.txt"); } catch (Exception e) {
+                Logger.logData(new StringBuilder("Could not write to OutputFile!").AppendLine().Append(e.Message).ToString());
+                File.WriteAllText("WriteError.txt", contents);
+            }
+        }
+
         public static void logKeyException<T>(T ex) where T : KeyNotFoundException
         {
             var sb = new StringBuilder().AppendLine().AppendLine();

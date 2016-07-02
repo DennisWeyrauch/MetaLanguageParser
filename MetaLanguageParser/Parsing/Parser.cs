@@ -45,6 +45,7 @@ namespace MetaLanguageParser//.Parsing
             kwDict.Add("§addMethod", AddMethod.parse);
             kwDict.Add("§vardecl", VarDecl.parse);
             kwDict.Add("§assign", Assign.parse);
+            kwDict.Add("§addType", AddType.parse);
         }
 
         public Parser(bool debug = false)
@@ -75,7 +76,7 @@ namespace MetaLanguageParser//.Parsing
             System.CodeDom.Compiler.IndentedTextWriter writer = null;
             try {
 
-                eb = new ExeBuilder(list, language); // Slot 4/4
+                eb = ExeBuilder.getInstance(list, language); // Slot 4/4
                 Resources.ResourceReader.readConfiguration(language);
                 
                 writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
@@ -103,9 +104,15 @@ namespace MetaLanguageParser//.Parsing
 
                 var sb = new StringBuilder( );
                 //string resCode = "";
+
+
+                // Add Imports // 
+
+                // Add C-Predeclare Signatures //
+
 #warning If CStyle with one pass, first go through methDict and add all signatures
 #warning Then go through the Types (which is missing currently)
-                foreach (var item in eb.methDict) {
+                foreach (var item in eb.typeDict) {
                     sb.AppendLine(item.Value.ToString());
                 }
 
@@ -119,7 +126,10 @@ namespace MetaLanguageParser//.Parsing
                         resCode = resCode.Remove(hitPos, nextEnd - hitPos+1);
                     }
 				}
-                try { File.WriteAllText($"Results.{__FILESUFFIX}", resCode); } catch (Exception) { Logger.logData("Could not write to OutputFile!"); }
+                try { File.WriteAllText($"Results.{__FILESUFFIX}", resCode); File.Delete($"WriteError.{__FILESUFFIX}"); } catch (Exception e) {
+                    Logger.logData(new StringBuilder("Could not write to OutputFile!").AppendLine().Append(e.Message).ToString());
+                    File.WriteAllText($"WriteError.{__FILESUFFIX}", resCode);
+                }
 				if (hasThrown) list.printError(finalize: true);
                 writer?.Dispose();
                 output?.Dispose();
@@ -259,11 +269,6 @@ namespace MetaLanguageParser//.Parsing
             //while (true) {
             try {
                 elem = list.getCurrent();
-               
-
-
-               
-#warning INFO:: Added Dictionary as else; add §varDecl, §lambda, etc. with different methods
                 if (kw.Contains(elem)) str = ce.parse(ref eb, ref pos);
                 else if (list.isAtEnd()) { }
 #warning INFO:: Add something for Assign/MethodCall to use X=y and X.Y instead of §assign and §call
