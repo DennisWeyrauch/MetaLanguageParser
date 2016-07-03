@@ -5,20 +5,18 @@ using System.Text;
 
 public class Program {
 	public static void main(string[] args) {
-		String enemy1;
-		String enemy2;
-		int dist1;
-		int dist2;
-		while (true) {
-			enemy1 = System.Console.ReadLine();
-			dist1 = System.Console.ReadLine();
-			enemy2 = System.Console.ReadLine();
-			dist2 = System.Console.ReadLine();
-			if (dist1 < dist2) {
-				System.Console.WriteLine(enemy1);
-			} else {
-				System.Console.WriteLine(enemy2);
+		int i;
+		int j = 0;
+		if ((i < 15) & (i > 0)) {
+			while (i < 15) {
+				i = i + 1;
+				System.Console.Write(i);
 			}
+		} else {
+			do {
+				i = i - 1;
+				System.Console.Write(i);
+			} while (i > 0);
 		}
 	}
 	

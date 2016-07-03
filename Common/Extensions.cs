@@ -169,8 +169,8 @@ namespace Common
 
             try {
                 if (Expression is string) {
-                    if (Expression.Equals("true") || Expression.Equals("false")) return true;
-                    Double.Parse(Expression as string);
+                    if (Expression.Equals(Boolean.TrueString) || Expression.Equals(Boolean.FalseString)) return true;
+                    Double.Parse(Expression as string, NumberStyles.Number | NumberStyles.AllowParentheses | NumberStyles.Float, NumberFormatInfo.InvariantInfo);
                 } else
                     Double.Parse(Expression.ToString());
                 return true;

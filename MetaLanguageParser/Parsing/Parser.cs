@@ -29,7 +29,7 @@ namespace MetaLanguageParser//.Parsing
         public static bool getDebug => doDebug;
         static string log = "logs\\__ParseTest.log";
         static string logStack = "logs\\__ParseStack.log";
-        static string basePath = Resources.ResxFiles.basePath;
+        //static string basePath = Resources.ResxFiles.basePath;
         //string input = "";
         Tokenizer toker;
         public static bool scopeChanged = false;

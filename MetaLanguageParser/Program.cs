@@ -25,10 +25,10 @@ namespace MetaLanguageParser
 
         static void Main(string[] args)
         {
-            string code;
-            code = (args.Length != 0) ? args[0] : Languages.Java.ToString().ToLower();
+            string code, codeFile;
+            code = (args.Length != 0) ? args[0] : Languages.CSharp.ToString().ToLower();
 
-            string codeFile = /*/"CodG_0-0.txt";/*/"codefile.txt";//*/
+            codeFile = (args.Length > 1) ? args[1] : "codefile.txt";
 
             Logger.resetLog();
             if (args.Length == 0) {

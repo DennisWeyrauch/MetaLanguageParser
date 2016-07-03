@@ -1,0 +1,10 @@
+## This file contains where the Language files are stored
+## Paths can be relative or absolute
+## Lines starting with '#' and empty Lines will be ignored
+
+# Languages Files
+LANG = "../../lang"
+# Resource Dictionaries
+RESX = "../../Resources"
+# Debug Switch that prints every build-iteration
+PrintParts = true
