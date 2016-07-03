@@ -9,8 +9,11 @@ namespace MetaLanguageParser.MetaCode
 {
     class AddMethod
     {
-        // §addMethod(§main)      /// Adds a EntryMethod
         // §addMethod()(myMethod) /// Adds a method called "myMethod" with no modifiers or Parameters, + ReturnType = void
+
+        /// <summary>
+        /// §addMethod(§main) --- /// Adds a EntryMethod like in "/myLang/§main.{suffix}"
+        /// </summary>
         internal static string parse(ref ExeBuilder eb, ref int pos)
         {
             MethodData data = new MethodData(); // Should be embedded Type

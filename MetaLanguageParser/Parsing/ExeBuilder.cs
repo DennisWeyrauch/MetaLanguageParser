@@ -29,7 +29,7 @@ namespace MetaLanguageParser
 
         /// <summary>Current list of tokenized code.</summary>
         public ListWalker list;
-        //list.GetEnumerator(); // Just to see it
+
         public static Dictionary<string,FuncDel> kw { get; private set; }
         public IndentedTextWriter writer;
         public int Indent = 0;
@@ -52,10 +52,6 @@ namespace MetaLanguageParser
         public Dictionary<string,Type> resolvedTypes;
         List<string> usings;
         
-        string _typeName;
-        public void invalidateTypeName() { _typeName = "<invalid-global-code>"; }
-        
-        // Name, MemberType, Reference;  last is null for overloads
         /// <summary>Dictionary holding references to all members.<para/>
         /// From Builder to callable Info: memberDict[name, memType].GetBaseDefinition(); // At least for methods</summary>
         /// <example>methDict["Main"].GetBaseDefinition();</example>
@@ -97,7 +93,7 @@ namespace MetaLanguageParser
              usings = new List<string>();
         }
         
-        private ExeBuilder(ListWalker lw, string langCode)//, IndentedTextWriter write)
+        private ExeBuilder(ListWalker lw, string langCode)
         {
             list = lw;
             LangCode = langCode;

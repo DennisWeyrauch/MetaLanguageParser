@@ -12,7 +12,7 @@ namespace MetaLanguageParser
         /// <summary>
         /// Printer Flag to output the generator steps
         /// </summary>
-        public static bool printParts = true;
+        public static bool printParts = false;
 
         public static void printer(string name, string output)
         {
@@ -28,7 +28,7 @@ namespace MetaLanguageParser
             string code;
             code = (args.Length != 0) ? args[0] : Languages.Java.ToString().ToLower();
 
-            string codeFile = /**/"CodG_0-0.txt";/*/"codefile.txt";//*/
+            string codeFile = /*/"CodG_0-0.txt";/*/"codefile.txt";//*/
 
             Logger.resetLog();
             if (args.Length == 0) {

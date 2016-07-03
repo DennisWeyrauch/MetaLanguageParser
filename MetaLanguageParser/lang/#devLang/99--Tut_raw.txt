@@ -1,0 +1,29 @@
+{Lang}
+
+Comment --> 
+Indent --> 
+
+true --> 
+String -> 
+Int32 -> 
+LowerThan --> 
+######
+## Import
+
+## Module
+
+## §addType($$name$$) { $$code$$ }
+
+## §addMain($$name$$)($$args$$) { $$code$$ }
+
+## while($$cond$$) { $$code$$ }
+
+## vardecl->Decl
+
+## §readLine($$args$$)
+
+## Read-Caster
+
+## Branches
+
+## §writeLine($$args$$)

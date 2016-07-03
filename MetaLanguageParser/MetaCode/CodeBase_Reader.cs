@@ -64,12 +64,11 @@ namespace MetaLanguageParser.MetaCode
             if (elem.EqualsChar('(')) elem = list.getNext();
             Operation expr = null;
             Op temp = null;
-            bool unary = false;
             bool binaryRight = false;
 
             try {
                 condDepth++;
-                // Assign the operation type
+                // Tests if it's just a nummeric (either nested or in braces
                 if (elem.IsNumeric()) {
                     return parseNumeric(elem);
                 }
@@ -246,7 +245,6 @@ namespace MetaLanguageParser.MetaCode
         }
 
         #endregion
-#warning DUMMY:: Prints everything as plaintext
         /// <summary>
         /// Rudimentary print of paramList: Including the MethBracket, stops when () are balanced OR ';' is found.<para/>
         /// ENTRY: on '(' ## EXIT: On ')'
@@ -259,13 +257,12 @@ namespace MetaLanguageParser.MetaCode
             var sb = new StringBuilder( );
             int cnt = 1;
             string elem = "";
-#warning CUSTOM:: Parameterlist-Seperator, ClosureOpening/Terminator, StatementTerminator
             while (cnt > 0) {
                 elem = eb.list[pos];
                 if (elem.EqualsChar('(')) cnt++;
                 else if (elem.EqualsChar(')')) cnt--;
                 if (cnt != 0) sb.Append(elem);
-                if (elem.Equals(";")) cnt = 0;
+                if (elem.EqualsChar(';')) cnt = 0;
                 pos++;
             }
             pos--;

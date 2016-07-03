@@ -11,12 +11,15 @@ Make more stuff work with Local + Method
 Clean up the indentation mess
 Add Command Explaination to them
  - Say that thing about _vardecl, and that removing §define always splits up the DeclarationAssignments
+(!!) Read in Datatypes
+--> Maybe even custom ones?
+(!!) Read in Modifiers
+--> Unlikely that custom ones are included
+
 
 
 ### Commands
 (#) CodeCommands
- -- §addType
- -- §addMember
 (#) DefParseCommands
  -- §checkOption --> see devFile
 (#) DestParseCommands

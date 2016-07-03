@@ -38,4 +38,7 @@ At least, for the main method; Int32; and Locals; resp.
 #Later.... (23:00+....)
 Made §varDecl dynamic so that it reads the format strings out of "_vardecl.txt"
 Fixed that indent problem, and it works without problems with Java and VB.Net as well.
-
+## 2016-07-02
+Added §addType and §readLine
+More or less finished the whole construction so that it would work
+Parsing in of Datatypes and modifiers is still missing

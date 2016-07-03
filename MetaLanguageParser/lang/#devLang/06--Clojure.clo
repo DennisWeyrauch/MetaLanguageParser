@@ -1,0 +1,46 @@
+Clojure --> clojure --> ??
+
+Comment --> ;
+Indent --> 2* Space
+
+true --> true
+//String -> 
+//Int32 -> 
+LowerThan --> "< {0} {1}"
+######
+## Import
+
+## Module
+
+## §addType($$name$$) { $$code$$ }
+(ns $$name$$
+	(:gen-class))
+
+## §addMain($$args$$) { $$code$$ }
+(defn -main [& args]
+	$$code$$)
+
+## while($$cond$$) { $$code$$ }
+(while $$cond$$
+	$$code$$)
+
+## vardecl->Decl
+--> Strangely implicit
+(let [$$decl$$ $$decl2$$ ...]
+	$$scope-that-these-will-be-valid$$)
+$$decl$$ --> $$name$$ ($$value$$)
+
+## §readLine($$args$$)
+$$decl$$ --> $$name$$ (read)
+## §readMulti($$args$$)
+$$name$$ (read) $$name2$$ (read) ...
+
+//## Read-Caster
+
+## Branches
+(if ($$cond$$) ($$true$$) ($$false$$))
+Actually, it would look like this, since all arguments supply their own braces
+(if $$cond$$ $$true$$ $$false$$)
+
+## §writeLine($$args$$)
+(println $$args$$)

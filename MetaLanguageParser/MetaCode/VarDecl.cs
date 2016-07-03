@@ -7,18 +7,20 @@ using System.Threading.Tasks;
 
 namespace MetaLanguageParser.MetaCode
 {
-    class VarDecl// : ICode
+    class VarDecl
     {
         internal static string parse(ref ExeBuilder eb, ref int pos)
         {
             // §vardecl($$Type$$ $$name$$);
             // §vardecl($$Type$$ $$name$$) = $$value$$;
+            // §vardecl({$$Type$$, $$name_n$$, ...});
+            // §vardecl({$$Type1$$, ...}, {$$Type2$$, ...}, ...);
             var list = eb.list;
             list.assertC("§vardecl").assertC('(');
             /// Multi Declaration
             MetaType type;
             if (list.isCurrent('{')) { //
-                // TYPE + // "," + name1 // x? + "}"
+                // TYPE + // "," + name1 // * + "}"
                 List<LocalData> locals = new List<LocalData>();
                 string elem = "";
                 do {
@@ -46,35 +48,8 @@ namespace MetaLanguageParser.MetaCode
                 }
                 eb.currentMethod.addLocal(data);
             }
-            //System.Console.ReadLine();
             list.assert(';'); // ; -> {NEXT}
-
-
-
-            return "";
-        }
-        internal static string parse1(ref ExeBuilder eb, ref int pos)
-        {
-            // §vardecl($$Type$$ $$name$$);
-            // §vardecl($$Type$$ $$name$$) = $$value$$;
-            var list = eb.list;
-            list.assertC("§vardecl").assertC("(");
-            MetaType type = MetaType.Factory(list.getCurrent());
-            string name = list[++pos];
-            list.assertPreInc(")");
-            LocalData data;
-            if (list.nextIs("=")) {
-                pos++; // = --> {value}
-                var str = CodeBase.readExpression(ref eb, ref pos);
-                data = new LocalData(type, name, str);
-            } else {
-                data = new LocalData(type, name);
-            }
-            list.assert(";");
-
-
-            eb.currentMethod.addLocal(data);
-
+            
             return "";
         }
     }

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Text;
+
+
 public class Program {
 	public static void main(string[] args) {
 		String enemy1;

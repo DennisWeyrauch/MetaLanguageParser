@@ -9,9 +9,11 @@ namespace MetaLanguageParser.MetaCode
 {
     class Assign
     {
+        /// <summary>
+        /// §assign(i)(value);
+        /// </summary>
         internal static string parse(ref ExeBuilder eb, ref int pos)
         {
-            // §assign(i)(value);
             var list = eb.list;
             list.assertC("§assign").assertC("(");
             string name = list[pos++];
