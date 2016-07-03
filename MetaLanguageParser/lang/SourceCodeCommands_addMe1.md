@@ -12,3 +12,18 @@
 §addType(§main)        // Adds a simple "public class Programm" according to "/myLang/§mainType.{suffix}"
 §endType               // Ends the current TypeDeclaration and adds it to the list of declared types
 ##
+Added an configFile
+
+##
+Operations:
+Either a direct Primitive
+	Boolean: true, false
+	Any number
+	--> Allowed are DecimalSeperator, ThousandSeperator (Has to be tested)
+	--> UnaryPlus/Minus and (-0) might be tokenized apart, but both are valid numbers
+	--> Currency and HexPrefix are available as well, but have to figured out if required.
+	"Text" ?
+	'Chars' ?
+Anything else is interpreted as "Variable"
+Or an conditional / arithmetic term
+	(+ {op1} {op2})

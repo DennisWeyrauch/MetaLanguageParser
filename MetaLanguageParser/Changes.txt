@@ -42,3 +42,5 @@ Fixed that indent problem, and it works without problems with Java and VB.Net as
 Added §addType and §readLine
 More or less finished the whole construction so that it would work
 Parsing in of Datatypes and modifiers is still missing
+## 2016-07-03
+Added an config-File to modify paths and the DebugSwitch "Print Parts"
