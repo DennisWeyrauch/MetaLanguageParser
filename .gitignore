@@ -1,12 +1,13 @@
 *.pdb
 *.7z
 *.lnk
+*.suo
 Common/obj/*
 MetaLanguageParser/obj/*
 Common/bin/Debug/*
 MetaLanguageParser/bin/Debug/oldCode
 MetaLanguageParser/bin/Debug/debug
 /#README.txt
-/MetaLanguageParser/#devDoc/BackUpCodes
 /MetaLanguageParser/#devDoc
+/MetaLanguageParser/#devDoc_
 /MetaLanguageParser/lang/java/unused/raw
