@@ -13,6 +13,8 @@ namespace MetaLanguageParser
         /// Printer Flag to output the generator steps
         /// </summary>
         public static bool printParts = false;
+        public static bool catchedErrors = false;
+        
 
         public static void printer(string name, string output)
         {
@@ -51,7 +53,12 @@ namespace MetaLanguageParser
                     Console.Read();
                 }//*/
             }
+            if (catchedErrors) {
+                Console.WriteLine($"Some non-fatal Errors appeared during Translation. Look into {Logger.path} for details.");
+            }
         }
+
+
     }
     // Comments are in snippet File //
     public static class Logger
@@ -83,6 +90,13 @@ namespace MetaLanguageParser
                 Logger.logData(new StringBuilder("Could not write to OutputFile!").AppendLine().Append(e.Message).ToString());
                 File.WriteAllText("WriteError.txt", contents);
             }
+        }
+
+        public static void LogNonFatalException<T>(T ex) where T : Exception
+        {
+            Console.Out.Write(ex.Message);
+            Logger.logException(ex);
+            Program.catchedErrors = true;
         }
 
         public static void logKeyException<T>(T ex) where T : KeyNotFoundException

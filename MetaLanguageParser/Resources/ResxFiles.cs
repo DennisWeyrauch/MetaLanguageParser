@@ -29,11 +29,11 @@ namespace MetaLanguageParser.Resources
                     switch (str[0].Trim().ToLower()) {
                         case "path":
                             basePath = myFunc(str[1]); 
-                            langPath = basePath + "/lang";
+                            langDir = basePath + "/lang";
                             resxPath = basePath + "/Resources";
                             break;
                         case "lang":
-                            langPath = myFunc(str[1]);
+                            langDir = myFunc(str[1]);
                             break;
                         case "resx":
                             resxPath = myFunc(str[1]);
@@ -67,7 +67,7 @@ PrintParts = false
 ## 2nd Arg = Path to CodeFile to parse. Default is ""./codefile.txt""
 ";
                 File.WriteAllText(cfgPath, cfgFile);
-                langPath = "../../lang";
+                langDir = "../../lang";
                 resxPath = "../../Resources";
             }
         }
@@ -79,7 +79,7 @@ PrintParts = false
         /// <summary>
         /// Contains the path to the Language Directory, where all Language Definitions are stored
         /// </summary>
-        public readonly static string langPath;
+        public readonly static string langDir;
         /// <summary>
         /// Contains the path to the Resource Directory
         /// </summary>
@@ -87,10 +87,12 @@ PrintParts = false
         private static string _lang;
         public static string LangCode
         {
-            get { return _lang; }
+            get {
+                //if (string.IsNullOrEmpty(_lang)) throw new InvalidOperationException("ResxFiles was not initialized with LanguageCode!");
+                return _lang; }
             set
             {
-                string path = langPath + "/" + value;
+                string path = langDir + "/" + value;
                 if (Directory.Exists(path)) {
                     path += "/" + value;
                     bool file = File.Exists(path);
@@ -109,20 +111,27 @@ PrintParts = false
         /// Returns the path to the current "lang" directory
         /// </summary>
         /// <returns></returns>
-        public static string getLangPath() => $"{langPath}/{_lang}";//new StringBuilder(basePath).Append($"/{_lang}").ToString();
+        public static string getLangPath() => $"{langDir}/{_lang}";//new StringBuilder(basePath).Append($"/{_lang}").ToString();
+        private static string langPath => $"{langDir}/{_lang}";
 
         /// <summary>
-        /// Returns the path to the given file in the current LanguageDirectory. == basePath/{_lang}/file.{langSuffix}
+        /// Get a file from the CurLang-Directory
         /// </summary>
+        /// <param name="file"></param>
         /// <returns></returns>
-        internal static string getLangPath(string file) => new StringBuilder(langPath).Append($"/{_lang}/{file}.{langSuffix}").ToString();
-        internal static string getLangPath2(string file) => $"{langPath}/{_lang}/{file}.{langSuffix}";
-        internal static string getLangPath(string file, bool hasSuffix) => new StringBuilder(langPath).Append($"/{_lang}/{file}").ToString();
+        internal static string getLangPath(string file) => $"{langPath}/{file}";// new StringBuilder(langDir).Append($"/{_lang}/{file}").ToString();
+
+        //internal static string getLangPath3(string file) => $"{langPath}/{file}.{langSuffix}"; // Would be the shortest with 22 bytes
         /// <summary>
         /// Retrieves the main configfile for the language
         /// </summary>
         /// <returns></returns>
-        internal static string getLangFile() => new StringBuilder(langPath).Append($"/{_lang}/{_lang}").ToString();
+        internal static string getLangFile() => new StringBuilder(langDir).Append($"/{_lang}/{_lang}").ToString();
+        /// <summary>
+        /// Returns the path to the given file in the current LanguageDirectory. == basePath/{_lang}/file.{langSuffix}
+        /// </summary>
+        /// <returns></returns>
+        internal static string getLangFile(string file) => new StringBuilder(langPath).Append($"/{file}.{langSuffix}").ToString();
 
         /// <summary>{resx}/opBinDict.xml</summary>
         internal static string getBinaryDict() => getMetaPath() + "/_opBool.txt";
@@ -136,7 +145,7 @@ PrintParts = false
         /// Returns the path to the MetaDirectory
         /// </summary>
         /// <returns></returns>
-        internal static string getMetaPath() => $"{langPath}/meta";//new StringBuilder(basePath).Append("/meta").ToString();
+        internal static string getMetaPath() => $"{langDir}/meta";//new StringBuilder(basePath).Append("/meta").ToString();
         /// <summary>
         /// Returns the path to the specified file in the metaDictionary
         /// </summary>

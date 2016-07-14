@@ -1,0 +1,11 @@
+﻿§program {
+	if (& (< i 15) (> i 0)) {
+		while (< (§preInc i) 15) {
+			§write(i);
+		}
+	} else {
+		do {
+			§write(i);
+		} while (> i 0)
+	}
+}

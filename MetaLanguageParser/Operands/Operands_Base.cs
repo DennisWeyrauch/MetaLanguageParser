@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MetaLanguageParser.Operands
 {
+    using Common;
     using static Convert;
     /**
     class Value
@@ -93,9 +94,7 @@ namespace MetaLanguageParser.Operands
     }
 
     /// <summary>
-    /// Operator type that represents a constant value. Contains predefinitions for
-    /// <see cref="bool"/>, <see cref="Int32"/> (Int32), <see cref="LocalBuilder"/>, and argLess <see cref="OpCodes"/>.
-    /// Everything else (incl. casting) has to be taken care of with a custom function.
+    /// Operator type that represents a constant value.
     /// </summary>
 
     [System.Diagnostics.DebuggerDisplay("{_constType}: {_value.ToString()}")]
@@ -104,7 +103,7 @@ namespace MetaLanguageParser.Operands
 
         enum ConstantType
         {
-            Invalid, DBNull, IsTrue, IsFalse, String,
+            Invalid, DBNull, IsTrue, IsFalse, Char, String,
             SByte, Integer, Long, Float, Double,
             Local, Parameter, Field, Method, Func
         }
@@ -161,6 +160,11 @@ namespace MetaLanguageParser.Operands
             _value = d;
             _constType = ConstantType.Double;
         }
+        public Value(char c)
+        {
+            _value = c;
+            _constType = ConstantType.Char;
+        }
         public Value(string s)
         {
             _value = s;
@@ -197,7 +201,86 @@ namespace MetaLanguageParser.Operands
         public Value(MethodInfo mi, bool isStatic) { }
         #endregion
 
-        
+
+        #region Parse and TryParse
+        /// <Summary>Converts the string representation of a number to its 32-bit signed integer equivalent.
+        ///      A return value indicates whether the conversion succeeded.</Summary>
+        /// <param name="elem">A string containing a number to convert.</param>
+        /// <param name="val">When this method returns, contains the <see cref="Value"/> type equivalent
+        ///      of the ValueType contained in <paramref name="elem"/>, if the conversion succeeded, or null if the conversion
+        ///      failed. The conversion fails if the <paramref name="elem"/> parameter is null or <see cref="System.String.Empty"/>,
+        ///      is not of the correct format. This parameter is passed uninitialized;
+        ///      any value originally supplied in result will be overwritten.</param>
+        /// <Returns>true if <paramref name="elem"/> was converted successfully; otherwise, false.</Returns>
+        public static bool TryParse(string elem, out Op val, bool printError = true)
+        {
+            val = null;
+            if (elem.IndexOfAny("+-*.=!§$%&/()[]{}<>?:".ToCharArray()) != -1) return false;
+            //if (elem.StartsWith("'") || elem.StartsWith("\"") || elem.IsNumeric())
+                try {
+                    val = Parse(elem);
+                } catch (Exception e) { if(printError)Logger.LogNonFatalException(e); }
+            return val != null;
+        }
+
+        public static bool IsValue(string elem) => elem.StartsWith("'") || elem.StartsWith("\"") || elem.Equals("null") || elem.IsNumeric();
+
+
+        /// <Summary>Converts the value of the specified string to its equivalent Unicode character.</Summary>
+        /// <param name="elem">A string that contains a primitive Value, or null.</param>
+        /// <Returns>A <see cref="Value"/> type object containing the ValueType from <paramref name="elem"/>.</Returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="elem"/> is null.</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="elem"/> contains no valid ValueType, Unicode character, or String.</exception>
+        public static Value Parse(string elem)
+        {
+            if (elem == null) throw new ArgumentNullException(elem);
+            if (string.IsNullOrWhiteSpace(elem)) throw new ArgumentException("Is Empty", elem);
+            if (elem.StartsWith("'")) return new Value(Char.Parse(elem.Substring(1, elem.Length-2)));
+            if (elem.StartsWith("\"")) return new Value(elem.Substring(1, elem.Length - 2));
+            if (elem.Equals("null")) return nullValue;
+            // DateTime
+            int i; if (Int32.TryParse(elem, out i)) return new Value(i);
+            long l; if (Int64.TryParse(elem, out l)) return new Value(l);
+            double d; if (Double.TryParse(elem, out d)) return new Value(d);
+            float f; if (Single.TryParse(elem, out f)) return new Value(f);
+            bool b; if (Boolean.TryParse(elem, out b)) return new Value(b);
+            throw new ArgumentException("Not a valid ValueType!", elem);
+        }
+
+        /// <Summary>Converts the string representation of a number to its <see cref="Value"/> equivalent.
+        ///      A return value indicates whether the conversion succeeded.</Summary>
+        /// <param name="elem">A string containing a number to convert.</param>
+        /// <param name="val">When this method returns, contains the numeric <see cref="Value"/> type equivalent
+        ///      of the ValueType contained in <paramref name="elem"/>, if the conversion succeeded, or null if the conversion
+        ///      failed. The conversion fails if the <paramref name="elem"/> parameter is null or <see cref="System.String.Empty"/>,
+        ///      is not of the correct format, or represents a number less than <see cref="System.Int64.MinValue"/>
+        ///      or greater than <see cref="System.Int64.MaxValue"/>. This parameter is passed uninitialized;
+        ///      any value originally supplied in result will be overwritten.</param>
+        /// <Returns>true if <paramref name="elem"/> was converted successfully; otherwise, false.</Returns>
+        public static bool TryParseNumeric(string elem, out Op val)
+        {
+            val = null;
+            if (elem.IsNumeric()) {
+                val = parseNumeric(elem);
+            }
+            return val != null;
+        }
+
+        /// <see cref="Common.Extensions.IsNumeric(object)"/>
+        public static Value parseNumeric(string elem)
+        {
+            int i; if (Int32.TryParse(elem, out i)) return new Value(i);
+            long l; if (Int64.TryParse(elem, out l)) return new Value(l);
+            double d; if (Double.TryParse(elem, out d)) return new Value(d);
+            float f; if (Single.TryParse(elem, out f)) return new Value(f);
+            bool b; if (Boolean.TryParse(elem, out b)) return new Value(b);
+            //decimal dec; if (Decimal.TryParse(elem, out dec)) return new Value(dec);
+
+            throw new ArgumentException("Not a valid numeric ValueType!", elem);
+        }
+
+        #endregion
+
         public override OperatorType _nodeType => OperatorType.Constant;
 
         public override Type GetType()
@@ -207,6 +290,7 @@ namespace MetaLanguageParser.Operands
                 case ConstantType.DBNull: return typeof(object);
                 case ConstantType.IsTrue:
                 case ConstantType.IsFalse: return typeof(bool);
+                case ConstantType.Char:
                 case ConstantType.String:
                 case ConstantType.SByte:
                 case ConstantType.Integer:
@@ -219,29 +303,40 @@ namespace MetaLanguageParser.Operands
                 case ConstantType.Method:
                 default: throw new NotImplementedException($"Value.GetType(): Unimplemented case '{_constType.ToString()}'");
            }
-
-            
         }
 
 
+
+        public static void setTypeDict(Dictionary<string, string> dict) => typeDict = dict;
+        static Dictionary<string,string> typeDict;// = new Dictionary<string,string>();
         public override string ToString()
         {
+            string str = _value.ToString();
             switch (_constType) {
-                case ConstantType.Local: //return $"ldloc '{_lb.ToString()}'";
+                /**/case ConstantType.Local: //return $"ldloc '{_lb.ToString()}'";
+                    //return _value.ToString();
                 case ConstantType.SByte:
                 case ConstantType.Float:
                 case ConstantType.Double:
                 case ConstantType.Long:
                 case ConstantType.Integer:
+                    return _value.ToString();//*/
+                case ConstantType.Char:
                 case ConstantType.String:
-                    return _value.ToString();
-                //case ConstantType.Func: return _emitFunc.ToString();
+                    var ct = _constType.ToString().ToLower();
+                    return (typeDict.ContainsKey(ct)) ? string.Format(typeDict[ct], str) : str;
                 case ConstantType.IsFalse: return "false";
                 case ConstantType.IsTrue: return "true";
 #warning IMPLEMENT MISSING _constType Cases
-                default: throw new NotImplementedException($"Value.ToString(): Unimplemented case '{_constType.ToString()}'");
+                default:
+                    //return _value.ToString();//
+                    throw new NotImplementedException($"Value.ToString(): Unimplemented case '{_constType.ToString()}'");
             }
+            return str;
             //return base.ToString();
         }
+
+
+        //public static implicit operator Op(Value v)  => v as Op;
     }
 }

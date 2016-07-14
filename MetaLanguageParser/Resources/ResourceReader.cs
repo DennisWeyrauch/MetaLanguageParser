@@ -28,7 +28,7 @@ namespace MetaLanguageParser.Resources
             path = getDestDict();
             if (!File.Exists(path)) throw new FileNotFoundException($"No config file '{lang}' found!");
             opDestDict = __readOpDict(path, getDestinationDict(lang));
-
+            __readTypeDict();
         }
 
         #region ResourceReader
@@ -62,7 +62,6 @@ namespace MetaLanguageParser.Resources
             Common.Serializer.SerializeFile(resxDict, resxPath);
         }
 
-
         public static OperatorDictionary opBinDict = new OperatorDictionary(eOpDictType.Boolean);
         public static OperatorDictionary opArithDict = new OperatorDictionary(eOpDictType.Arithmetic);
         private static OperatorDictionary __readOpDict(string path, string resxPath, eOpDictType opType)
@@ -90,7 +89,6 @@ namespace MetaLanguageParser.Resources
             return dict;
         }
 
-
         public static ConfigurationDictionary opDestDict = new ConfigurationDictionary();
         private static ConfigurationDictionary __readOpDict(string path, string resxPath)
         {
@@ -110,6 +108,25 @@ namespace MetaLanguageParser.Resources
             Common.Serializer.SerializeFile(dict, resxPath);
             return dict;
         }
+
+        public static void __readTypeDict()
+        {
+            //Parsing.MetaType.setTypeDict(readAnyFile(getLangPath("_types.txt"), true));
+            var dict = new Dictionary<string, string>();
+            bool mode = true;
+            foreach (var entry in readFile(getLangFile("_types"))) {
+                if (entry[0].Equals("§§Raw")) {
+                    if (mode) mode = false;
+                    else throw new InvalidOperationException("Invalid TypeConfiguration File");
+                    mode = false;
+                    Parsing.MetaType.setTypeDict(dict);
+                    dict = new Dictionary<string, string>();
+                    continue;
+                }
+                dict.Add(entry[0].ToLower(), entry[1]);
+            }
+            Operands.Value.setTypeDict(dict);
+        }
 #endregion
         /// <summary>
         /// Yielder for reading MetaDefinition Files.
@@ -125,11 +142,11 @@ namespace MetaLanguageParser.Resources
             }
         }
 
-        public static Dictionary<string, string> readAnyFile(string path)
+        public static Dictionary<string, string> readAnyFile(string path, bool lowerCase = false)
         {
             var dict = new Dictionary<string, string>();
             foreach (var entry in readFile(path)) {
-                dict.Add(entry[0], entry[1]);
+                dict.Add((lowerCase)?entry[0].ToLower():entry[0], entry[1]);
             }
             return dict;
         }
@@ -139,8 +156,10 @@ namespace MetaLanguageParser.Resources
         internal static string __FILESUFFIX => resxDict[nameof(__FILESUFFIX)];
         internal static string __STATEMENT_CLOSE => resxDict[nameof(__STATEMENT_CLOSE)];
         internal static string __INDENT => System.Text.RegularExpressions.Regex.Unescape(resxDict[nameof(__INDENT)]);
-        
+        internal static string __COMMENT => resxDict[nameof(__COMMENT)];
+
         private static string outDummy;
+
         /// <summary>
         /// Describes if the BlockClosure is consists of <see cref="__BLOCK_CLOSE"/> and an Individual Keyword introducing the Structure. <para/>
         /// State: Not implemented

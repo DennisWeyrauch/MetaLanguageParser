@@ -40,7 +40,7 @@ namespace MetaLanguageParser.Parsing
 #warning CUSTOM:: Retrieve them
         static LocalData()
         {
-            var dict = Resources.ResourceReader.readAnyFile(Resources.ResxFiles.getLangPath("_vardecl.txt", true));
+            var dict = Resources.ResourceReader.readAnyFile(Resources.ResxFiles.getLangPath("_vardecl.txt"));
             forStr_decl = dict["§decl"];
             forStr_assign = dict["§assign"];
             dict.TryGetValue("§define", out forStr_def);

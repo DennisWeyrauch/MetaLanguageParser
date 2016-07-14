@@ -1,5 +1,6 @@
 ﻿using Common;
 using MetaLanguageParser.Operands;
+using MetaLanguageParser.Tokenize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace MetaLanguageParser.MetaCode
             List<string> readin = new List<string>();
             string readin1 = "while ($$cond$$) { §inc\r\n\t$$code$$ §dec\r\n}";
 
-            var tokens = Tokenizer.TokenizeFile(getLangPath(fileName), Tokenizer.enumType.MetaType, false);
+            var tokens = Tokenizer.TokenizeFile(getLangFile(fileName), Tokenizer.enumType.MetaType, false);
 
             List<string> readin2 = new List<string>() {
                  "while (", "$$", "cond", "$$", ") {", "§inc", "\r\n", "$$", "code", "$$", "§dec", "\r\n", "}"
@@ -98,6 +99,11 @@ namespace MetaLanguageParser.MetaCode
         // And don't care about "out of scope" or thelike. The progLang it self should handle that
         internal bool resolveIfExist(string elem, out string str)
         {
+            var eb = ExeBuilder.Instance;
+            if (eb.currentMethod.containsLocal(elem)) {
+                str = elem;
+                return true;
+            }
             return dict.TryGetValue(elem, out str);
         }
 

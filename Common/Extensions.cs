@@ -169,7 +169,9 @@ namespace Common
 
             try {
                 if (Expression is string) {
-                    if (Expression.Equals(Boolean.TrueString) || Expression.Equals(Boolean.FalseString)) return true;
+                    var expr = Expression as string;
+                    if (expr.Equals(Boolean.TrueString, StringComparison.InvariantCultureIgnoreCase)
+                        || expr.Equals(Boolean.FalseString, StringComparison.InvariantCultureIgnoreCase)) return true;
                     Double.Parse(Expression as string, NumberStyles.Number | NumberStyles.AllowParentheses | NumberStyles.Float, NumberFormatInfo.InvariantInfo);
                 } else
                     Double.Parse(Expression.ToString());

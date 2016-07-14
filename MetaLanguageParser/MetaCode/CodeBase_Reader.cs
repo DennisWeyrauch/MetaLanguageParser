@@ -43,7 +43,7 @@ namespace MetaLanguageParser.MetaCode
         protected static string readArithmetic(ref ExeBuilder eb, ref int pos)
         {
             Op expr = null;
-            if (!TryParseNumeric(eb.list.getCurrent(), out expr)) {
+            if (!Value.TryParse(eb.list.getCurrent(), out expr, false)) {
                 expr = eb.codeBase.Peek().readCondExpr(ref eb.list, OperatorType.Any);
                 //if (expr.GetType() != typeof(bool)) throw new InvalidSyntaxException("Expression didn't resolve to boolean");
             } else pos++;
@@ -65,12 +65,13 @@ namespace MetaLanguageParser.MetaCode
             Operation expr = null;
             Op temp = null;
             bool binaryRight = false;
+            Value val;
 
             try {
                 condDepth++;
                 // Tests if it's just a nummeric (either nested or in braces
-                if (elem.IsNumeric()) {
-                    return parseNumeric(elem);
+                if (Value.IsValue(elem)) {
+                    return Value.Parse(elem);
                 }
                 expr = readOperator(elem, lookup);
             
@@ -83,7 +84,7 @@ namespace MetaLanguageParser.MetaCode
                     if (elem.Equals("("))
                         temp = readCondExpr(ref list, OperatorType.Any); // ((Binary)expr).setLeft(myFunc2(list));
                     // 2. -OR- Test if a literal/primitive token
-                    else if (elem.IsNumeric()) temp = parseNumeric(elem);
+                    else if (Value.TryParse(elem, out temp, false)) ;// temp = parseNumeric(elem);
                     // 3. -OR- Figure out reference token
                     else {
                         string s = elem;
@@ -91,9 +92,9 @@ namespace MetaLanguageParser.MetaCode
                         if (resolveIfExist(elem, out s)) {
                             temp = new Value(s);
                             (temp as Value).setLocal();
-                        }
+                        } 
                         // Else just default to plain text.
-                        temp = new Value(elem);
+                        else temp = new Value(elem);
                     }
                     if (binaryRight) break;
                     binaryRight = true;
@@ -134,35 +135,7 @@ namespace MetaLanguageParser.MetaCode
             }
             return expr;
         }
-        
-
-        static internal bool TryParseNumeric(string elem, out Op val)
-        {
-            val = null;
-            if (elem.IsNumeric()) {
-                val = parseNumeric(elem);
-            }
-            return val != null;
-        }
-
-        /// <see cref="Common.Extensions.IsNumeric(object)"/>
-        static internal Value parseNumeric(string elem)
-        {
-            int i;
-            long l;
-            //decimal dec;
-            float f;
-            double d;
-            bool b;
-            if (Int32.TryParse(elem, out i)) return new Value(i);
-            if (Int64.TryParse(elem, out l)) return new Value(l);
-            //if (Decimal.TryParse(elem, out dec)) return new Value(dec);
-            if (Double.TryParse(elem, out d)) return new Value(d);
-            if (Single.TryParse(elem, out f)) return new Value(f);
-            if (Boolean.TryParse(elem, out b)) return new Value(b);
-            throw new NotImplementedException("Invalid Numeric Type in parseNumeric");
-        }
-
+    
         #endregion
 
         #region Read CodeBlocks

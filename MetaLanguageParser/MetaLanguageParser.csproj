@@ -65,6 +65,7 @@
     <Compile Include="MetaCode\AddMethod.cs" />
     <Compile Include="MetaCode\AddType.cs" />
     <Compile Include="MetaCode\Assign.cs" />
+    <Compile Include="MetaCode\Comment.cs" />
     <Compile Include="MetaCode\VarDecl.cs" />
     <Compile Include="Parsing\MetaData.cs" />
     <Compile Include="Parsing\MetaType.cs" />
@@ -107,7 +108,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="#Changes.txt" />
     <Content Include="MetaCode\TextFile1.txt" />
+    <None Include="Todo.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

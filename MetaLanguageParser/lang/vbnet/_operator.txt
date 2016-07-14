@@ -10,6 +10,9 @@ GreaterThan	{0} > {1}
 LessThan	{0} < {1}
 GreaterThanOrEqual	{0} >= {1}
 LesserThanOrEqual	{0} <= {1}
+##Note: StringCompare
+# Add "Option Compare Text" among the Imports
+# To allow (string = string) --> bool
 ### Arithmetic
 ##Unary
 PreInc	({0} = {0} + 1)

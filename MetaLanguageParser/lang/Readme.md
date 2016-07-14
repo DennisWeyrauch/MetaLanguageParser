@@ -1,5 +1,8 @@
 This folder contains all Language Definition Files (further refered to as 'mdef' as in MetaDefinition) and Language Destination Files (further referred to as 'mdest' or 'dest', likewise). 
 
+As a general rule, any line starting with a Hash ('#') will be treated as comment and therefore skipped.
+Empty Lines or such containing only WS as well.
+
 # Files #
 ##/meta/##
 * _opArith.txt

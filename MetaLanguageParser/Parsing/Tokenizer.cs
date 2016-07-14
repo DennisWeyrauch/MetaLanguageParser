@@ -5,7 +5,7 @@ using System.Linq; // string.Select()
 using System.Text.RegularExpressions; // Regex, RegexOptions, Match
 using ListWalker = Common.ListWalker;
 
-namespace MetaLanguageParser
+namespace MetaLanguageParser.Tokenize
 {
     public abstract class Tokenizer
     {

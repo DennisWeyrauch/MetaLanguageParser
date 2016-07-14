@@ -3,3 +3,4 @@ Block_Init	{
 Block_Close	}
 Statement_Close	;
 Indent	\t
+Comment	/* {0} */

@@ -1,0 +1,18 @@
+﻿###
+# {0} = Type
+# {1} = Name
+# {2} = Value 
+###
+## $$type$$ $$name$$
+§decl	
+
+## $$name$$ = $$value$$
+§assign	
+
+## $$type$$ $$name$$ = $$value$$;
+# Comment / Remove the next line to always seperate Decl and Assignment
+#§define	
+
+## Constant
+# Add this line when LocalConstants are explicit stated as such
+#§const	

@@ -24,24 +24,15 @@ namespace MetaLanguageParser.Parsing
             Dynamic_Compile,
             /// <summary>Dynamic reference (Duck typing)</summary>
             Dynamic_Runtime,
-            /// <summary>1 byte integer</summary>
-            Int8, Byte = Int8,
-            /// <summary>2 byte integer</summary>
-            Int16, Short = Int16,
-            /// <summary>4 byte integer</summary>
-            Int32, Int = Int32,
-            /// <summary></summary>
-            Int64, Long = Int64,
-            UInt8, UByte = UInt8,
-            UInt16, UShort = UInt16,
-            UInt32, UInt = UInt32,
-            UInt64, ULong = UInt64,
-            Float32, Single = Float32,
-            Float64, Double = Float64,
-            Glyph, Char = Glyph,
-            Text, String = Text,
-            WideGlyph, WChar = WideGlyph,
-            WideText, WString = WideText,
+            /// <summary>Signed Integer</summary>
+            Int8, Int16, Int32, Int64,
+            /// <summary>Unsigned Integer</summary>
+            UInt8, UInt16, UInt32, UInt64,
+            /// <summary>Floating Point</summary>
+            Float32, Float64, Float128,
+            /// <summary>Text</summary>
+            Char, Text, String = Text,
+            WChar, WString,
 
             Boolean, Bool = Boolean,
             /// <summary>Represents an ordered collection.</summary>
@@ -52,6 +43,8 @@ namespace MetaLanguageParser.Parsing
             Map,
             /// <summary>Represents an Reference. Use ObjectType</summary>
             Reference, Object = Reference,
+            /// <summary>Self set Type</summary>
+            Any
         }
         public enumMetaTypes metaType = enumMetaTypes.Invalid;
         /// <summary>
@@ -77,7 +70,7 @@ namespace MetaLanguageParser.Parsing
         {
             get
             {
-                if (metaType != enumMetaTypes.Reference) throw new InvalidOperationException();
+                if (metaType != enumMetaTypes.Reference && metaType != enumMetaTypes.Any) throw new InvalidOperationException();
                 return _objName;
             }
             set { _objName = value; }
@@ -85,7 +78,9 @@ namespace MetaLanguageParser.Parsing
 
         public static MetaType Factory(string s)
         {
-            return new MetaType(resolvedTypes[s.ToLower()]);
+            if(resolvedTypes.ContainsKey(s))
+               return new MetaType(resolvedTypes[s.ToLower()]);
+            else return new MetaType(s);
         }
         public static MetaType Factory(enumMetaTypes mType)
         {
@@ -96,11 +91,42 @@ namespace MetaLanguageParser.Parsing
         {
             this.metaType = mType;
         }
+        private MetaType(string s)
+        {
+            this._objName = s;
+            this.metaType = enumMetaTypes.Any;
+        }
 
+
+        static MetaType()
+        {
+            //ResourceReaderreadAnyFile(getLangPath("_types.txt"), true));
+        }
+
+        public static void setTypeDict(Dictionary<string, string> dict) => typeDict = dict;
+        static Dictionary<string,string> typeDict;// = new Dictionary<string,string>();
+
+        string getTypeKey(string str)
+        {
+
+            switch (metaType) {
+                case enumMetaTypes.Dynamic_Compile:
+                case enumMetaTypes.Dynamic_Runtime:
+                    //case enumMetaTypes.List:
+                    //case enumMetaTypes.Set:
+                    //case enumMetaTypes.Map:
+                    throw new NotImplementedException("BLARG of " + metaType);
+                    break;
+                case enumMetaTypes.Any:
+                    return ObjectType;
+                default:
+                    return metaType.ToString();
+            }
+        }
 
         public override string ToString()
         {
-            switch (metaType) {
+            /**switch (metaType) {
                 case enumMetaTypes.Invalid:
                     break;
                 case enumMetaTypes.Dynamic_Compile:
@@ -145,6 +171,42 @@ namespace MetaLanguageParser.Parsing
                 default: throw new NotImplementedException("MetaType.ToString(): Unimplemented case " + metaType.ToString());
             }
             throw new NotImplementedException("BLARG of " + metaType);
+            //*/
+
+            string val,key = "";
+            switch (metaType) {
+                case enumMetaTypes.Dynamic_Compile:
+                case enumMetaTypes.Dynamic_Runtime:
+                //case enumMetaTypes.List:
+                //case enumMetaTypes.Set:
+                //case enumMetaTypes.Map:
+                    throw new NotImplementedException("BLARG of " + metaType);
+                    break;
+                case enumMetaTypes.Any:
+                    key = ObjectType;
+                    break;
+                default:
+                    key = metaType.ToString();
+                    break;
+            }
+            if (!typeDict.TryGetValue(key.ToLower(), out val)) val = "_MISSING_"+key;
+            // Add Array and shit
+            return val;
+        }
+
+        void __Test1(string str)
+        {
+            string key = "";
+            if (typeDict.TryGetValue(str, out key)) ; else key = str;
+        }
+        void __Test2(string str)
+        {
+            string key = "";
+            if (!typeDict.TryGetValue(str, out key)) key = str;
+        }
+        void __Test3(string str)
+        {  
+            string key = (typeDict.ContainsKey(str))? typeDict[str] : str;
         }
 
 
@@ -197,7 +259,9 @@ namespace MetaLanguageParser.Parsing
             return "";
         }
 
-
+        /// <summary>
+        /// Dictionary to unify the basic datatypes into a common root (the Enum)
+        /// </summary>
         static Dictionary<string, enumMetaTypes> resolvedTypes = new Dictionary<string, enumMetaTypes>() {
                 /// Void
                 //{"void", typeof(void) },
@@ -208,17 +272,18 @@ namespace MetaLanguageParser.Parsing
                 //{"sbyte", typeof(sbyte) }, {"short", typeof(short) }, {"int32", typeof(int) }, {"long", typeof(long) },
 
                 /// Unsigned Integer
-                //{"byte", typeof(byte) }, {"ushort", typeof(ushort) }, {"uint", typeof(uint) }, {"ulong", typeof(ulong) },
-                //{"byte", typeof(byte) }, {"ushort", typeof(ushort) }, {"UInt32", typeof(uint) }, {"ulong", typeof(ulong) },
+                {"byte", enumMetaTypes.UInt8 }, {"ushort", enumMetaTypes.UInt16 }, {"uint", enumMetaTypes.UInt32 }, {"ulong", enumMetaTypes.UInt64 },
+                {"uint8", enumMetaTypes.UInt8 }, {"uint16", enumMetaTypes.UInt16 }, {"uint32", enumMetaTypes.UInt32 }, {"uint64", enumMetaTypes.UInt64 },
 
-                /// Signed decimal number (16 byte)
-                //{"decimal", typeof(decimal) },
 
                 /// Floating Point number
-               // {"float", typeof(float) }, {"double", typeof(double) },
+                {"float32", enumMetaTypes.Float32 },{"float", enumMetaTypes.Float32 }, {"single", enumMetaTypes.Float64 },
+                {"float64", enumMetaTypes.Float64 },{"double", enumMetaTypes.Float64 },
+                /// Signed decimal number (16 byte)
+                {"decimal", enumMetaTypes.Float128 },{"float128", enumMetaTypes.Float128 },
 
                 /// Boolean
-                //{"bool", typeof(bool) },
+                {"bool", enumMetaTypes.Bool}, {"boolean", enumMetaTypes.Bool},
 
                 /// Character literals
                 {"char", enumMetaTypes.Char }, {"string", enumMetaTypes.String },

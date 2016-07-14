@@ -44,3 +44,8 @@ More or less finished the whole construction so that it would work
 Parsing in of Datatypes and modifiers is still missing
 ## 2016-07-03
 Added an config-File to modify paths and the DebugSwitch "Print Parts"
+##2016-07-14
+I think I forgot one or two days....
+Anyway, enabled Readin of Types (build In only; others are not invalid, but marked with _MISSING_X)
+Also added Custom Literals Decoration (for Char and String, more to come)
+And added §comment to allow Writing Comments

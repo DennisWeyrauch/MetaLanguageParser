@@ -5,4 +5,5 @@
   <entry name="__BLOCK_CLOSE">}</entry>
   <entry name="__STATEMENT_CLOSE">;</entry>
   <entry name="__INDENT">\t</entry>
+  <entry name="__COMMENT">/* {0} */</entry>
 </dictionary>

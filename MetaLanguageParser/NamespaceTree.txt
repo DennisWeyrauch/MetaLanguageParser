@@ -1,0 +1,25 @@
+MetaLanguageParser
+	.MetaCode	// Externalized CodeSegments
+	.Operands	// OperatorStuff
+	.Parsing	// DataHolder Classes
+	.Resources	// Reading and Files
+		ConfigurationDict
+		OperatorDict
+		ResourceReader
+		ResxFiles
+		enum eOpDictType
+	.Tokenize
+		CSharpTokenizer
+		MetaCodeTokenizer
+		MetaDefTokenizer
+		MetaTokenizer
+		Tokenizer
+	ExeBuilder
+	FuncDel
+	Logger
+	Parser
+	Program
+####
+MetaCode.ICode --> Tokenize.Tokenizer
+MetaCode.CodeBase_base --> Tokenize.Tokenizer
+Parser --> using MetaCode, Tokenize

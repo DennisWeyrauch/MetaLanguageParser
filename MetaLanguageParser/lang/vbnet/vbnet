@@ -3,5 +3,6 @@ Block_Init	§EOF
 Block_Close	End
 Statement_Close	 
 Indent	    
-§§Options§§
-hasSyntacticWhitespace
+Comment	'{0}
+#§§Options§§
+#hasSyntacticWhitespace

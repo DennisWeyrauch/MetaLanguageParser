@@ -8,7 +8,7 @@ using Common;
 using static MetaLanguageParser.Resources.ResourceReader;
 //using static MetaLanguageParser.Resources.LangConfig;
 
-namespace MetaLanguageParser//.Parsing
+namespace MetaLanguageParser
 {
     using MetaCode;
     using System.Linq;
@@ -31,7 +31,7 @@ namespace MetaLanguageParser//.Parsing
         static string logStack = "logs\\__ParseStack.log";
         //static string basePath = Resources.ResxFiles.basePath;
         //string input = "";
-        Tokenizer toker;
+        Tokenize.Tokenizer toker;
         public static bool scopeChanged = false;
         public static Dictionary<string,FuncDel> kwDict;
         public static List<string> kw;
@@ -46,6 +46,7 @@ namespace MetaLanguageParser//.Parsing
             kwDict.Add("§vardecl", VarDecl.parse);
             kwDict.Add("§assign", Assign.parse);
             kwDict.Add("§addType", AddType.parse);
+            kwDict.Add("§comment", Comment.parse);
         }
 
         public Parser(bool debug = false)
@@ -53,14 +54,14 @@ namespace MetaLanguageParser//.Parsing
             //doDebug = Program.doDebug; // static set via main
             //StringBuilder sb = new StringBuilder().Append(File.ReadAllText(files[0]));
             doDebug = debug;
-            toker = new MetaTokenizer();
+            toker = new Tokenize.MetaTokenizer();
             _instance = this;
             kw = new List<string>();
         }
 
 
         /// <summary>Main trigger method to start building</summary>
-        public void execute(string file, string language) // 111
+        public void execute(string file, string language, bool readConfigs = true) // 111
         {
             if (_running) {
                 Console.WriteLine("Another instance already exists!");
@@ -77,7 +78,7 @@ namespace MetaLanguageParser//.Parsing
             try {
 
                 eb = ExeBuilder.getInstance(list, language); // Slot 4/4
-                Resources.ResourceReader.readConfiguration(language);
+                if(readConfigs) Resources.ResourceReader.readConfiguration(language);
                 
                 writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
 
@@ -126,6 +127,7 @@ namespace MetaLanguageParser//.Parsing
                         resCode = resCode.Remove(hitPos, nextEnd - hitPos+1);
                     }
 				}
+                resCode = output.ToString() + resCode;
                 try { File.WriteAllText($"Results.{__FILESUFFIX}", resCode); File.Delete($"WriteError.{__FILESUFFIX}"); } catch (Exception e) {
                     Logger.logData(new StringBuilder("Could not write to OutputFile!").AppendLine().Append(e.Message).ToString());
                     File.WriteAllText($"WriteError.{__FILESUFFIX}", resCode);
@@ -169,8 +171,13 @@ namespace MetaLanguageParser//.Parsing
                     // Valid Statements: §vardecl, §assign, §pre/postinc/dec, §call, and keywords
                     if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
                     else if (kwDict.TryGetValue(elem, out myfunc)) {
-                        elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
-                        if (elem.IsNotNOE()) writer.WriteLine(elem);
+                        if (elem.Equals("§comment")) {
+                            elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                            if (elem.IsNotNOE()) writer.InnerWriter.WriteLine(elem);
+                        } else {
+                            elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                            if (elem.IsNotNOE()) writer.WriteLine(elem);
+                        }
                     } else if (list.isAtEnd(terminator)) {
                         //if (list.isClosure()) list.Index++;
                         elem = output.ToString();
@@ -189,6 +196,7 @@ namespace MetaLanguageParser//.Parsing
                     //CatchHandler(ref eb, ref eb.list.Index, e);
                 }/* catch (Exception e) { }//*/
             }
+            //writer.WriteLine(@"/** fgfgfg**/"); elem = writer.ToString();
             depthCnt--;
             //if(hasThrown && depthCnt == 0) list.printError(finalize: true);
             writer.Dispose();

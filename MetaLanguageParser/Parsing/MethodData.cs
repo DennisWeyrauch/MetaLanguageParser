@@ -56,7 +56,13 @@ namespace MetaLanguageParser.Parsing
 
         Dictionary<string, MetaType> args = new Dictionary<string, MetaType>();
         Dictionary<string, LocalData> locals = new Dictionary<string, LocalData>();
-        internal void addLocal(LocalData data) => locals.Add(data.Name, data);
+        internal void addLocal(LocalData data)// => locals.Add(data.Name, data);
+        {
+            try { locals.Add(data.Name, data); }
+            catch(ArgumentException ae) {
+                throw new ArgumentException($"A local of the same name already exists (Local {data.Name} to {Name})", ae);
+            }
+        }
 
         string code;
 
@@ -113,7 +119,14 @@ namespace MetaLanguageParser.Parsing
                 //list.assert("{");
             }
         }
-        
+
+        /// <summary>
+        /// Check whether or not this is defined as a local
+        /// </summary>
+        /// <param name="elem"></param>
+        /// <returns></returns>
+        internal bool containsLocal(string elem) => locals.ContainsKey(elem);
+
         private MetaType readType(string elem)
         {
             throw new NotImplementedException();
