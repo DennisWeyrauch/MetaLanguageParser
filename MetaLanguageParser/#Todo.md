@@ -1,4 +1,4 @@
-﻿### Todo
+﻿## Todo ##
 * ~~Supply Codefile via arg as well~~
 * ~~(!!) Add proper method/class structure (at least Main/Programm) to allow executing the code~~
 * ~~(!!!) Typing model~~
@@ -22,9 +22,13 @@
   * §cast, §addCast
 * 2016-07-14
   * Fix LineBreakProblems in VB.net
+  * ... and these two empty newlines still bug me
   * Read in meta/types to disallow undefined types
   * Enable more LiteralDeco
   * Add §comment to Docu
+* 2016-07-15
+  * Add MetaAdapter Class (Details see TextFile1.txt)
+  * Add new Methods from Switch.cs
 
 
 ### Commands

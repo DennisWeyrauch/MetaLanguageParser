@@ -32,7 +32,7 @@ namespace MetaLanguageParser.Resources
         }
 
         #region ResourceReader
-        public static ConfigurationDictionary resxDict = new ConfigurationDictionary();
+        public static ConfigurationDictionary resxDict {get; private set;} = new ConfigurationDictionary();
         public static void checkResx(string lang)
         {
             string path = ResxFiles.getLangFile();
@@ -62,8 +62,8 @@ namespace MetaLanguageParser.Resources
             Common.Serializer.SerializeFile(resxDict, resxPath);
         }
 
-        public static OperatorDictionary opBinDict = new OperatorDictionary(eOpDictType.Boolean);
-        public static OperatorDictionary opArithDict = new OperatorDictionary(eOpDictType.Arithmetic);
+        public static OperatorDictionary opBinDict {get; private set;} = new OperatorDictionary(eOpDictType.Boolean);
+        public static OperatorDictionary opArithDict {get; private set;} = new OperatorDictionary(eOpDictType.Arithmetic);
         private static OperatorDictionary __readOpDict(string path, string resxPath, eOpDictType opType)
         {
             var dict = new OperatorDictionary(opType);
@@ -89,7 +89,8 @@ namespace MetaLanguageParser.Resources
             return dict;
         }
 
-        public static ConfigurationDictionary opDestDict = new ConfigurationDictionary();
+        public static ConfigurationDictionary opDestDict {get; private set;} = new ConfigurationDictionary();
+		/// <summary>Read the Operand-Destination Dictionary</summary>
         private static ConfigurationDictionary __readOpDict(string path, string resxPath)
         {
             var dict = new ConfigurationDictionary();
@@ -129,7 +130,8 @@ namespace MetaLanguageParser.Resources
         }
 #endregion
         /// <summary>
-        /// Yielder for reading MetaDefinition Files.
+        /// Yielder for reading MetaDefinition Files. Will skip any Empty/WhiteSpaceOnly Lines.
+        /// Comments 
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>

@@ -16,7 +16,7 @@ namespace Common
     {
         static int instanceId = 0;
         public ListWalker(bool append = true) {
-            appendLog = append;
+            appendLog = append; // is in Region ErrorPrinter
             if(instanceId > 0) {
                 logName += string.Format("_{0:00}", instanceId);//string.Format("{0}_{1:00}.{2}",logName, instanceId, logSuffix);
             }

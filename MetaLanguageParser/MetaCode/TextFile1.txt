@@ -4,3 +4,57 @@
 #§program	AddProgram
 #§varDecl	VarDecl
 #§addMethod	AddMethod
+
+Read in all files without Extension
+	--> List<string> __files, __temp
+Drop CodeBase_base, CodeBase_Reader, ICode
+If MetaDict.xml exists
+	if yes, then:
+		//Read into Dictionary<string, CodeDelegate> __codeDict
+		Read into Dictionary<string, string> __codeDict
+			add() = <§key.toLower(), ClassName>
+		Foreach entry in __codeDict:
+			remove corresponding entry from __temp
+If __temp is empty{
+	Parser.setCodeDitc(__codeDict); // Or out Param
+	return readIn Assembly("MetaCode.dll"); // And set that as thingy
+		// Or generate the dictionary there if there are problems
+}
+
+string __code
+Foreach entry in __files:
+	Read Code --> += code // With that Import Merge thingy
+Assembly __tempAsm = Reflection.compileCode(__code, DLLAndMemory)
+###
+Generate Dictionary
+Dictionary<string, CodeDel> __codeDict
+Dictionary<string, CodeDel> __printDict
+foreach type in __asm.GetTypes():
+	string __key = "§" + type.GetName().toLower()
+	CodeDel func = type.GetMethod("parse")
+	__codeDict.Add(__key, func)
+	__printDict.Add(__key, type.Name)
+Parser.setCodeDict(__codeDict)
+__printDict.printToFile(path)
+#####
+
+MetaCodeAdapter Hooks:
+	CodeBase Hooks:
+		CodeBase.readExpression(ref eb, ref pos) : string Code
+		execRun(...) : Optional Terminator Keyword
+		// buildCode if required
+		ReadConditional, readArithmetic, readStatements, ParamList
+	ExeBuilder Hooks
+		Add Method
+		Add Local (to current Method)
+		//Add Import
+	
+	
+	ThrowSyntaxException(string) : InvalidSyntaxException
+	getNewLocal(string): string
+	getCodeWriter() ? :: Maybe Wrapper class
+	ReparseCode(said WrapperClass) : string Code //will also Dispose of it again
+		Might contain NLInc / NWDec 
+	ReadFile(string path) : Dictionary // Read ConfigFile
+		As Extension, allow Writer as well?
+	

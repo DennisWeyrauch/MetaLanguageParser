@@ -49,3 +49,5 @@ I think I forgot one or two days....
 Anyway, enabled Readin of Types (build In only; others are not invalid, but marked with _MISSING_X)
 Also added Custom Literals Decoration (for Char and String, more to come)
 And added §comment to allow Writing Comments
+## 2016-07-15
+Added some pseudo code for SwitchCase and MetaCodeExtension Compiler (which took way longer than wanted)

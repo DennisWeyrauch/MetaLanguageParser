@@ -11,6 +11,12 @@ namespace MetaLanguageParser.Resources
     /// <summary>
     /// A <see cref="SerializableDictionary{TKey, TValue}"/> with <typeparamref name="TKey"/> and <typeparamref name="TValue"/> being <see cref="string"/>.
     /// </summary>
+    /// <code>
+    /// <dictionary>
+    ///     <entry name="__KEY">__VALUE</entry>
+    ///     <entry name="__KEY" xml:space="preserve">__VALUE_withWhitespace</entry>
+    /// </dictionary>
+    /// </code>
     [XmlRoot("dictionary")]
     public class ConfigurationDictionary : SerializableDictionary<string, string>, IXmlSerializable
     {
@@ -42,12 +48,10 @@ namespace MetaLanguageParser.Resources
                 writer.WriteAttributeString("name", key);
 
                 var value = this[key];
-                /*if (value.Contains(" ")) {
-                    value = value.Replace(" ", "&#20;");
-#warning Also replace < and >
-                    writer.WriteRaw(value);
-                } else //*/
-                    writer.WriteString(value);
+                if (value.StartsWith(" ")) {
+                    writer.WriteAttributeString("xml:space", "preserve");
+                }
+                writer.WriteString(value);
 
                 writer.WriteEndElement();
             }
