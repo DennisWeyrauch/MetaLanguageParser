@@ -25,6 +25,30 @@ namespace MetaLanguageParser
             CSharp, Java, VBNet
         }
 
+        private static void DirectoryCopy(string srcDir, string destDir, bool copySubDirs = false)
+        {
+            DirectoryInfo dir = new DirectoryInfo(srcDir);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            
+            if (!dir.Exists) {
+                throw new DirectoryNotFoundException("Source directory does not exist or could not be found: " + srcDir);
+            }
+            
+            if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+            
+            foreach (FileInfo file in dir.GetFiles()) {
+                string temppath = Path.Combine(destDir, file.Name);
+                file.CopyTo(temppath, true);
+            }
+
+            if (copySubDirs) {
+                foreach (DirectoryInfo subdir in dirs) {
+                    string temppath = Path.Combine(destDir, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
+        }
+
         static void Main(string[] args)
         {
             string code, codeFile;
@@ -34,6 +58,13 @@ namespace MetaLanguageParser
 
             Logger.resetLog();
             if (args.Length == 0) {
+                DirectoryCopy("../../MetaCode","./MetaCode");
+                File.Delete("MetaCode/#Explain.cs");
+                File.Delete("MetaCode/CodeBase_base.cs");
+                File.Delete("MetaCode/CodeBase_Reader.cs");
+                File.Delete("MetaCode/ICode.cs");
+                File.Delete("MetaCode/MetaCode.7z");
+                File.Delete("MetaCode/TextFile1.txt");
                 new MetaLanguageParser.Parser().execute(codeFile, code);
             } else {
 
@@ -56,6 +87,8 @@ namespace MetaLanguageParser
             if (catchedErrors) {
                 Console.WriteLine($"Some non-fatal Errors appeared during Translation. Look into {Logger.path} for details.");
             }
+            Console.WriteLine("Finished. Press the AnyKey-Key to close this window.");
+            Console.Read();
         }
 
 

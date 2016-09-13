@@ -93,6 +93,21 @@ namespace MetaLanguageParser.Tokenize
             return tokens;
         }
 
+        /// <summary>
+        /// Fixing encoding issues of the Paragraph Symbol (Åò) between ANSI and UTF-8
+        /// </summary>
+        /// <param name="path">The path to write back changes to.</param>
+        public static void fixEncodingErrors(string path)
+        {
+            string input = File.ReadAllText(path);
+            fixEncodingErrors(path, ref input);
+        }
+
+        /// <summary>
+        /// Fixing encoding issues of the Paragraph Symbol (Åò) between ANSI and UTF-8
+        /// </summary>
+        /// <param name="path">The path to write back changes to.</param>
+        /// <param name="input">The input to fix</param>
         public static void fixEncodingErrors(string path, ref string input)
         {
             /*var sb = new System.Text.StringBuilder( );

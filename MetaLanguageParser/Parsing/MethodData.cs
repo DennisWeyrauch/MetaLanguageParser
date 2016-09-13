@@ -37,7 +37,7 @@ namespace MetaLanguageParser.Parsing
         //TypeData enclosedType;
 
         eMethodType methodType;
-        internal void setMain()
+        public void setMain()
         {
             methodType = eMethodType.EntryMethod;
             this.Name = "Main";
@@ -56,7 +56,7 @@ namespace MetaLanguageParser.Parsing
 
         Dictionary<string, MetaType> args = new Dictionary<string, MetaType>();
         Dictionary<string, LocalData> locals = new Dictionary<string, LocalData>();
-        internal void addLocal(LocalData data)// => locals.Add(data.Name, data);
+        public void addLocal(LocalData data)// => locals.Add(data.Name, data);
         {
             try { locals.Add(data.Name, data); }
             catch(ArgumentException ae) {
@@ -71,7 +71,7 @@ namespace MetaLanguageParser.Parsing
             return (attr & MemberAttributes.Abstract) == MemberAttributes.Abstract;
         }
 
-        internal void setCode(string code) {
+        public void setCode(string code) {
             if (code.IsNotNOE()) {
                 this.code = code;
                 if (code.EndsWith("\r\n\r\n")) code = code.Remove(code.Length - 2);
@@ -97,7 +97,7 @@ namespace MetaLanguageParser.Parsing
             retType = readType(elem);//new LocalData(readType(elem), "<return>");
             //retType.dir = MetaType.enumLocalType.Return;
             Name = list.getNext();
-            list.assertPreInc("("); // On (
+            list.assertNext("("); // On (
             bool first = true;
             while(list.whileNot(ref elem, ')')) { //1. On ( -> TYPE1 != ), go into loop
                 // 2nd: Name++ -> , != )

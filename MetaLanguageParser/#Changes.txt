@@ -51,3 +51,6 @@ Also added Custom Literals Decoration (for Char and String, more to come)
 And added §comment to allow Writing Comments
 ## 2016-07-15
 Added some pseudo code for SwitchCase and MetaCodeExtension Compiler (which took way longer than wanted)
+## 2016-09-13
+Added Handling of using external code fragments from the "MetaCode"-Folder
+Added Adapter for remove need for ExeBuilder in MetaCode

@@ -49,12 +49,12 @@ namespace MetaLanguageParser.Parsing
             this.Name = v;
         }
 
-        internal static TypeData setMain()
+        public static TypeData setMain()
         {
             return new TypeData(eTypeType.EntryClass, "Program");
         }
         string stuff;
-        internal void setStuff(string ret) => stuff = ret;
+        public void setStuff(string ret) => stuff = ret;
 
 
         /// Generics

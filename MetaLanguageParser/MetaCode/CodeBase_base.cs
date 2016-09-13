@@ -119,7 +119,7 @@ namespace MetaLanguageParser.MetaCode
                  "while (", "cond", ") {", "§inc", "§n", "code", "§dec", "§n", "}"
             };//*/
             /*
-            if (((CodeExample)this).FileName.Equals("else")) {
+            if (((CodeWalker)this).FileName.Equals("else")) {
                 new Object(); // DebugHook
             }//*/
             bool isRetract = false;
@@ -127,7 +127,7 @@ namespace MetaLanguageParser.MetaCode
             using (var output = new System.IO.StringWriter())
             using (var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT)) {
                 foreach (var item in readin) {
-                    //System.IO.File.WriteAllText($"myLog_{((CodeExample)this).FileName}.txt", output.ToString()); // Prints Steps
+                    //System.IO.File.WriteAllText($"myLog_{((CodeWalker)this).FileName}.txt", output.ToString()); // Prints Steps
                     if(isRetract) {
                         if (item.Contains(')')) isRetract = false;
                         writer.Write(item);
@@ -162,7 +162,7 @@ namespace MetaLanguageParser.MetaCode
                 
                 dict.Clear();
                 // Prints Iterations
-                if (Program.printParts) try { Program.printer(((CodeExample)this).FileName, output.ToString()); } catch (Exception) { }
+                if (Program.printParts) try { Program.printer(((CodeWalker)this).FileName, output.ToString()); } catch (Exception) { }
                 return output.ToString();
             }
         }

@@ -140,8 +140,9 @@ namespace Common.Reflection
         #endregion
         #region 4-Escaping Code                    [[Core 2]]
         /// <summary>
-        /// Remove LineBreaks, Tabs and LineComments (except if they are in Strings)
-        /// BlockComments and surplus Space is ignored anyway by the Compiler
+        /// Remove LineBreaks, Tabs and LineComments (except if they are in Strings).
+        /// Also merges using directives in case of multiple codeFiles. 
+        /// BlockComments and surplus Space are ignored anyway by the Compiler. 
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -176,12 +177,20 @@ namespace Common.Reflection
             }
 
             /// Step3: Organize usings
-            var matches = Regex.Matches(c2, @"^(using (?!static).*?;)", RegexOptions.Multiline).Cast<Match>();
+            var matches = Regex.Matches(c2, @"^(using [^;=]*?;)", RegexOptions.Multiline).Cast<Match>();
+            RWDictionary<string,string> dict = new RWDictionary<string,string>();
             string usings = "";
             foreach (var token in from m in matches select m.Groups[1].Value) {
-                usings += token + "\r\n";
+                dict.Add(token, "", true);
             }
-            var c3 = Regex.Replace(c2, escStr + @"|^using (?!static).*?;\s*?$", "$1", RegexOptions.Multiline);
+            // using alias prop works with Groups[2] etc.
+
+            var c3 = Regex.Replace(c2, escStr + @"|^using .*?;\s*?$", "$1", RegexOptions.Multiline);
+            foreach (var item in dict) {
+                //if (item.Value.IsNOE()) { // For alias
+                usings += item.Key + "\r\n";
+                //}
+            }
             var c4 = usings + c3;
             if (debug) c4.WriteText(@"debug\logD_usings.cs");
 

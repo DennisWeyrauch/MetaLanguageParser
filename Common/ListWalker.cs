@@ -17,7 +17,7 @@ namespace Common
         static int instanceId = 0;
         public ListWalker(bool append = true) {
             appendLog = append; // is in Region ErrorPrinter
-            if(instanceId > 0) {
+            if (instanceId > 0) {
                 logName += string.Format("_{0:00}", instanceId);//string.Format("{0}_{1:00}.{2}",logName, instanceId, logSuffix);
             }
             instanceId++;
@@ -47,8 +47,8 @@ namespace Common
             {
                 if (addEOF | hasEOF) {
                     if (!hasEOF) {
-                       //var i = this.FindLastIndex( s => s.Equals("EOF"));
-                       if(this.FindLastIndex(s => s.Equals("EOF")) == -1) this.Add("EOF");
+                        //var i = this.FindLastIndex( s => s.Equals("EOF"));
+                        if (this.FindLastIndex(s => s.Equals("EOF")) == -1) this.Add("EOF");
                         hasEOF = true;
                     }
                     return base.Count - 1;
@@ -66,7 +66,7 @@ namespace Common
         public char getCurrentAsChar() => this[Index][0];
         public char getNextAsChar() => this[++Index][0];
         public string getNext() => this[++Index];
-        public string peekNext() => this[Index+1];
+        public string peekNext() => this[Index + 1];
         /// <summary>Return "<see cref="this[Index]"/> == <paramref name="c"/>".</summary>
         public bool isCurrent(char c) => this[Index].EqualsChar(c);
         /// <summary>Return "<see cref="this[Index]"/> == <paramref name="s"/>".</summary>
@@ -86,7 +86,7 @@ namespace Common
         public bool nextNot(string s) => !nextIs(s);
         //public bool nextNot2(char c) => !this.getNext().EqualsChar(c);
         //public bool nextNot(string S) => !this.getNext().Equals(s);
-#endregion
+        #endregion
         #region While Conditionals
         /// <summary>
         /// Increment Index, assign token, and return '<paramref name="para"/> == this[<see cref="Index"/>]'.
@@ -106,7 +106,7 @@ namespace Common
         /// <param name="para">The object to check against.</param>
         /// <returns></returns>
         public bool whileTrue(ref string token, string para) => (token = this.getNext()).Equals(para);
-        
+
         /// <summary>
         /// Increment Index, assign token, and return '<paramref name="para"/> != this[<see cref="Index"/>]'.
         /// <para/>
@@ -210,7 +210,7 @@ namespace Common
         /// Otherwise returns that Element (pos+1 relative to caller).
         /// </summary>
         /// <param name="c"></param>
-        public string assertPreInc(char c)
+        public string assertNext(char c)
         {
             if (nextNot(c)) throw new InvalidSyntaxException();
             return getCurrent();
@@ -248,11 +248,28 @@ namespace Common
             return this;
         }
         /// <summary>
+        /// Throws <see cref="InvalidSyntaxException"/> when current element is not <paramref name="s"/>.
+        /// Otherwise increments the Index and returns the instance to allow chaining.
+        /// </summary>
+        /// <param name="s"></param>
+        public ListWalker assertMulti(params string[] s)
+        {
+            int len = s.Length;
+            s = s.Reverse().ToArray();
+            while(len != 0) {
+                //if (!isCurrent(s[len])) throw new InvalidSyntaxException();
+                if (!this[Index].Equals(s[len])) throw new InvalidSyntaxException();
+                len--;
+                Index++;
+            }
+            return this;
+        }
+        /// <summary>
         /// Throws <see cref="InvalidSyntaxException"/> if NEXT element is not <paramref name="s"/>.
         /// Otherwise returns that Element (pos+1 relative to caller).
         /// </summary>
         /// <param name="s"></param>
-        public string assertPreInc(string s)
+        public string assertNext(string s)
         {
             if (nextNot(s)) throw new InvalidSyntaxException();
             return getCurrent();

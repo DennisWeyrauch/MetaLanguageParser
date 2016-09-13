@@ -42,8 +42,13 @@ namespace MetaLanguageParser.Resources
                 var src = File.GetLastWriteTime(path);
                 var dst = File.GetLastWriteTime(resxPath);
                 if (dst >= src) {
-                    resxDict = Common.Serializer.DeserializeFile<ConfigurationDictionary>(resxPath);
-                    return;
+                    try {
+                        resxDict = Common.Serializer.DeserializeFile<ConfigurationDictionary>(resxPath);
+                        return;
+                    } catch (Exception) {
+                        Console.WriteLine($"Error while reading {resxPath}. Recreating dict...");
+                        File.Copy(resxPath, resxPath + "_copy");
+                    }
                 }
             }
             bool options = false;
@@ -144,6 +149,12 @@ namespace MetaLanguageParser.Resources
             }
         }
 
+        /// <summary>
+        /// Read any File in form of "Key   Value" (Tab inbetween), and return lines as KeyValuePairs of a Dictionary
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="lowerCase"></param>
+        /// <returns></returns>
         public static Dictionary<string, string> readAnyFile(string path, bool lowerCase = false)
         {
             var dict = new Dictionary<string, string>();
@@ -158,7 +169,7 @@ namespace MetaLanguageParser.Resources
         internal static string __FILESUFFIX => resxDict[nameof(__FILESUFFIX)];
         internal static string __STATEMENT_CLOSE => resxDict[nameof(__STATEMENT_CLOSE)];
         internal static string __INDENT => System.Text.RegularExpressions.Regex.Unescape(resxDict[nameof(__INDENT)]);
-        internal static string __COMMENT => resxDict[nameof(__COMMENT)];
+        public static string __COMMENT => resxDict[nameof(__COMMENT)];
 
         private static string outDummy;
 

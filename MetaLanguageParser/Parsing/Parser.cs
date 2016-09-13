@@ -33,20 +33,60 @@ namespace MetaLanguageParser
         //string input = "";
         Tokenize.Tokenizer toker;
         public static bool scopeChanged = false;
-        public static Dictionary<string,FuncDel> kwDict;
+        public static Dictionary<string,CodeDel> kwDict;
         public static List<string> kw;
         public static int depth = 0;
         public static Parser _instance;
         public static Parser getInstance => _instance;
+        internal static System.Reflection.Assembly codeAsm;
 
         static Parser()
         {
-            kwDict = new Dictionary<string, FuncDel>();
-            kwDict.Add("§addMethod", AddMethod.parse);
-            kwDict.Add("§vardecl", VarDecl.parse);
-            kwDict.Add("§assign", Assign.parse);
-            kwDict.Add("§addType", AddType.parse);
-            kwDict.Add("§comment", Comment.parse);
+            Console.WriteLine("Checking MetaCode directory...");
+            string path = "MetaCode";
+            string lib = "MetaLib.dll";
+            string libPath = path+"/"+lib;
+            string linkPath = path+"/Linker.txt";
+
+            bool exists = File.Exists(libPath);
+            FileInfo libFile = (exists) ? new FileInfo(libPath) : null;
+
+            var fileDict = readAnyFile(linkPath);
+            var dirFiles = Directory.EnumerateFiles(path);
+            var fileList = new List<string>();
+            foreach (var item in dirFiles) {
+                FileInfo fi = new FileInfo(item);
+                Tokenize.Tokenizer.fixEncodingErrors(item);
+                string file = fi.Name.Substring(0,fi.Name.Length-fi.Extension.Length);
+                if (fileDict.ContainsKey(file)) {
+                    fileList.Add(File.ReadAllText(item));
+                    if (exists && libFile.LastWriteTime < fi.LastWriteTime) exists = false;
+                }
+            }
+            if (exists && libFile.LastWriteTime < new FileInfo(linkPath).LastWriteTime) exists = false;
+            if (exists) {
+                Console.WriteLine("Loading last recent Library...");
+                codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
+            } else {
+                Console.WriteLine("Compiling new MetaLib...");
+                //fileList.Add($"public class X {{ public static int cnt = {fileList.Count}; }}");
+                codeAsm = Common.Reflection.Reflection.getAssembly(fileList, true, lib);
+                File.Move(lib, libPath);
+            }
+
+            Type tempType;
+            kwDict = new Dictionary<string, CodeDel>();
+
+            //fileDict.Remove("AddType");
+            //kwDict.Add("§addType", AddType.parse);
+
+            foreach (var item in fileDict) {
+                tempType = codeAsm.GetType("MetaLanguageParser.MetaCode."+item.Key);
+                var del = tempType.GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel));
+                kwDict.Add(item.Value, (CodeDel) del);
+                //kwDict.Add(item.Value, (CodeDel)(codeAsm.GetType("MetaLanguageParser.MetaCode." + item.Key)).GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel)));
+            }
+            Console.WriteLine("Done.");
         }
 
         public Parser(bool debug = false)
@@ -66,8 +106,10 @@ namespace MetaLanguageParser
             if (_running) {
                 Console.WriteLine("Another instance already exists!");
                 return;
+            } else {
+                Console.WriteLine("Tokenizing...");
+                _running = true;
             }
-            _running = true;
             int len; // Reserving Slots for locals.
             ListWalker list = toker.execute(file); // Slot 3/4
             ExeBuilder eb = null;
@@ -76,7 +118,7 @@ namespace MetaLanguageParser
 
             System.CodeDom.Compiler.IndentedTextWriter writer = null;
             try {
-
+                Console.WriteLine("Reading Configuration...");
                 eb = ExeBuilder.getInstance(list, language); // Slot 4/4
                 if(readConfigs) Resources.ResourceReader.readConfiguration(language);
                 
@@ -88,6 +130,7 @@ namespace MetaLanguageParser
                 len = list.Count;
 #warning
                 //eb.currentMethod
+                Console.WriteLine("Starting Execution...");
                 while (list.Index < len) {
                     var str = execRun(ref eb, ref list.Index);
                     writer.Write(str);
@@ -113,6 +156,7 @@ namespace MetaLanguageParser
 
 #warning If CStyle with one pass, first go through methDict and add all signatures
 #warning Then go through the Types (which is missing currently)
+                Console.WriteLine("Cleaning up...");
                 foreach (var item in eb.typeDict) {
                     sb.AppendLine(item.Value.ToString());
                 }
@@ -140,10 +184,6 @@ namespace MetaLanguageParser
         }
 
 
-
-
-
-
         static bool hasThrown = false;
         static int depthCnt = 0;
         /// <summary>
@@ -161,10 +201,11 @@ namespace MetaLanguageParser
             depthCnt++;
 
 
-            ICode ce = new CodeExample();
+            ICode ce = new CodeWalker();
             var output = new StringWriter();
             var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, "\t");
-            FuncDel myfunc;
+            //FuncDel myfunc;
+            CodeDel myfunc;
             while (true) {
                 try {
                     elem = list.getCurrent();
@@ -172,10 +213,10 @@ namespace MetaLanguageParser
                     if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
                     else if (kwDict.TryGetValue(elem, out myfunc)) {
                         if (elem.Equals("§comment")) {
-                            elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                            elem = myfunc(ref pos);//writer.Write(myfunc(ref eb, ref pos));
                             if (elem.IsNotNOE()) writer.InnerWriter.WriteLine(elem);
                         } else {
-                            elem = myfunc(ref eb, ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                            elem = myfunc(ref pos);//writer.Write(myfunc(ref eb, ref pos));
                             if (elem.IsNotNOE()) writer.WriteLine(elem);
                         }
                     } else if (list.isAtEnd(terminator)) {
@@ -186,7 +227,11 @@ namespace MetaLanguageParser
                 } catch (Exception e)
                     when (e is InvalidSyntaxException || e is InvalidOperationException) {
                     if (doDebug) throw;
-                    if (e.Message.Contains("PARSER")) throw;
+                    if (e.Message.Contains("PARSER")) {
+                        //if (!hasThrown)
+                            Console.WriteLine(e.Message);
+                        throw;
+                    }
                     list.printError();
                     hasThrown = true;
                     writer.Write("<<<ERROR>>>");
@@ -218,8 +263,8 @@ namespace MetaLanguageParser
             if (!_running) throw new InvalidOperationException("Calling Statement Parser Method without init!");
             var list = eb.list;
             string elem = "";
-            FuncDel func;
-            ICode ce = new CodeExample();
+            CodeDel func;
+            ICode ce = new CodeWalker();
 			var str = "";
             //while (true) {
                 try {
@@ -229,7 +274,7 @@ namespace MetaLanguageParser
                     else if (list.isAtEnd()) {}
 					#warning INFO:: Add something for Assign/MethodCall to use X=y and X.Y instead of §assign and §call
 					//else if(varDict...) str = ... // Assignement/MethodCall
-					else if(kwDict.TryGetValue(elem, out func)) str = func.Invoke(ref eb, ref pos);
+					else if(kwDict.TryGetValue(elem, out func)) str = func.Invoke(ref pos);
                     else throw new InvalidSyntaxException("PARSER", elem, pos);
                 } catch (Exception e)
                     when (e is InvalidSyntaxException || e is InvalidOperationException) {
@@ -271,8 +316,8 @@ namespace MetaLanguageParser
             if (!_running) throw new InvalidOperationException("Calling Expression Parser Method without init!");
             var list = eb.list;
             string elem = "";
-            FuncDel func;
-            ICode ce = new CodeExample();
+            CodeDel func;
+            ICode ce = new CodeWalker();
             var str = "";
             //while (true) {
             try {
@@ -281,7 +326,7 @@ namespace MetaLanguageParser
                 else if (list.isAtEnd()) { }
 #warning INFO:: Add something for Assign/MethodCall to use X=y and X.Y instead of §assign and §call
                 //else if(varDict...) str = ... // Assignement/MethodCall
-                else if (kwDict.TryGetValue(elem, out func)) str = func.Invoke(ref eb, ref pos);
+                else if (kwDict.TryGetValue(elem, out func)) str = func.Invoke(ref pos);
                 else throw new InvalidSyntaxException("PARSER", elem, pos);
             } catch (Exception e)
                 when (e is InvalidSyntaxException || e is InvalidOperationException) {

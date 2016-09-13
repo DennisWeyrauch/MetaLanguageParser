@@ -1,0 +1,5 @@
+﻿AddMethod	§addMethod
+VarDecl	§vardecl
+Assign	§assign
+AddType	§addType
+Comment	§comment

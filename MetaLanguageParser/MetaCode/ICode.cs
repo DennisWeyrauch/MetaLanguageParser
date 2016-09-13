@@ -14,12 +14,6 @@ namespace MetaLanguageParser.MetaCode
 {
     public interface ICode
     {
-        /// <include file='ICode.doc' path='ICode/Member[@name="parse"]/*' />
-        //string Name { get; }
-        /// <include file='ICode.doc' path='ICode/Member[@name="FileName"]/*' />
-        //string FileName { get; }
-
-
         // <include file='ICode.doc' path='ICode/Member[@name="parse"]/*' />
         /// <summary>
         /// ENTRY: pos on KEYWORD #
@@ -33,8 +27,16 @@ namespace MetaLanguageParser.MetaCode
         string parse(ref ExeBuilder eb, ref int pos);
     }
 
+    public class MetaBase : ICode
+    {
+        public string parse(ref ExeBuilder eb, ref int pos)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [System.Diagnostics.DebuggerDisplay("{FileName} (Cnt = {dict.Count})")]
-    public class CodeExample : CodeBase, ICode
+    public class CodeWalker : CodeBase, ICode
     {
         public string FileName { get; set; } = "meta";
 
@@ -86,9 +88,9 @@ while ($$cond$$) {
                   //  new Object();
                 if (tokens.isCurrent("$$")) {
                     string key = tokens.getNext();   /// $$ -> Key   -> [ASSIGN]
-                    tokens.assertPreInc("::");       /// Key -> ::   -> [TEST]
+                    tokens.assertNext("::");       /// Key -> ::   -> [TEST]
                     string value = tokens.getNext(); /// :: -> Value -> [ASSIGN]
-                    tokens.assertPreInc("$$");       /// Value -> $$ -> [TEST]
+                    tokens.assertNext("$$");       /// Value -> $$ -> [TEST]
                     tokens.Index++;                  /// $$ -> ...
                     eb.codeBase.Push(this);
                     string result = metaDict[value].Invoke(ref eb, ref pos);

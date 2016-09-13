@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MetaLanguageParser.Parsing
 {
-    class LocalData
+    public class LocalData
     {
 
         public LocalData(MetaType type, string name)

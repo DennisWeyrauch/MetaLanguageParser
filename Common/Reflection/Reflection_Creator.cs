@@ -68,13 +68,40 @@ namespace Common.Reflection
         }
 
         /// <summary>
+        /// Returns the Assembly containing the sum of all types in <paramref name="codeRaw"/>.
+        /// </summary>
+        /// <param name="codeRaw"></param>
+        /// <returns></returns>
+        public static Assembly getAssembly(List<string> codeRaw) => getAssembly(codeRaw, false, null);
+        /// <summary>
+        /// Returns the Assembly containing the sum of all types in <paramref name="codeRaw"/>.
+        /// </summary>
+        /// <param name="codeRaw"></param>
+        /// <returns></returns>
+        public static Assembly getAssembly(List<string> codeRaw, bool genExe, string name)
+        {
+            caller = Assembly.GetCallingAssembly();
+            var sb = new StringBuilder();
+            foreach (var item in codeRaw) {
+                sb.Append(item).AppendLine();
+            }
+            return compileCode(sb.ToString(), genExe, name);
+        }
+        static Assembly caller;
+        enum CompileOptions
+        {
+            // ASM, Exe, DLL, ASM+Exe, ASM+DLL
+        }
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="codeRaw"></param>
         /// <exception cref="FileNotFoundException"></exception>
         /// <returns></returns>
-        internal static Assembly compileCode(string codeRaw)
+        internal static Assembly compileCode(string codeRaw, bool generateDll = false, string asmName = "")
         {
+            File.Delete(file_errorLog);
+            File.Delete(file_errorCode);
             string code = escapeCode(codeRaw);
             System.CodeDom.Compiler.CompilerResults res = null;
             try {
@@ -86,12 +113,14 @@ namespace Common.Reflection
                     var curAss = Assembly.GetExecutingAssembly();
 
                     comPar.CompilerOptions = "/optimize";
+                    if (generateDll) comPar.OutputAssembly = asmName;// caller.Location+"/MetaCode/"+asmName;
                     comPar.GenerateInMemory = true;
                     comPar.ReferencedAssemblies.Add("System.dll");
                     comPar.ReferencedAssemblies.Add("Microsoft.CSharp.dll");
                     comPar.ReferencedAssemblies.Add("mscorlib.dll");
                     comPar.ReferencedAssemblies.Add("System.Core.dll");
                     comPar.ReferencedAssemblies.Add(curAss.Location);
+                    comPar.ReferencedAssemblies.Add(caller.Location);
                     comPar.ReferencedAssemblies.Add(dictAss.Location);
 
                     res = foo.CompileAssemblyFromSource(comPar, code);
@@ -109,12 +138,14 @@ namespace Common.Reflection
                     sw.WriteLine("Note: The code given in error_code.log matches exact the one that threw the errors");
                 }
                 sw.Close();
+                code.WriteText(file_errorCode);
             } catch (Exception e) {
                 var sw = File.CreateText(file_errorLog);
                 var msg = $"Unable to compile Code into .dll;\r\n {e.GetType().Name} :\r\n\t{e.Message}";
                 Console.WriteLine(msg);
                 sw.WriteLine(msg);
                 sw.Close();
+                code.WriteText(file_errorCode);
             }
             if (_doDebug) code.WriteText(file_errorCode);
             //Console.Read(); throw new ArgumentException("Invalid code");

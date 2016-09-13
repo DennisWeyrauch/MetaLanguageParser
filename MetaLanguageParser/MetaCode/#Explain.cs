@@ -1,9 +1,10 @@
-using MetaLanguageParser.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetaLanguageParser.Parsing;
+using static MetaLanguageParser.Parsing.Adapter;
 
 namespace MetaLanguageParser.MetaCode
 {
@@ -16,7 +17,7 @@ namespace MetaLanguageParser.MetaCode
         internal static string parse(ref ExeBuilder eb, ref int pos)
         {
 			// Your Code
-			var list = eb.list; // To get the Tokenized List of the Codefile
+			var list = getList(); // To get the Tokenized List of the Codefile
 			/// See Functions in DocXml of that
 			
 			//CodeBase Handler: All expect pos to be on the first concerning element

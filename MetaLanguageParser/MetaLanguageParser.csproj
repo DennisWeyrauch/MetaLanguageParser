@@ -67,6 +67,7 @@
     <Compile Include="MetaCode\Assign.cs" />
     <Compile Include="MetaCode\Comment.cs" />
     <Compile Include="MetaCode\VarDecl.cs" />
+    <Compile Include="Parsing\Adapter.cs" />
     <Compile Include="Parsing\MetaData.cs" />
     <Compile Include="Parsing\MetaType.cs" />
     <Compile Include="MetaCode\CodeBase_base.cs" />

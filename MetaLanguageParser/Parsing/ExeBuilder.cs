@@ -22,6 +22,7 @@ namespace MetaLanguageParser
     /// <param name="pos">Current position in Token-List.</param>
     /// <returns>Position to continue with.</returns>
     public delegate string FuncDel(ref ExeBuilder eb, ref int pos);
+    public delegate string CodeDel(ref int pos);
 
     /// <summary>Data class holding all relevant data for the parser.</summary>
     public class ExeBuilder {
