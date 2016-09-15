@@ -1,0 +1,8 @@
+﻿§§listOf($$Exception$$)§§ ==>
+catch ($$exType$$ $$exName) {
+	$$code$$
+}
+
+catch ($$exType$$ $$exName) where $$filter$$ {
+	$$code$$
+}

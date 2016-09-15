@@ -1,0 +1,46 @@
+Add new languages
+ --> Create new folder in /lang
+ --> Config file of same name
+	FileSuffix, Indent, Comment
+ --> MakeLangBat.bat with that name
+
+Create new Keywords
+ --> File "X" in /lang/meta translates to "X" in /lang/~~~
+
+Define new operators
+	Binary -> Boolean, Arithmetic (_opArith/_opBool // _operator)
+
+ShortCut Code File -- $program (full), $main (EntryMethod)
+
+Adding new "TypeKeywords" via /lang/~~~/_types.~~
+ --> Basic Types hardcoded, need to be mapped there
+ --> Literals support for chars and strings
+
+Adding CodeFlow Keywords via /MetaCode, hooked into code via Linker.txt
+
+## Missing##
+Adapter Documentation (and ListWalker / Datas as well)
+Literals ({0}F" etc.) Support (? there already ?)
+Casts
+OOP Structure Element (where to place fields, ctors, etc. in a typeDef)
+Modifiers Definition / Parsing
+
+#### Keyword Definition ####
+Declare ParseVars
+Read Code, Conditionals, ParamList
+## Translate ##
+Increase/Decrease Indent, Newlines
+
+## Missing ##
+A specific keyowrd gets translated into an method call, which itself is a plainText Method that should only be added once
+PlainText Imports (added to List, structure element like $fields etc)
+
+
+#### Code ####
+Comments
+Declare Locals (_vardecl.txt)
+Assignment: Primitives
+
+## Missing ##
+Proper structure
+Fields, Properties, Ctors, Proper Types&Methods

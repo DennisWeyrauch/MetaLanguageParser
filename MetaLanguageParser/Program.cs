@@ -49,6 +49,16 @@ namespace MetaLanguageParser
             }
         }
 
+        static void Move_DevToDebug(){
+            DirectoryCopy("../../MetaCode","./MetaCode");
+            File.Delete("MetaCode/#Explain.cs");
+            File.Delete("MetaCode/CodeBase_base.cs");
+            File.Delete("MetaCode/CodeBase_Reader.cs");
+            File.Delete("MetaCode/ICode.cs");
+            File.Delete("MetaCode/MetaCode.7z");
+            File.Delete("MetaCode/TextFile1.txt");
+        }
+
         static void Main(string[] args)
         {
             string code, codeFile;
@@ -58,13 +68,7 @@ namespace MetaLanguageParser
 
             Logger.resetLog();
             if (args.Length == 0) {
-                DirectoryCopy("../../MetaCode","./MetaCode");
-                File.Delete("MetaCode/#Explain.cs");
-                File.Delete("MetaCode/CodeBase_base.cs");
-                File.Delete("MetaCode/CodeBase_Reader.cs");
-                File.Delete("MetaCode/ICode.cs");
-                File.Delete("MetaCode/MetaCode.7z");
-                File.Delete("MetaCode/TextFile1.txt");
+                Move_DevToDebug();
                 new MetaLanguageParser.Parser().execute(codeFile, code);
             } else {
 

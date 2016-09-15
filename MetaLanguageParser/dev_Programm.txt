@@ -1,0 +1,29 @@
+Programm Todo
+
+DevMode:
+	code = Lang.CSharp.ToString().ToLower();
+	codefile = "codefile.txt"
+	move_DevToDebug();
+	new Parser();
+
+ExeMode:
+if(arg[0] isNOE) {
+	Read config.txt
+		--> defaultLang = csharp
+		--> defaultFile = codefile.txt
+		Write("Arguments missing. Using defaults...")
+	//Write($"No LangCode. Using default '{defaultLang}' as destination")
+	//Write($"No CodeFile. Using default '{defaultFile}' as source")
+	assign both
+} else if (arg[0] exists here){
+	//Write("LangCode missing. Using default...")
+	WriteRead("DestLanguage") // Ask for code ?
+	assign both
+} else {
+	assume [0] = langcode
+	check [1]
+		NOE: Defaults
+		else if not exist --> FileNotFoundException -> stop
+}
+
+Console.WriteLine("Lang: {langCode}, CodeFile: {codefile}")

@@ -1,10 +1,13 @@
 ## CodeFiles ##
+These Files will be non-public regardless of anythings
 * ExeBuilder
   * Holds .... stuff.
 * Parser
   * Main Parser logic for iterating tokens
 * Tokenizer
   * Tokenizes all kinds of files
+* Adapter
+  * Contains adapter methods, to prevent exposing everything to the normal user
 
 ## DataFiles ##
 * MetaType
