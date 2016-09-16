@@ -56,6 +56,11 @@ namespace MetaLanguageParser.Parsing
 
         Dictionary<string, MetaType> args = new Dictionary<string, MetaType>();
         Dictionary<string, LocalData> locals = new Dictionary<string, LocalData>();
+        public string Code { get; protected set; }
+        /// <summary>
+        /// Adds a Local variable to this method
+        /// </summary>
+        /// <param name="data"></param>
         public void addLocal(LocalData data)// => locals.Add(data.Name, data);
         {
             try { locals.Add(data.Name, data); }
@@ -64,20 +69,27 @@ namespace MetaLanguageParser.Parsing
             }
         }
 
-        string code;
 
         public bool isSigOnly()
         {
             return (attr & MemberAttributes.Abstract) == MemberAttributes.Abstract;
         }
 
+        /// <summary>
+        /// Set the code of this method.
+        /// </summary>
+        /// <param name="code">Stringifyied code to set</param>
+        //// <exception cref="InvalidOperationException">When code has already been set once.</exception>
         public void setCode(string code) {
-            if (code.IsNotNOE()) {
-                this.code = code;
+            //if (code.IsNotNOE()) {
+            if (code != null) {
+                this.Code = code;
                 if (code.EndsWith("\r\n\r\n")) code = code.Remove(code.Length - 2);
-            } else throw new InvalidOperationException("Already added MethodCode of " + Name);
+                //} else throw new InvalidOperationException("Already added MethodCode of " + Name);
+            } else throw new ArgumentNullException("Can't add non-existing code.");
         }
 
+        // Should be moved into AddMethod
         public void readSignature(ref Common.ListWalker list, ref int pos)
         {
             string elem = list.getCurrent();
@@ -120,6 +132,12 @@ namespace MetaLanguageParser.Parsing
             }
         }
 
+        // Should be a MetaType-Method (called via Adapter)
+        private MetaType readType(string elem)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Check whether or not this is defined as a local
         /// </summary>
@@ -127,62 +145,72 @@ namespace MetaLanguageParser.Parsing
         /// <returns></returns>
         internal bool containsLocal(string elem) => locals.ContainsKey(elem);
 
-        private MetaType readType(string elem)
-        {
-            throw new NotImplementedException();
-        }
-
-        string getLocalOutput(bool option)
+        /// <summary>
+        /// Returns a Block of Code containing all occuring Variable Declarations in the Method
+        /// </summary>
+        /// <param name="option">???</param>
+        /// <returns></returns>
+        public string getLocalOutput(bool option = false)
         {
             var sb = new StringBuilder();
             foreach (var item in locals) sb.AppendLine(item.Value.ToString());
 #warning If option "Seperate them" is true....
             if (option) {
                 foreach (var item in locals) {
-                    if(item.Value.hasValue)
-                        sb.AppendLine(item.Value.getAssign());
+                    if(item.Value.hasValue) sb.AppendLine(item.Value.getAssign());
                 }
             }
-
             return sb.ToString();
         }
 
-        public override string ToString()
+        public string getMainSignature() => new CodeBase().readFile("§main")[0];
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => ToString(null);
+        /*
+        Should do some kind of fallback: USe the EntryMethod from below,
+        Methods just "Row up Modifiers, Name, ( Args ) Block Code Block"
+
+        //*/
+
+        /// <summary>
+        /// Handles the Debug-PartPriter, and then calls the approriate Writer from <paramref name="tw"/>.
+        /// In case of the Entry Method, reads the "§main.txt" and inserts the code approriately.
+        /// </summary>
+        /// <param name="tw"></param>
+        /// <returns></returns>
+        public string ToString(MetaCode.TypeWriter.TypeWriter tw)
         {
             // Also something about an OOP Option
             //var output = new StringWriter();
             //var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
-
-            if (locals.Count > 0) {//code = new StringBuilder(getLocalOutput(false)).AppendLine(code).ToString();
-                var sb = new StringBuilder();
-                foreach (var item in locals) sb.AppendLine(item.Value.ToString());
-#warning If option "Seperate them" is true....
-                if (false) {
-                    foreach (var item in locals) {
-                        if (item.Value.hasValue)
-                            sb.AppendLine(item.Value.getAssign());
-                    }
-                }
-
-                code = sb.Append(code).ToString();
-
-            }
+            
             if (Program.printParts) {
                 //Program.printer("method_"+Name, new StringBuilder(sb.ToString()).AppendLine().AppendLine("########").Append(code).ToString());
-                Program.printer("method_" + Name, code);
+                Program.printer("method_" + Name, getLocalOutput(false) + Code);
             }
-            switch (methodType) {
-                case eMethodType.Method:
-                    break;
-                case eMethodType.EntryMethod: return GenerateAsEntryMethod();
-                case eMethodType.Constructor:
-                    break;
-                case eMethodType.TypeConstructor:
-                    break;
-                case eMethodType.Destructor:
-                    break;
-                default:
-                    throw new NotImplementedException("MethodData.ToString(): Unimplemented case " + methodType.ToString());
+            if (tw != null) {
+                switch (methodType) {
+                    case eMethodType.Method: tw.writeMethod(this, false); break;
+                    case eMethodType.EntryMethod: tw.writeMethod(this, true); break;
+                    case eMethodType.Constructor: tw.writeCtor(this); break;
+                    case eMethodType.TypeConstructor: tw.writeCctor(this); break;
+                    case eMethodType.Destructor: tw.writeDtor(this); break;
+                    default:
+                        throw new NotImplementedException("MethodData.ToString(): Unimplemented case " + methodType.ToString());
+                }
+                return "";
+            } else {
+                if (methodType == eMethodType.EntryMethod) {
+                    if (locals.Count > 0) {//code = new StringBuilder(getLocalOutput(false)).AppendLine(code).ToString();
+                        Code = getLocalOutput(false) + Code;
+                    }
+                    return new CodeBase().buildCode(new CodeBase().readFile("§mainMeth"), new Dictionary<string, string>() { { "code", Code } });
+                } else throw new InvalidOperationException("No MethodDelegates defined for writing Methods.");
             }
 
             return base.ToString();
@@ -232,24 +260,7 @@ namespace MetaLanguageParser.Parsing
 
             return "";
         }
-
-        private string GenerateAsEntryMethod()
-        {
-            // Read §main Signature
-            return new CodeBase().buildCode(new CodeBase().readFile("§main"), new Dictionary<string, string>() { { "code", code }});
-        }
-        private string GenerateAsConstructor()
-        {
-            return "";
-        }
-        private string GenerateAsTypeConstructor()
-        {
-            return "";
-        }
-        private string GenerateAsDestructor()
-        {
-            return "";
-        }
+        
         #endregion
     }
     public static class OutputHolder

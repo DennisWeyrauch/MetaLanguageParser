@@ -47,7 +47,8 @@ namespace MetaLanguageParser.Resources
                         return;
                     } catch (Exception) {
                         Console.WriteLine($"Error while reading {resxPath}. Recreating dict...");
-                        File.Copy(resxPath, resxPath + "_copy");
+                        
+                        File.Copy(resxPath, resxPath + "_copy", true);
                     }
                 }
             }

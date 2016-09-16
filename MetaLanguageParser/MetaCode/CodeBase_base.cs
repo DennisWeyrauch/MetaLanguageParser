@@ -112,8 +112,9 @@ namespace MetaLanguageParser.MetaCode
         /// </summary>
         /// <param name="readin"></param>
         /// <param name="dict"></param>
+        /// <param name="indent">Preexisting Indent to apply to code</param>
         /// <returns></returns>
-        internal string buildCode(List<string> readin, Dictionary<string, string> dict)
+        internal string buildCode(List<string> readin, Dictionary<string, string> dict, int indent = 0)
         {
             /*List<string> readin2 = new List<string>() {
                  "while (", "cond", ") {", "§inc", "§n", "code", "§dec", "§n", "}"
@@ -126,6 +127,9 @@ namespace MetaLanguageParser.MetaCode
 
             using (var output = new System.IO.StringWriter())
             using (var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT)) {
+                if(indent > 0) {
+                    for (int i = 0; i < indent; i++) writer.Indent++;
+                }
                 foreach (var item in readin) {
                     //System.IO.File.WriteAllText($"myLog_{((CodeWalker)this).FileName}.txt", output.ToString()); // Prints Steps
                     if(isRetract) {
@@ -146,16 +150,16 @@ namespace MetaLanguageParser.MetaCode
                     string s = "";
                     // I don't have to assign an empty string, run a Regex on that, and then check if it's empty, when it was so to begin with!
                     if (dict.TryGetValue(item, out s) && s.IsNotNOE()) {
-                        string indent;
+                        string idntStr = "";
                         switch (writer.Indent) {
                             case 0: writer.Write(s); continue;
-                            case 1: indent = __INDENT; break;
+                            case 1: idntStr = __INDENT; break;
                             default:
-                                indent = __INDENT.ConcatTimes(writer.Indent);
+                                idntStr = __INDENT.ConcatTimes(writer.Indent);
                                 break;
                         }
                         // Apply the indent recursive to every code line
-                        var str = Regex.Replace(s, "([\r\n]+(?:" + indent + ")*)", "${1}"+indent);
+                        var str = Regex.Replace(s, "([\r\n]+(?:" + idntStr + ")*)", "${1}"+idntStr);
                         if (str.IsNotNOE()) writer.Write(str);
                     } else writer.Write(item);
                 }

@@ -66,6 +66,8 @@
     <Compile Include="MetaCode\AddType.cs" />
     <Compile Include="MetaCode\Assign.cs" />
     <Compile Include="MetaCode\Comment.cs" />
+    <Compile Include="MetaCode\TypeWriter\TypeWriter.cs" />
+    <Compile Include="MetaCode\TypeWriter\__Template.cs" />
     <Compile Include="MetaCode\VarDecl.cs" />
     <Compile Include="Parsing\Adapter.cs" />
     <Compile Include="Parsing\MetaData.cs" />

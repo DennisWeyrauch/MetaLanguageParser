@@ -33,12 +33,7 @@ namespace MetaLanguageParser.Parsing
     [System.Diagnostics.DebuggerDisplay("{typeType} - {Name}: Meth({methods.Count})")]
     public class TypeData
     {
-        string debugDisplay()
-        {
-
-
-            return "";
-        }
+        public string debugDisplay() => $"{typeType} - {Name}: Meth({methods.Count})";
 
         eTypeType typeType;
         public string Name { get; protected set; }
@@ -67,13 +62,20 @@ namespace MetaLanguageParser.Parsing
         /// List of Fields
         /// List of Methods (Ctors seperate?)
         List<MethodData> methods = new List<MethodData>();
+        public List<MethodData> getMethods() => methods;
 
         internal void AddMethod(MethodData data)
         {
             methods.Add(data);
         }
 
-
+        internal static eTypeType getModeEnum(string v)
+        {
+            switch (v) {
+                case "class": return eTypeType.Class;
+                default: throw new NotImplementedException("TypeData.getModeEnum(): Unimplemented case " + v.ToString());
+            }
+        }
 
         public override string ToString()
         {

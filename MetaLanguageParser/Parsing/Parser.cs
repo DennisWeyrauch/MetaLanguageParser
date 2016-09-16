@@ -11,6 +11,7 @@ using static MetaLanguageParser.Resources.ResourceReader;
 namespace MetaLanguageParser
 {
     using MetaCode;
+    using MetaCode.TypeWriter;
     using System.Linq;
     using System.Reflection.Emit;
     using System.Resources;
@@ -49,7 +50,10 @@ namespace MetaLanguageParser
             string linkPath = path+"/Linker.txt";
 
             bool exists = File.Exists(libPath);
-            FileInfo libFile = (exists) ? new FileInfo(libPath) : null;
+            FileInfo libFile = null;
+            try {
+                libFile = (exists) ? new FileInfo(libPath) : null;
+            } catch (FileNotFoundException) { exists = false; }
 
             var fileDict = readAnyFile(linkPath);
             var dirFiles = Directory.EnumerateFiles(path);
@@ -71,14 +75,22 @@ namespace MetaLanguageParser
                 Console.WriteLine("Compiling new MetaLib...");
                 //fileList.Add($"public class X {{ public static int cnt = {fileList.Count}; }}");
                 codeAsm = Common.Reflection.Reflection.getAssembly(fileList, true, lib);
-                File.Move(lib, libPath);
+                if (codeAsm != null) {
+                    File.Delete(libPath + "_old");
+                    File.Replace(lib, libPath, libPath + "_old");
+                } else {
+                    Console.WriteLine("Could not create Code-Assembly!");
+                    if (File.Exists(libPath)) {
+                        Console.WriteLine("Loading Backup Lib !");
+                        codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
+                    }
+                }
             }
 
             Type tempType;
             kwDict = new Dictionary<string, CodeDel>();
 
-            //fileDict.Remove("AddType");
-            //kwDict.Add("§addType", AddType.parse);
+            fileDict.Remove("AddType"); kwDict.Add("§addType", AddType.parse);
 
             foreach (var item in fileDict) {
                 tempType = codeAsm.GetType("MetaLanguageParser.MetaCode."+item.Key);
@@ -86,7 +98,7 @@ namespace MetaLanguageParser
                 kwDict.Add(item.Value, (CodeDel) del);
                 //kwDict.Add(item.Value, (CodeDel)(codeAsm.GetType("MetaLanguageParser.MetaCode." + item.Key)).GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel)));
             }
-            Console.WriteLine("Done.");
+            Console.WriteLine($"Done. ({fileDict.Count} loaded)");
         }
 
         public Parser(bool debug = false)
@@ -107,6 +119,7 @@ namespace MetaLanguageParser
                 Console.WriteLine("Another instance already exists!");
                 return;
             } else {
+                Console.WriteLine($"[Settings] Lang: {language}, CodeFile: {file}");
                 Console.WriteLine("Tokenizing...");
                 _running = true;
             }
@@ -121,6 +134,7 @@ namespace MetaLanguageParser
                 Console.WriteLine("Reading Configuration...");
                 eb = ExeBuilder.getInstance(list, language); // Slot 4/4
                 if(readConfigs) Resources.ResourceReader.readConfiguration(language);
+                if (Program.printParts) Program.deleteParts();
                 
                 writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
 
@@ -147,31 +161,41 @@ namespace MetaLanguageParser
                 //string resCode = // TypeArr.toString()...
 
                 var sb = new StringBuilder( );
-                //string resCode = "";
-
-
                 // Add Imports // 
-
                 // Add C-Predeclare Signatures //
-
 #warning If CStyle with one pass, first go through methDict and add all signatures
 #warning Then go through the Types (which is missing currently)
-                Console.WriteLine("Cleaning up...");
-                foreach (var item in eb.typeDict) {
-                    sb.AppendLine(item.Value.ToString());
+                Console.WriteLine("Building Types...");
+				//*
+				TypeWriter tw = TypeWriter.Factory(language);
+                string typeStrings = "__COULD_NOT_OPEN_TYPEWRITER__";
+                try {
+                    typeStrings = tw.writeTypes(eb.typeDict);
+                } catch (Exception e) {
+                    Console.WriteLine("ERROR: There were errors during printing the code. (Details in ErrorLog)");
+                    Logger.logException(e);
+                    /*/
+                    foreach (var item in eb.typeDict) {
+                        sb.AppendLine(item.Value.ToString());
+                    }
+				    //*/
+
                 }
 
-                string resCode = sb.ToString();//output.ToString();
-				if(Regex.IsMatch(resCode, @"§retract\(\d+\)")){
+                Console.WriteLine("Cleaning up...");
+                
+				if(Regex.IsMatch(typeStrings, @"§retract\(\d+\)|§EOF", RegexOptions.Multiline)){
 					int hitPos = 0;
-					foreach(var item in Extensions.matchHelper(resCode, @"§retract\((\d+)\)")){
-						hitPos = resCode.IndexOf("§retract", hitPos);
+					foreach(var item in Extensions.matchHelper(typeStrings, @"§retract\((\d+)\)")){
+						hitPos = typeStrings.IndexOf("§retract", hitPos);
 						hitPos -= int.Parse(item);
-                        int nextEnd = resCode.IndexOf(')', hitPos);
-                        resCode = resCode.Remove(hitPos, nextEnd - hitPos+1);
+                        int nextEnd = typeStrings.IndexOf(')', hitPos);
+                        typeStrings = typeStrings.Remove(hitPos, nextEnd - hitPos+1);
                     }
+                    typeStrings = Regex.Replace(typeStrings, "([ \t]*§EOF)", "", RegexOptions.Multiline);
 				}
-                resCode = output.ToString() + resCode;
+
+                string resCode = output.ToString() + typeStrings;
                 try { File.WriteAllText($"Results.{__FILESUFFIX}", resCode); File.Delete($"WriteError.{__FILESUFFIX}"); } catch (Exception e) {
                     Logger.logData(new StringBuilder("Could not write to OutputFile!").AppendLine().Append(e.Message).ToString());
                     File.WriteAllText($"WriteError.{__FILESUFFIX}", resCode);

@@ -7,4 +7,4 @@ LANG = "../../lang"
 # Resource Dictionaries
 RESX = "../../Resources"
 # Debug Switch that prints every build-iteration
-PrintParts = false
+PrintParts = true

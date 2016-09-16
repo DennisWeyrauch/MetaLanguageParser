@@ -7,22 +7,23 @@ using System.Threading.Tasks;
 
 namespace MetaLanguageParser
 {
-    class Program { 
-            
+    class Program {
+
+        #region Directory Stuff
         /// <summary>
         /// Printer Flag to output the generator steps
         /// </summary>
-        public static bool printParts = false;
+        public static bool printParts = true;
         public static bool catchedErrors = false;
         
-
         public static void printer(string name, string output)
         {
-            try { System.IO.File.WriteAllText($"myLog_{DateTime.Now.ToFileTime()}_{name}.txt", output); } catch (Exception) { }
+            Directory.CreateDirectory("PartsLog");
+            try { System.IO.File.WriteAllText($"PartsLog/myLog_{DateTime.Now.ToFileTime()}_{name}.txt", output); } catch (Exception) { }
         }
-        enum Languages
+        public static void deleteParts()
         {
-            CSharp, Java, VBNet
+            Directory.Delete("PartsLog", true);
         }
 
         private static void DirectoryCopy(string srcDir, string destDir, bool copySubDirs = false)
@@ -50,19 +51,26 @@ namespace MetaLanguageParser
         }
 
         static void Move_DevToDebug(){
-            DirectoryCopy("../../MetaCode","./MetaCode");
+            DirectoryCopy("../../MetaCode","./MetaCode", true);
             File.Delete("MetaCode/#Explain.cs");
             File.Delete("MetaCode/CodeBase_base.cs");
             File.Delete("MetaCode/CodeBase_Reader.cs");
             File.Delete("MetaCode/ICode.cs");
             File.Delete("MetaCode/MetaCode.7z");
             File.Delete("MetaCode/TextFile1.txt");
+            File.Delete("MetaCode/TypeWriter/TypeWriter.cs");
+        }
+
+#endregion
+        enum Languages
+        {
+            CSharp, Java, VBNet
         }
 
         static void Main(string[] args)
         {
             string code, codeFile;
-            code = (args.Length != 0) ? args[0] : Languages.CSharp.ToString().ToLower();
+            code = (args.Length != 0) ? args[0] : Languages.VBNet.ToString().ToLower();
 
             codeFile = (args.Length > 1) ? args[1] : "codefile.txt";
 

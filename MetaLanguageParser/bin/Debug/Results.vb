@@ -1,5 +1,11 @@
 'Added comments, testing out multilude of DataTypes
-Module Module1
+ Program
+    /* Fields */
+    /* Prop */
+    /* Ctor */
+    /* Cctor */
+    /* Dtor */
+    
     Sub Main()
         Dim j As Integer
         j = 0
@@ -18,16 +24,19 @@ Module Module1
         Dim str As String
         str = "Text"
         Dim dsas As _MISSING_Ratiopharm
+        
         If ((i < 15) AND (i > 0)) Then
             Do While (i < 15) 
-                i = i + 1Console.Write(i)
+                i = i + 1
+                Console.Write(i)
             Loop
         Else 
             Do 
-                i = i - 1Console.Write(i)
+                i = i - 1
+                Console.Write(i)
             Loop While (i > 0)
         End If
-    End Sub
+    End
     
 
-End Module
+End

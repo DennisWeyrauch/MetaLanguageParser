@@ -52,5 +52,12 @@ And added §comment to allow Writing Comments
 ## 2016-07-15
 Added some pseudo code for SwitchCase and MetaCodeExtension Compiler (which took way longer than wanted)
 ## 2016-09-13
+Started Three-Step Process for implementing Types:
 Added Handling of using external code fragments from the "MetaCode"-Folder
 Added Adapter for remove need for ExeBuilder in MetaCode
+## 2016-09-15
+Some paper coding for proper TypeAdding (mostly cause Modifiers)
+-Later-
+PseudoCodification of above.... mah, do it proper from the start (Need to implement missing new things)
+## 2016-09-16
+Finalized third and last step: Added Full TypeWriter

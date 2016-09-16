@@ -26,7 +26,7 @@ namespace MetaLanguageParser.MetaCode
                 pos++;
                 list.assertC(")");
             }
-            else data.readSignature(ref list, ref pos);
+            else data.readSignature(ref list, ref pos); // Should be here
             // Put the indetn outside
 #warning Also handle somehow the §main contents (Maybe own Handler for that (and §program as well))
 #warning Called from destFiles, this should just take the lines as they are without parsing (until §endMethod)
@@ -43,5 +43,6 @@ namespace MetaLanguageParser.MetaCode
 
             return "";
         }
+
     }
 }

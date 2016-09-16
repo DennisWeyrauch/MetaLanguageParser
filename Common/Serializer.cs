@@ -22,9 +22,12 @@ namespace Common
             T obj = default(T);
             var serializer = new XmlSerializer(typeof(T));
             Stream stream = File.OpenRead(file);
-            obj = (T)serializer.Deserialize(stream); // Quicker
+            try {
+                obj = (T)serializer.Deserialize(stream); // Quicker
+            } finally {
+                stream.Dispose();
+            }
             //obj = Serializer.DeserializeFromStream<T>(ref stream);
-            stream.Dispose();
             return obj;
         }
 
@@ -36,15 +39,15 @@ namespace Common
         public static void SerializeFile<T>(T obj, string file)
         {
             var serializer = new XmlSerializer(typeof(T));
-            try
-            {
                 Stream stream = File.Create(file);
+            try {
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
                     serializer.Serialize(writer, obj);
                 }
-            }
-            catch (Exception) { throw; }
+            } catch (IOException) { Console.Error.WriteLine("Could not acquire WriteLock."); } 
+                catch (Exception) { throw; } finally { stream.Dispose(); }
+
         }
 
         #region Binary and Stream

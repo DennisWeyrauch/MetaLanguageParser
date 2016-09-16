@@ -1,9 +1,11 @@
 /* Added comments, testing out multilude of DataTypes */
-using System;
-using System.IO;
-using System.Text;
-
-public class Program {
+ Program {
+	/* Fields */
+	/* Prop */
+	/* Cctor */
+	/* Cctor */
+	/* Dtor */
+	
 	public static void main(string[] args) {
 		int j = 0;
 		sbyte b;
@@ -17,6 +19,7 @@ public class Program {
 		char c = 'c';
 		string str = "Text";
 		_MISSING_Ratiopharm dsas;
+		
 		if ((i < 15) & (i > 0)) {
 			while (i < 15) {
 				i = i + 1;
@@ -29,6 +32,7 @@ public class Program {
 			} while (i > 0);
 		}
 	}
+	
 	
 
 }

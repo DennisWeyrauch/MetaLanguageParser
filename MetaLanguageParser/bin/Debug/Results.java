@@ -1,8 +1,11 @@
 /* Added comments, testing out multilude of DataTypes */
-import java.util.*;
-
-
-public class Program {
+ Program {
+	/* Fields */
+	/* Prop */
+	/* Ctor */
+	/* Cctor */
+	/* Dtor */
+	
 	public static void main(String[] args) {
 		int j = 0;
 		byte b;
@@ -16,6 +19,7 @@ public class Program {
 		char c = 'c';
 		String str = "Text";
 		_MISSING_Ratiopharm dsas;
+		
 		if ((i < 15) & (i > 0)) {
 			while (i < 15) {
 				i = i + 1;

@@ -176,7 +176,8 @@ namespace MetaLanguageParser.MetaCode
             var writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);
             while (!eb.list.isCurrent('}')) {
                 elem = Parser.execStatement(ref eb, ref pos);
-                if (elem.IsNotNOE()) if (elem.EndsWith(";")) writer.WriteLine(elem); else writer.Write(elem);
+                //if (elem.IsNotNOE()) if (elem.EndsWith(";")) writer.WriteLine(elem); else writer.Write(elem);
+                if (elem.IsNotNOE()) if (eb.list[pos-1].EqualsChar(';')) writer.WriteLine(elem); else writer.Write(elem);
             }
             elem = output.ToString().TrimEnd(' ', '\r', '\n');
             writer.Dispose();

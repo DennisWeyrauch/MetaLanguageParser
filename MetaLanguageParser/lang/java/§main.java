@@ -1,3 +1,1 @@
-﻿public static void main(String[] args) {§inc
-		$$code$$§dec
-}
+﻿public static void main(String[] args)
