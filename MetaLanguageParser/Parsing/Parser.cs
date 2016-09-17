@@ -48,6 +48,7 @@ namespace MetaLanguageParser
             string lib = "MetaLib.dll";
             string libPath = path+"/"+lib;
             string linkPath = path+"/Linker.txt";
+            Common.Reflection.Reflection.setSuppressor(Program.suppressError);
 
             bool exists = File.Exists(libPath);
             FileInfo libFile = null;
@@ -131,9 +132,8 @@ namespace MetaLanguageParser
 
             System.CodeDom.Compiler.IndentedTextWriter writer = null;
             try {
-                Console.WriteLine("Reading Configuration...");
                 eb = ExeBuilder.getInstance(list, language); // Slot 4/4
-                if(readConfigs) Resources.ResourceReader.readConfiguration(language);
+                Console.WriteLine(); 
                 if (Program.printParts) Program.deleteParts();
                 
                 writer = new System.CodeDom.Compiler.IndentedTextWriter(output, __INDENT);

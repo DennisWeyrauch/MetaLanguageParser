@@ -17,13 +17,22 @@ namespace MetaLanguageParser.Parsing
         /// <returns></returns>
         public static ListWalker getList() => ExeBuilder.Instance.list;
 
+        public static void printPart(string partSuffix, string text) => Program.printer(partSuffix, text);
+        /// <summary> ShortCut Extension for "string.IsNullOrEmpty(this)" </summary>
+        /// <returns>(s == null || s?.Equals(""))</returns>
+        public static bool IsNOE(this string s) => string.IsNullOrEmpty(s);
+        /// <summary> ShortCut Extension for "~(string.IsNullOrEmpty(this))" </summary>
+        /// <returns>(s != null &amp;&amp; !s?.Equals(""))</returns>
+        public static bool IsNotNOE(this string s) => !string.IsNullOrEmpty(s);
+
+        #region Read-Methods
         /// <summary>
         /// Read any File in form of "Key   Value" (Tab inbetween), and return lines as KeyValuePairs of a Dictionary
         /// </summary>
         /// <param name="path">Path to the file</param>
         /// <param name="lowerCase"></param>
         /// <returns></returns>
-		public static Dictionary<string, string> readFile(string path, bool lowerCase = false) => ResourceReader.readAnyFile(path, lowerCase);
+        public static Dictionary<string, string> readFile(string path, bool lowerCase = false) => ResourceReader.readAnyFile(path, lowerCase);
 
         /// <summary>
         /// Read a codefile from "/lang" and return a tokenized list of the contents.
@@ -38,6 +47,8 @@ namespace MetaLanguageParser.Parsing
         /// <param name="path"></param>
         /// <returns></returns>
         public static IEnumerable<string[]> readFilePerLine(string path) { return ResourceReader.readFile(path);}
+
+#endregion
 
         /// <summary> Add the given local to the current Method.</summary>
         /// <param name="local">The local to add</param>
@@ -60,7 +71,8 @@ namespace MetaLanguageParser.Parsing
         /// <summary>
         /// Recursive parserMethod to read MultiLineCodeblocks of Statements
         /// </summary>
-        /// <param name="terminator"></param>
+        /// <param name="terminator">When found, will stop current execution layer and return manufactored code block up to this point.<para/>
+        /// If empty, takes §EOF or <see cref="SYMBOL.Block_Close"/> as terminator.</param>
         /// <returns></returns>
         public static string execRun(string terminator = "")
         {
@@ -79,16 +91,24 @@ namespace MetaLanguageParser.Parsing
             var eb = ExeBuilder.Instance;
             return CodeBase.readExpression(ref eb, ref getList().Index);
         }
-		// TempSolution
+
 	
+        /// <summary>
+        /// Symbol class for easy access of preset config characters.
+        /// </summary>
 		public static class SYMBOL {
+            /// <summary>Block-opening symbol</summary>
 			public static string Block = ResourceReader.__BLOCK_INIT;//"{";
+            /// <summary>Block-closing symbol</summary>
             public static string Block_Close = ResourceReader.__BLOCK_CLOSE;//"}";
+            /// <summary>List seperator</summary>
             public static string ListSeperator = ",";
+            /// <summary>Indentation character (or string)</summary>
             public static string Indent = ResourceReader.__INDENT;//"\t";
 		}
 		
 		public static class KEYWORD {
+            public static Dictionary<string, string> modDict => MetaData.Modifiers;
 			public static string Extend = "ext";
 			public static string Implement = "impl";
 		}

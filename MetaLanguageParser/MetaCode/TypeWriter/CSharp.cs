@@ -11,11 +11,13 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
     public class CSharp : TypeWriter
     {
 		public override void writeType(TypeData data){
-			// public, private, protected, internal
-			// static
-			// class interface struct enum
+			var scope = new[]{"private", "public"};
+			var access = new[]{"static"};
+			var state = writeModifiers(data, scope, " ");
+			state = writeModifiers(data, access, " ", state);
+			writeMode(data, state);
 			/// Name ///
-			writer.Write(" ");
+			writer.Write(' ');
 			writer.Write(data.Name);
 			// Generics
 			OpenBlock();

@@ -16,7 +16,9 @@ namespace Common.Reflection
         #region 1-executeCCtor  (5117/5136 in 90)
 		
 		static int instanceCounter = 0;
-		
+        static bool suppressErrors = false;
+        public static void setSuppressor(bool val) => suppressErrors = val;
+
         /// <summary>
         /// Execute an embeddded constructor
         /// Possible Exceptions: FileNotFoundException (Invalid Code), 
@@ -78,14 +80,14 @@ namespace Common.Reflection
         /// </summary>
         /// <param name="codeRaw"></param>
         /// <returns></returns>
-        public static Assembly getAssembly(List<string> codeRaw, bool genExe, string name)
+        public static Assembly getAssembly(List<string> codeRaw, bool genDll, string name)
         {
             caller = Assembly.GetCallingAssembly();
             var sb = new StringBuilder();
             foreach (var item in codeRaw) {
                 sb.Append(item).AppendLine();
             }
-            return compileCode(sb.ToString(), genExe, name);
+            return compileCode(sb.ToString(), genDll, name);
         }
         static Assembly caller;
         enum CompileOptions
@@ -129,9 +131,18 @@ namespace Common.Reflection
             } catch (FileNotFoundException) {
                 var sw = File.CreateText(file_errorLog);
                 sw.WriteLine($"The compilation has thrown errors. (foundCond = {foundCond}; foundDEBUG = {foundDebug})\r\n");
-                foreach (var item in res.Errors) {
-                    Console.WriteLine(item.ToString());
-                    sw.WriteLine(item.ToString());
+                if (suppressErrors) {
+                    int cnt = 0;
+                    foreach (var item in res.Errors) {
+                        cnt++;
+                        sw.WriteLine(item.ToString());
+                    }
+                    Console.WriteLine($"[Errors] Found: {cnt} / {res.Errors.Count}");
+                } else {
+                    foreach (var item in res.Errors) {
+                        Console.WriteLine(item.ToString());
+                        sw.WriteLine(item.ToString());
+                    }
                 }
                 if (_doDebug) {
                     sw.WriteLine();

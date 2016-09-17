@@ -43,6 +43,10 @@ namespace MetaLanguageParser.Resources
                             Boolean.TryParse(str[1].Trim(), out b);
                             Program.printParts = b;
                             break;
+                        case "suppressError":
+                            Boolean.TryParse(str[1].Trim(), out b);
+                            Program.suppressError = b;
+                            break;
                     }
                 }
             } else {
@@ -51,6 +55,7 @@ namespace MetaLanguageParser.Resources
 ## Paths can be relative or absolute
 ## Lines starting with '#' and empty Lines will be ignored
 ## This file will be regenerated when missing.
+## PathReader will trim any leading/trailing ' ' or "" from the PathStrings
 ## Note: Either PATH or LANG+RESX are required for proper use
 
 # Base Dir in case only one path is enough (LANG is then PATH+'/lang' and resx PATH+'/resources')
@@ -73,15 +78,15 @@ PrintParts = false
         }
 
         /// <summary>
-        /// Base path to the "lang" directory, to allow moving of stuff (like, into same folder of exe without changing too much paths)
+        /// [BASE] Base path to the "lang" directory, to allow moving of stuff (like, into same folder of exe without changing too much paths)
         /// </summary>
         public readonly static string basePath;// = @"../../lang";
         /// <summary>
-        /// Contains the path to the Language Directory, where all Language Definitions are stored
+        /// [BASE/lang] Contains the path to the Language Directory, where all Language Definitions are stored
         /// </summary>
         public readonly static string langDir;
         /// <summary>
-        /// Contains the path to the Resource Directory
+        /// [BASE/resx] Contains the path to the Resource Directory
         /// </summary>
         public readonly static string resxPath;
         private static string _lang;
@@ -108,14 +113,15 @@ PrintParts = false
 
 
         /// <summary>
-        /// Returns the path to the current "lang" directory
+        /// [BASE/lang/MYLANG] Returns the path to the current "lang" directory
         /// </summary>
         /// <returns></returns>
         public static string getLangPath() => $"{langDir}/{_lang}";//new StringBuilder(basePath).Append($"/{_lang}").ToString();
+        /// <summary> [BASE/lang/MYLANG] </summary>
         private static string langPath => $"{langDir}/{_lang}";
 
         /// <summary>
-        /// Get a file from the CurLang-Directory
+        /// [BASE/lang/MYLANG/{<paramref name="file"/>}]Get a file from the CurLang-Directory
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
@@ -123,12 +129,12 @@ PrintParts = false
 
         //internal static string getLangPath3(string file) => $"{langPath}/{file}.{langSuffix}"; // Would be the shortest with 22 bytes
         /// <summary>
-        /// Retrieves the main configfile for the language
+        /// [BASE/lang/MYLANG/mylang]Retrieves the main configfile for the language
         /// </summary>
         /// <returns></returns>
         internal static string getLangFile() => new StringBuilder(langDir).Append($"/{_lang}/{_lang}").ToString();
         /// <summary>
-        /// Returns the path to the given file in the current LanguageDirectory. == basePath/{_lang}/file.{langSuffix}
+        /// [BASE/lang/MYLANG/{file}.{mySuffix}]Returns the path to the given file in the current LanguageDirectory. == basePath/{_lang}/file.{langSuffix}
         /// </summary>
         /// <returns></returns>
         internal static string getLangFile(string file) => new StringBuilder(langPath).Append($"/{file}.{langSuffix}").ToString();
@@ -150,8 +156,9 @@ PrintParts = false
         /// Returns the path to the specified file in the metaDictionary
         /// </summary>
         /// <returns></returns>
-        internal static string getMetaPath(string file)
-            => new StringBuilder(getMetaPath()).Append($"/{file}").Append(metaSuffix).ToString();
+        internal static string getMetaPath(string file) => file.EndsWith(metaSuffix)
+            ? new StringBuilder(getMetaPath()).Append($"/{file}").ToString()
+            : new StringBuilder(getMetaPath()).Append($"/{file}").Append(metaSuffix).ToString();
 
         /// <summary>Returns the path to the MetaDirectory</summary>
         internal static string getResourcePath() => resxPath;// new StringBuilder(basePath).Append("/../Resources").ToString();

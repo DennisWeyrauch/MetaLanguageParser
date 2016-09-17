@@ -1,5 +1,4 @@
 using MetaLanguageParser.Parsing;
-using MetaLanguageParser.Parsing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +14,17 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
     {
 		protected System.CodeDom.Compiler.IndentedTextWriter writer;
 		protected static System.Reflection.Assembly codeAsm;
+
+
+
+        /// <summary>
+        /// Will create a new TypeWriter Object of the given language. ##
+        /// If found, compiles into assembly and executes custom TypeWriter; ##
+        /// else, uses Fallback writer <see cref="Dummy"/>.class with simplyfied Methods
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        /// <remarks>Might look like much overhead, but it already existed for MetaCode, so it's mostly reused</remarks>
 		public static TypeWriter Factory(string lang){
             Console.WriteLine("Checking TypeWriter directory...");
             string path = "MetaCode/TypeWriter";
@@ -76,8 +86,9 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
                 //kwDict.Add(item.Value, (CodeDel)(codeAsm.GetType("MetaLanguageParser.MetaCode." + item.Key)).GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel)));
             }//*/
 		}
-		
-		public string writeTypes(Dictionary<string, TypeData> typeDict){
+
+        #region Abstract Methods
+        public string writeTypes(Dictionary<string, TypeData> typeDict){
 			string result;
             StringWriter output = new StringWriter();
             writer = new System.CodeDom.Compiler.IndentedTextWriter(output, SYMBOL.Indent);
@@ -108,6 +119,53 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
         }
         public abstract void writeMethod(MethodData data, bool isEntry);
         /** Write Shortcuts **/
+        #endregion
+
+
+        Dictionary<string,string> modifiers = new Dictionary<string,string>();
+        string seperator = " ";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mods"></param>
+        /// <param name="seperator"></param>
+        /// <returns>Value indicating whether or not strings were written,</returns>
+        protected bool writeModifiers(TypeData data, string[] mods, string seperator, bool first = true)
+        {
+            var mod = data.getModifiers();
+            string key;
+            this.seperator = seperator;
+            foreach (var item in mods) {
+                if (!mod.Contains(item)) continue;
+                if (first) first = false; else writer.Write(seperator);
+                if (!modifiers.TryGetValue(item, out key)) key = $"__{item}__";
+                writer.Write(key);
+            }
+            return first;
+        }
+
+        protected void writeModifier(string kw)
+        {
+            string key;
+            if (!modifiers.TryGetValue(kw, out key)) key = $"__{kw}__";
+            writer.Write(key);
+        }
+
+        protected void writeModifier(string kw, string format)
+        {
+            string key;
+            if (!modifiers.TryGetValue(kw, out key)) key = $"__{kw}__";
+            writer.Write(string.Format(format, key));
+        }
+
+        protected void writeMode(TypeData data, bool state)
+        {
+            var mode = data.getMode();
+            var dict = MetaData.TypeModes;
+            if (state) writer.Write(seperator);
+            writer.Write(dict[mode]);
+        }
 
 
         protected void NewLine() => writer.WriteLine();
@@ -119,7 +177,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
         }
         protected void WriteLine(string s) => writer.WriteLine(s);
 
-        /// <summary> Write ' ', __BLOCK_INIT, Increase Indent, Newline  </summary>
+        /// <summary> Write ' ', <see cref="SYMBOL.Block"/>, Increase Indent, Newline </summary>
         protected void OpenBlock()
         {
             writer.Write(' ');
@@ -128,7 +186,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
             writer.WriteLine();
         }
 
-        /// <summary> Decrease Indent, Write Newline, __BLOCK_CLOSE, </summary>
+        /// <summary> Decrease Indent, Write Newline, <see cref="SYMBOL.Block_Close"/>, Newline</summary>
         protected void CloseBlock()
         {
             writer.Indent--;
@@ -137,7 +195,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
             writer.WriteLine();
         }
 
-        /// <summary> Decrease Indent, Write Newline, __BLOCK_CLOSE + <paramref name="suffix"/>, </summary>
+        /// <summary> Decrease Indent, Write Newline, <see cref="SYMBOL.Block_Close"/> + <paramref name="suffix"/>, Newline</summary>
         /// <param name="suffix">Appendix on BLOCK_CLOSE</param>
         protected void CloseBlock(string suffix)
         {
@@ -166,11 +224,12 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
                     break;
             }
             // Apply the indent recursive to every code line
-            Program.printer($"CodeBlock_{cnt}_1-before", s);
+            //Program.printer($"CodeBlock_{cnt}_1-before", s);
+            Program.printer($"CodeBlock_{cnt++}", s);
             var str = System.Text.RegularExpressions.Regex.Replace(s, "(^[\r\n]*(?:" + idntStr + ")*)", "${1}"+idntStr, System.Text.RegularExpressions.RegexOptions.Multiline);
             str = str.TrimStart(SYMBOL.Indent.ToCharArray());
             writer.Write(str);
-            Program.printer($"CodeBlock_{cnt++}_2-after", str);
+            //Program.printer($"CodeBlock_{cnt++}_2-after", str);
         }
 
 		

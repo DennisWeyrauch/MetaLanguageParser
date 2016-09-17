@@ -15,7 +15,8 @@ namespace MetaLanguageParser
         /// </summary>
         public static bool printParts = true;
         public static bool catchedErrors = false;
-        
+        public static bool suppressError = false;
+
         public static void printer(string name, string output)
         {
             Directory.CreateDirectory("PartsLog");
@@ -23,7 +24,7 @@ namespace MetaLanguageParser
         }
         public static void deleteParts()
         {
-            Directory.Delete("PartsLog", true);
+            try { Directory.Delete("PartsLog", true); } catch (Exception) { }
         }
 
         private static void DirectoryCopy(string srcDir, string destDir, bool copySubDirs = false)
@@ -70,13 +71,15 @@ namespace MetaLanguageParser
         static void Main(string[] args)
         {
             string code, codeFile;
-            code = (args.Length != 0) ? args[0] : Languages.VBNet.ToString().ToLower();
+            code = (args.Length != 0) ? args[0] : Languages.CSharp.ToString().ToLower();
 
             codeFile = (args.Length > 1) ? args[1] : "codefile.txt";
 
             Logger.resetLog();
             if (args.Length == 0) {
                 Move_DevToDebug();
+                Console.WriteLine("Reading Configuration...");
+                Resources.ResourceReader.readConfiguration(code);
                 new MetaLanguageParser.Parser().execute(codeFile, code);
             } else {
 
@@ -137,9 +140,14 @@ namespace MetaLanguageParser
             }
         }
 
+        /// <summary>
+        /// Prints the Exception message onto Console, and logs Exception into log.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ex"></param>
         public static void LogNonFatalException<T>(T ex) where T : Exception
         {
-            Console.Out.Write(ex.Message);
+            Console.Out.WriteLine(ex.Message);
             Logger.logException(ex);
             Program.catchedErrors = true;
         }

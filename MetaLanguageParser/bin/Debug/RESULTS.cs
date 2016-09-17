@@ -1,5 +1,5 @@
 /* Added comments, testing out multilude of DataTypes */
- Program {
+__public__class Program {
 	/* Fields */
 	/* Prop */
 	/* Cctor */

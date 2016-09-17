@@ -1,0 +1,4 @@
+Class	class
+Interface	inter
+Struct	struct
+Enum	enum

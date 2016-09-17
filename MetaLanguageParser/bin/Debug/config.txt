@@ -1,6 +1,7 @@
 ## This file contains where the Language files are stored
 ## Paths can be relative or absolute
 ## Lines starting with '#' and empty Lines will be ignored
+## PathReader will trim any leading/trailing ' ' or "" from the PathStrings
 
 # Languages Files
 LANG = "../../lang"
@@ -8,3 +9,5 @@ LANG = "../../lang"
 RESX = "../../Resources"
 # Debug Switch that prints every build-iteration
 PrintParts = true
+# Supress Compiler Errors in Console (only in errorLog then)
+suppressErr = true

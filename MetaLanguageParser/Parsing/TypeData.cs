@@ -37,8 +37,8 @@ namespace MetaLanguageParser.Parsing
 
         eTypeType typeType;
         public string Name { get; protected set; }
-
-        public TypeData(eTypeType entryClass, string v)
+        
+        public TypeData(eTypeType entryClass, string v) : base()
         {
             this.typeType = entryClass;
             this.Name = v;
@@ -51,6 +51,12 @@ namespace MetaLanguageParser.Parsing
         string stuff;
         public void setStuff(string ret) => stuff = ret;
 
+        List<string> modifiers = new List<string>();
+        public List<string> getModifiers() => modifiers;
+        internal void setMods(Stack<string> mods)
+        {
+            this.modifiers = mods.ToList();
+        }
 
         /// Generics
         /// 
@@ -69,6 +75,8 @@ namespace MetaLanguageParser.Parsing
             methods.Add(data);
         }
 
+
+
         internal static eTypeType getModeEnum(string v)
         {
             switch (v) {
@@ -76,6 +84,8 @@ namespace MetaLanguageParser.Parsing
                 default: throw new NotImplementedException("TypeData.getModeEnum(): Unimplemented case " + v.ToString());
             }
         }
+        internal string getMode() => typeType.ToString().ToLower();
+
 
         public override string ToString()
         {
@@ -107,5 +117,6 @@ namespace MetaLanguageParser.Parsing
             // Read §mainType Signature
             return new CodeBase().buildCode(new CodeBase().readFile("§mainType"), dict);
         }
+
     }
 }

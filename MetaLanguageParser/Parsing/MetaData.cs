@@ -133,9 +133,72 @@ BeforeFieldInit  = 1-0100-0000-0000-0000-0000 = 1048576 // Calling static method
 
     public abstract class MetaData
     {
+        static bool filledDicts = false;
+        static Dictionary<string,string> dictMod;
+        static Dictionary<string,string> dictTM;
+        static Dictionary<string,string> dictKW;
 
+        public static Dictionary<string, string> Modifiers => dictMod ?? setDicts(0);
+        public static Dictionary<string, string> TypeModes => dictTM ?? setDicts(1);
+        public static Dictionary<string, string> OtherKW => dictKW ?? setDicts(2);
+
+
+        protected MetaData()
+        {
+            if (filledDicts) return;
+            setDicts();
+        }
+
+        static Dictionary<string, string> setDicts(int mode)
+        {
+            setDicts();
+            switch (mode) {
+                case 0: return dictMod;
+                case 1: return dictTM;
+                case 2: return dictKW;
+                default: return new Dictionary<string, string>();
+            }
+        }
+
+        internal static void setDicts()
+        {
+            if (filledDicts) return;
+            dictMod = new Dictionary<string,string>();
+            dictTM = new Dictionary<string,string>();
+            dictKW = new Dictionary<string,string>();
+            Console.WriteLine("Reading Modifiers...");
+            string path = Resources.ResxFiles.getMetaPath("_modifiers.txt");
+            int mode = -1;
+            try {
+                foreach (var entry in Resources.ResourceReader.readFile(path)) {
+                    switch (entry[0]) {
+                        case "§§modifier": mode = 0; continue;
+                        case "§§tmode": mode = 1; continue;
+                        case "§§other": mode = 2; continue;
+                        default: break;
+                    }
+                    switch (mode) {
+                        case 0: dictMod.Add(entry[0], entry[1]); break;
+                        case 1: dictTM.Add(entry[0], entry[1]); break;
+                        case 2: dictKW.Add(entry[0], entry[1]); break;
+                        default: throw new InvalidOperationException("Please set the Keyword Group first (§§ + modifier/tmode/other)");
+                    }
+                }
+            } catch (System.IO.IOException ioe) {
+                Console.WriteLine("Skipping task [Reading Modifiers]. Reason: '_modifiers.txt' not found or empty.");
+                Logger.logException(ioe);
+            } catch (Exception e) {
+                Console.WriteLine("Skipping task [Reading Modifiers]. Reason: Unknown error.");
+                Logger.logException(e);
+            }
+            filledDicts = true;
+        }
+
+        
 #warning Should the Type be stored here as well?
         protected TypeData enclosedType;
+
+
 
         protected MemberAttributes attr;
         /**

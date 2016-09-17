@@ -17,6 +17,7 @@ namespace MetaLanguageParser.Resources
     {
         public static void readConfiguration(string lang)
         {
+            LangCode = lang;
             checkResx(lang);
 			// readMemberAttributes
             string path = getBinaryDict();
