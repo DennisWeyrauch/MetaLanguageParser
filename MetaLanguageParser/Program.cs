@@ -71,7 +71,7 @@ namespace MetaLanguageParser
         static void Main(string[] args)
         {
             string code, codeFile;
-            code = (args.Length != 0) ? args[0] : Languages.VBNet.ToString().ToLower();
+            code = (args.Length != 0) ? args[0] : Languages.CSharp.ToString().ToLower();
 
             codeFile = (args.Length > 1) ? args[1] : "codefile.txt";
 

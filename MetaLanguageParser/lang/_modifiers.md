@@ -40,6 +40,17 @@ Static TypeMember, in contrast to instance
 ## New ##
 [Members] Explicit state that this hides a base member of the same name.
 
+## Type Mode ##
+# Encapsulated DataObject #
+class	class
+# Abstract Template Type #
+interface	interface
+# User-defined Valuetype #
+struct	struct
+# Enumeration (List of Name-value Pairs / Flags)
+enum	enum
+
+
 # Keywords to use
 * Access/Scope
 	* Public	public

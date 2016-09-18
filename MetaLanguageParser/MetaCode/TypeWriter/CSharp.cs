@@ -11,7 +11,8 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
     public class CSharp : TypeWriter
     {
 		public override void writeType(TypeData data){
-			var scope = new[]{"private", "public"};
+			//var scope = new[]{"public", "protected", "internal", "private"};
+			var scope = new[]{"Public", "Family", "Assembly", "FamANDAsm", "Private"};
 			var access = new[]{"static"};
 			var state = writeModifiers(data, scope, " ");
 			state = writeModifiers(data, access, " ", state);

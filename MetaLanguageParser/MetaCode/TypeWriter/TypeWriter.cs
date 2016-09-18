@@ -192,6 +192,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
             foreach (var item in mods) {
                 if (!mod.Contains(item)) continue;
                 if (addSep) writer.Write(seperator); else addSep = true;
+                //if (KEYWORD.modDict.Values.Contains(item)) key = item; else
                 if (!KEYWORD.modDict.TryGetValue(item, out key)) key = $"__{item}__";
                 writer.Write(key);
             }

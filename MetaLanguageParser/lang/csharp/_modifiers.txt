@@ -2,15 +2,14 @@
 ## Scope & Access Modifiers ##
 §§modifier
 ## Scope
-public	public
-private	private
-#Assembly
-#Internal	##Family+Assembly: Derived classes inside the assembly
-#Family	##Protected / Derived
-#Shared	##Either Derived or same assembly
-
+Public	public00
+#FamORAsm	shared
+Assembly	internal
+Family	protected
+FamANDAsm	protected internal
+Private	private
 ## Modifiers
-static	static
+Static	static
 #abstract
 #final
 #readonly
