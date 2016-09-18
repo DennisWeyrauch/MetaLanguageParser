@@ -20,7 +20,7 @@ namespace MetaLanguageParser.MetaCode
             pos++;
             list.assertC('('); // Skip §addMethod
             if (list[pos].Equals("§main")) {
-                data = TypeData.setMain();
+                data = TypeData.makeMain();
                 pos++;
             } else readType(out data, ref pos);
             list.assertC(')');
@@ -47,12 +47,7 @@ namespace MetaLanguageParser.MetaCode
 				pos++;
 			} // Default modifiers when nothing was set is determined by LangFiles (extra Section)
 			/// class, interface, struct, enum
-			/*data.setMode(list[pos]); // First Argument
-			pos++;
-			data.setName(list[pos]); // Second Argument
-			pos++;
-            //*/
-            data = new TypeData(TypeData.getModeEnum(list[pos++]), list[pos++]);
+            data = new TypeData(list[pos++], list[pos++]);
 			data.setMods(mods);
 
 			// ...Generics... //

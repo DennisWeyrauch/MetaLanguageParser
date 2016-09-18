@@ -1,5 +1,5 @@
 ﻿AddMethod	§addMethod
-VarDecl	§vardecl
-Assign	§assign
+VarDecl	§vardecl, §vd
+Assign	§assign, §a
 AddType	§addType
-Comment	§comment
+Comment	§comment, §c

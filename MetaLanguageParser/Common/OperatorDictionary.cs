@@ -45,7 +45,7 @@ namespace MetaLanguageParser.Resources
 
             if (wasEmpty) return;
             Type type = null;
-            Console.WriteLine(reader.BaseURI);
+            //Console.WriteLine(reader.BaseURI);
 
             while (reader.NodeType != XmlNodeType.EndElement) {
                 type = Operation.getOpType(reader.Name, opType);

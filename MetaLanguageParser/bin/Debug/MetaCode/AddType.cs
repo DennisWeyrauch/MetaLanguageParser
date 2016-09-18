@@ -10,9 +10,6 @@ namespace MetaLanguageParser.MetaCode
 {
     class AddType
     {
-		static Dictionary<string, string> _mod;
-		static Dictionary<string, string> modDict =>  _mod ?? (_mod = readFile("modType.txt")); // Change to lookup from ResxFiles
-		
         /// <summary>
         /// §addType(§main)  ---    /// Adds a EntryType like in "/myLang/§mainType.{suffix}"
         /// </summary>
@@ -23,7 +20,7 @@ namespace MetaLanguageParser.MetaCode
             pos++;
             list.assertC('('); // Skip §addMethod
             if (list[pos].Equals("§main")) {
-                data = TypeData.setMain();
+                data = TypeData.makeMain();
                 pos++;
             } else readType(out data, ref pos);
             list.assertC(')');
@@ -45,18 +42,13 @@ namespace MetaLanguageParser.MetaCode
 			//throw new NotImplementedException("addType.AnythingElse");
 			// public, static
 			var mods = new Stack<string>();
-			while(modDict.ContainsKey(list[pos])){
+			while(KEYWORD.modDict.ContainsKey(list[pos])){
                 mods.Push(list[pos]); // Push onto Stack
 				pos++;
 			} // Default modifiers when nothing was set is determined by LangFiles (extra Section)
 			/// class, interface, struct, enum
-			/*data.setMode(list[pos]); // First Argument
-			pos++;
-			data.setName(list[pos]); // Second Argument
-			pos++;
-            //*/
-            data = new TypeData(TypeData.getModeEnum(list[pos++]), list[pos++]);
-			//data.setMods(mods);
+            data = new TypeData(list[pos++], list[pos++]);
+			data.setMods(mods);
 
 			// ...Generics... //
 			//pos++;

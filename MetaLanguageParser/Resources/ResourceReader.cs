@@ -17,9 +17,10 @@ namespace MetaLanguageParser.Resources
     {
         public static void readConfiguration(string lang)
         {
+            Console.WriteLine("Reading Configuration...");
             LangCode = lang;
             checkResx(lang);
-			// readMemberAttributes
+            // readMemberAttributes
             string path = getBinaryDict();
             if (!File.Exists(path)) throw new FileNotFoundException($"No config file '{lang}' found!");
             opBinDict = __readOpDict(path, getBinaryDict(lang), eOpDictType.Boolean);
@@ -53,6 +54,7 @@ namespace MetaLanguageParser.Resources
                     }
                 }
             }
+            Console.WriteLine("Recreate...");
             bool options = false;
             foreach (var entry in readFile(path)) {
                 if (entry[0].Equals("§§Options§§")) {

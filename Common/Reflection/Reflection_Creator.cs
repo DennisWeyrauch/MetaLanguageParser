@@ -68,19 +68,13 @@ namespace Common.Reflection
 
             //return type.GetConstructor(Type.EmptyTypes).Invoke(param); // Not feasable, because it TypeArray, and Namespace and whatnot.
         }
-
+        
         /// <summary>
         /// Returns the Assembly containing the sum of all types in <paramref name="codeRaw"/>.
         /// </summary>
         /// <param name="codeRaw"></param>
         /// <returns></returns>
-        public static Assembly getAssembly(List<string> codeRaw) => getAssembly(codeRaw, false, null);
-        /// <summary>
-        /// Returns the Assembly containing the sum of all types in <paramref name="codeRaw"/>.
-        /// </summary>
-        /// <param name="codeRaw"></param>
-        /// <returns></returns>
-        public static Assembly getAssembly(List<string> codeRaw, bool genDll, string name)
+        public static Assembly getAssembly(List<string> codeRaw, bool genDll, string name)//(string name, bool genDll, params string[] codeRaw)
         {
             caller = Assembly.GetCallingAssembly();
             var sb = new StringBuilder();
@@ -89,11 +83,10 @@ namespace Common.Reflection
             }
             return compileCode(sb.ToString(), genDll, name);
         }
+
+
         static Assembly caller;
-        enum CompileOptions
-        {
-            // ASM, Exe, DLL, ASM+Exe, ASM+DLL
-        }
+        //enum CompileOptions { /* ASM, Exe, DLL, ASM+Exe, ASM+DLL */ }
         /// <summary>
         /// 
         /// </summary>
@@ -115,7 +108,7 @@ namespace Common.Reflection
                     var curAss = Assembly.GetExecutingAssembly();
 
                     comPar.CompilerOptions = "/optimize";
-                    if (generateDll) comPar.OutputAssembly = asmName;// caller.Location+"/MetaCode/"+asmName;
+                    if (generateDll) comPar.OutputAssembly = (asmName.IsNOE()) ? DateTime.UtcNow.ToShortDateString() + ".dll" : asmName;
                     comPar.GenerateInMemory = true;
                     comPar.ReferencedAssemblies.Add("System.dll");
                     comPar.ReferencedAssemblies.Add("Microsoft.CSharp.dll");
@@ -130,14 +123,10 @@ namespace Common.Reflection
                 }
             } catch (FileNotFoundException) {
                 var sw = File.CreateText(file_errorLog);
-                sw.WriteLine($"The compilation has thrown errors. (foundCond = {foundCond}; foundDEBUG = {foundDebug})\r\n");
+                sw.WriteLine($"The compilation has thrown errors. (foundCond = {foundCond}; foundDEBUG = {foundDebug})\r\nNote: The listed Linenumbers match {file_errorCode}.\r\n");
                 if (suppressErrors) {
-                    int cnt = 0;
-                    foreach (var item in res.Errors) {
-                        cnt++;
-                        sw.WriteLine(item.ToString());
-                    }
-                    Console.WriteLine($"[Errors] Found: {cnt} / {res.Errors.Count}");
+                    foreach (var item in res.Errors) sw.WriteLine(item.ToString());
+                    Console.WriteLine($"[Errors] Found: {res.Errors.Count}");
                 } else {
                     foreach (var item in res.Errors) {
                         Console.WriteLine(item.ToString());

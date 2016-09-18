@@ -41,20 +41,20 @@ namespace MetaLanguageParser
         public static Parser getInstance => _instance;
         internal static System.Reflection.Assembly codeAsm;
 
+#warning Remove the AddType Removal when finished
         static Parser()
         {
             Console.WriteLine("Checking MetaCode directory...");
             string path = "MetaCode";
-            string lib = "MetaLib.dll";
+            string libName = "MetaLib";
+            string lib = $"{libName}.dll";
             string libPath = path+"/"+lib;
             string linkPath = path+"/Linker.txt";
             Common.Reflection.Reflection.setSuppressor(Program.suppressError);
 
             bool exists = File.Exists(libPath);
             FileInfo libFile = null;
-            try {
-                libFile = (exists) ? new FileInfo(libPath) : null;
-            } catch (FileNotFoundException) { exists = false; }
+            try { libFile = (exists) ? new FileInfo(libPath) : null;} catch (FileNotFoundException) { exists = false; }
 
             var fileDict = readAnyFile(linkPath);
             var dirFiles = Directory.EnumerateFiles(path);
@@ -73,33 +73,48 @@ namespace MetaLanguageParser
                 Console.WriteLine("Loading last recent Library...");
                 codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
             } else {
-                Console.WriteLine("Compiling new MetaLib...");
+                Console.WriteLine($"Compiling new {libName}...");
                 //fileList.Add($"public class X {{ public static int cnt = {fileList.Count}; }}");
                 codeAsm = Common.Reflection.Reflection.getAssembly(fileList, true, lib);
                 if (codeAsm != null) {
                     File.Delete(libPath + "_old");
-                    File.Replace(lib, libPath, libPath + "_old");
+                    try {
+                        File.Replace(lib, libPath, libPath + "_old");
+                    } catch (IOException) {
+                        File.Delete(libPath);
+                        File.Move(lib, libPath);
+                    }
                 } else {
-                    Console.WriteLine("Could not create Code-Assembly!");
+                    Console.WriteLine("Could not create Assembly!");
                     if (File.Exists(libPath)) {
                         Console.WriteLine("Loading Backup Lib !");
                         codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
-                    }
+                    } else throw new FileNotFoundException("Could not find BackupLib !");
                 }
             }
 
             Type tempType;
             kwDict = new Dictionary<string, CodeDel>();
-
-            fileDict.Remove("AddType"); kwDict.Add("§addType", AddType.parse);
-
+#warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //fileDict.Remove("AddType"); kwDict.Add("§addType", AddType.parse);
+            int errors = 0;
             foreach (var item in fileDict) {
                 tempType = codeAsm.GetType("MetaLanguageParser.MetaCode."+item.Key);
                 var del = tempType.GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel));
-                kwDict.Add(item.Value, (CodeDel) del);
+                var csv = item.Value.Split(',',' ');
+                foreach (var alias in csv) {
+                    if (alias.IsNOE()) continue;
+                    try {
+                        kwDict.Add(alias, (CodeDel)del);
+                    } catch (ArgumentException) {
+                        errors++;
+                        Logger.logData($"Key '{alias}' already exists ! (->{kwDict[alias]})");
+                    }
+                }
                 //kwDict.Add(item.Value, (CodeDel)(codeAsm.GetType("MetaLanguageParser.MetaCode." + item.Key)).GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel)));
             }
-            Console.WriteLine($"Done. ({fileDict.Count} loaded)");
+            
+            Console.WriteLine($"Done.\r\n -- {fileDict.Count} classes loaded\r\n -- {errors} duplicates ignored\r\n -- '{kwDict.Count} for {fileDict.Count}' alias added");
         }
 
         public Parser(bool debug = false)
@@ -160,7 +175,6 @@ namespace MetaLanguageParser
                 /// Rectract function
                 //string resCode = // TypeArr.toString()...
 
-                var sb = new StringBuilder( );
                 // Add Imports // 
                 // Add C-Predeclare Signatures //
 #warning If CStyle with one pass, first go through methDict and add all signatures
@@ -168,18 +182,20 @@ namespace MetaLanguageParser
                 Console.WriteLine("Building Types...");
 				//*
 				TypeWriter tw = TypeWriter.Factory(language);
+                
                 string typeStrings = "__COULD_NOT_OPEN_TYPEWRITER__";
                 try {
                     typeStrings = tw.writeTypes(eb.typeDict);
                 } catch (Exception e) {
                     Console.WriteLine("ERROR: There were errors during printing the code. (Details in ErrorLog)");
                     Logger.logException(e);
-                    /*/
+                    //*/
+                    var sb = new StringBuilder( ).AppendLine();
                     foreach (var item in eb.typeDict) {
                         sb.AppendLine(item.Value.ToString());
                     }
-				    //*/
-
+                    //*/
+                    typeStrings += sb.ToString();
                 }
 
                 Console.WriteLine("Cleaning up...");
@@ -198,7 +214,9 @@ namespace MetaLanguageParser
                 string resCode = output.ToString() + typeStrings;
                 try { File.WriteAllText($"Results.{__FILESUFFIX}", resCode); File.Delete($"WriteError.{__FILESUFFIX}"); } catch (Exception e) {
                     Logger.logData(new StringBuilder("Could not write to OutputFile!").AppendLine().Append(e.Message).ToString());
-                    File.WriteAllText($"WriteError.{__FILESUFFIX}", resCode);
+                    try {
+                        File.WriteAllText($"WriteError.{__FILESUFFIX}", resCode);
+                    } catch (Exception e2) { Logger.logException(e2); File.WriteAllText($"WriteError.txt", resCode); }
                 }
 				if (hasThrown) list.printError(finalize: true);
                 writer?.Dispose();

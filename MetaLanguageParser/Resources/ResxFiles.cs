@@ -43,7 +43,7 @@ namespace MetaLanguageParser.Resources
                             Boolean.TryParse(str[1].Trim(), out b);
                             Program.printParts = b;
                             break;
-                        case "suppressError":
+                        case "suppressErr":
                             Boolean.TryParse(str[1].Trim(), out b);
                             Program.suppressError = b;
                             break;

@@ -29,6 +29,10 @@
 * 2016-07-15
   * Add MetaAdapter Class (Details see TextFile1.txt)
   * Add new Methods from Switch.cs
+* 2016-09-16_-_18
+  * TypeWriter
+  * Adapter Documentation
+  * Explain _modifiers.txt
 
 
 ### Commands

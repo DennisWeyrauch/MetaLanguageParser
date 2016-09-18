@@ -1,0 +1,32 @@
+### ReadMode: KEY --> Value string appearing in code
+## Scope & Access Modifiers ##
+§§modifier
+## Scope
+public	public
+private	private
+#Assembly
+#Internal	##Family+Assembly: Derived classes inside the assembly
+#Family	##Protected / Derived
+#Shared	##Either Derived or same assembly
+
+## Modifiers
+static	static
+#abstract
+#final
+#readonly
+#sealed
+#const
+#override
+#virtual
+
+## Type Mode ##
+§§tmode
+class	class
+interface	interface
+struct	struct
+enum	enum
+
+## Other keywords ##
+§§other
+ext_int	impl
+ext_cla	ext

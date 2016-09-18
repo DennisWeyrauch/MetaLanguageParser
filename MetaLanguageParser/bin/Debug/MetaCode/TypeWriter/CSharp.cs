@@ -20,6 +20,15 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 			writer.Write(' ');
 			writer.Write(data.Name);
 			// Generics
+			bool _ext = data.hasExt();
+			bool _impl = data.hasImpl();
+			if(_ext || _impl){
+				writer.Write(" : ");
+				if(_ext) writer.Write(data.getExt());
+				if(_impl && _ext) writer.Write(", ");
+				if(_impl) writeList(data.getInterfaces(), ",");
+			}
+			
 			OpenBlock();
 			/*/foreach(var field in data.getFields()) writeField(field);/*/writer.Write("/* Fields */");//*/
 			NewLine();
@@ -36,6 +45,40 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 			// Nested Types
 			CloseBlock();
 		}
+		
+		void __Meth1(TypeData data, bool _ext, bool _impl){
+				writer.Write(" : ");
+				if(_ext) writer.Write(data.getExt());
+				if(_impl && _ext) writer.Write(", ");
+				if(_impl) writeList(data.getInterfaces(), ",");
+		}
+		void __Meth2(TypeData data, bool _ext, bool _impl){
+			if(_ext || _impl){
+				writer.Write(" : ");
+				if(_ext) writer.Write(data.getExt());
+				if(_impl){
+					if(_ext) writer.Write(", ");
+					writeList(data.getInterfaces(), ", ", false);
+				}
+			}
+		}
+		void __Meth3(TypeData data, bool _ext, bool _impl){
+			if(_ext || _impl){
+				writer.Write(" : ");
+				if(_ext) writer.Write(data.getExt());
+				if(_impl){
+					writeList(data.getInterfaces(), ", ", _ext);
+				}
+			}
+		}
+		void __Meth4(TypeData data, bool _ext, bool _impl){
+			if(_ext || _impl){
+				writer.Write(" : ");
+				if(_ext) writer.Write(data.getExt());
+				if(_impl) writeList(data.getInterfaces(), ", ", _ext);
+			}
+		}
+		
 		
 		// <Scope> <static|const|....> TYPE NAME <;| = VALUE;>
 		//public override void writeField(FieldData data) {}

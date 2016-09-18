@@ -134,6 +134,7 @@ BeforeFieldInit  = 1-0100-0000-0000-0000-0000 = 1048576 // Calling static method
     public abstract class MetaData
     {
         static bool filledDicts = false;
+        static bool keyFirstFlag = false;
         static Dictionary<string,string> dictMod;
         static Dictionary<string,string> dictTM;
         static Dictionary<string,string> dictKW;
@@ -160,14 +161,40 @@ BeforeFieldInit  = 1-0100-0000-0000-0000-0000 = 1048576 // Calling static method
             }
         }
 
+        public static void switchDictDirection(bool keyfirst) {
+            filledDicts = false;
+            dictMod = null;
+            dictTM = null;
+            dictKW = null;
+            keyFirstFlag = keyfirst;
+        }
+        public static void switchDictDirection2(bool keyfirst)
+        {
+            filledDicts = false;
+            dictMod = dictTM = dictKW = null;
+            keyFirstFlag = keyfirst;
+        }
+
         internal static void setDicts()
         {
             if (filledDicts) return;
             dictMod = new Dictionary<string,string>();
             dictTM = new Dictionary<string,string>();
             dictKW = new Dictionary<string,string>();
-            Console.WriteLine("Reading Modifiers...");
-            string path = Resources.ResxFiles.getMetaPath("_modifiers.txt");
+            string path;
+            int key, value;
+            if (keyFirstFlag) {
+                Console.WriteLine("Reading Modifiers (LANG)...");
+                path = Resources.ResxFiles.getLangPath("_modifiers.txt");
+                key = 0;
+                value = 1;
+            } else {
+                Console.WriteLine("Reading Modifiers (Meta)...");
+                path = Resources.ResxFiles.getMetaPath("_modifiers.txt");
+                key = 1;
+                value = 0;
+            }
+
             int mode = -1;
             try {
                 foreach (var entry in Resources.ResourceReader.readFile(path)) {
@@ -178,9 +205,9 @@ BeforeFieldInit  = 1-0100-0000-0000-0000-0000 = 1048576 // Calling static method
                         default: break;
                     }
                     switch (mode) {
-                        case 0: dictMod.Add(entry[0], entry[1]); break;
-                        case 1: dictTM.Add(entry[0], entry[1]); break;
-                        case 2: dictKW.Add(entry[0], entry[1]); break;
+                        case 0: dictMod.Add(entry[key], entry[value]); break;
+                        case 1: dictTM.Add(entry[key], entry[value]); break;
+                        case 2: dictKW.Add(entry[key], entry[value]); break;
                         default: throw new InvalidOperationException("Please set the Keyword Group first (§§ + modifier/tmode/other)");
                     }
                 }

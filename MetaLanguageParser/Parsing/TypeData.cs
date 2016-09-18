@@ -10,11 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static MetaLanguageParser.Parsing.eTypeType;
 using static MetaLanguageParser.Resources.ResourceReader;
+using static MetaLanguageParser.Parsing.Adapter;
 
 namespace MetaLanguageParser.Parsing
 {
-
-
     public enum eTypeType
     {
         /// <summary> Encapsulated DataObject</summary>
@@ -35,28 +34,61 @@ namespace MetaLanguageParser.Parsing
     {
         public string debugDisplay() => $"{typeType} - {Name}: Meth({methods.Count})";
 
-        eTypeType typeType;
+        string typeType;
+        protected internal bool isEntryType = false;
         public string Name { get; protected set; }
         
-        public TypeData(eTypeType entryClass, string v) : base()
+        public TypeData(string mode, string v) : base()
         {
-            this.typeType = entryClass;
+            this.typeType = mode;
             this.Name = v;
         }
 
-        public static TypeData setMain()
+        public static TypeData makeMain()
         {
-            return new TypeData(eTypeType.EntryClass, "Program");
+            var td = new TypeData("<<<MAIN>>>", "Program");
+            td.isEntryType = true;
+            return td;
         }
+
         string stuff;
         public void setStuff(string ret) => stuff = ret;
 
         List<string> modifiers = new List<string>();
         public List<string> getModifiers() => modifiers;
-        internal void setMods(Stack<string> mods)
+        public void setMods(Stack<string> mods)
         {
-            this.modifiers = mods.ToList();
+            string temp;
+            foreach (var item in mods) {
+                if (!KEYWORD.modDict.TryGetValue(item, out temp)) temp = item;
+                this.modifiers.Add(temp);
+            }
         }
+
+        // // KILL this enum
+        /*internal static eTypeType getModeEnum(string v)
+        {
+            switch (v) {
+                case "class": return eTypeType.Class;
+                default: throw new NotImplementedException("TypeData.getModeEnum(): Unimplemented case " + v.ToString());
+            }
+        }//*/
+        internal string getMode() => typeType.ToString().ToLower();
+
+
+        #region Extension and Interfaces
+        List<MetaType> listExtends = new List<MetaType>();
+        public bool hasExt() => listExtends.Count > 0;
+        public MetaType getExt(int idx = 0) => listExtends[idx];
+        public List<MetaType> getExtList() => listExtends;
+        public void addExt(MetaType mt) => listExtends.Add(mt);
+
+        List<MetaType> listImpl = new List<MetaType>();
+        public bool hasImpl() => listImpl.Count > 0;
+        public MetaType getInterface(int idx = 0) => listImpl[idx];
+        public List<MetaType> getInterfaces() => listImpl;
+        public void addInterface(MetaType mt) => listImpl.Add(mt);
+        #endregion
 
         /// Generics
         /// 
@@ -77,29 +109,7 @@ namespace MetaLanguageParser.Parsing
 
 
 
-        internal static eTypeType getModeEnum(string v)
-        {
-            switch (v) {
-                case "class": return eTypeType.Class;
-                default: throw new NotImplementedException("TypeData.getModeEnum(): Unimplemented case " + v.ToString());
-            }
-        }
-        internal string getMode() => typeType.ToString().ToLower();
-
-
         public override string ToString()
-        {
-            switch (typeType) {
-                //case eTypeType.Class: break;
-                case eTypeType.EntryClass: return buildAsEntryType();
-                //case eTypeType.Interface:  break;
-                //case eTypeType.Struct: break;
-                //case eTypeType.Enum:  break;
-                default: throw new NotImplementedException("TypeData.ToString(): Unimplemented case " + typeType.ToString());
-            }
-        }
-
-        string buildAsEntryType()
         {
             var dict = new Dictionary<string, string>();
             var meth = new StringBuilder();
@@ -116,7 +126,17 @@ namespace MetaLanguageParser.Parsing
 
             // Read §mainType Signature
             return new CodeBase().buildCode(new CodeBase().readFile("§mainType"), dict);
-        }
 
+            /*
+            If EntryType not set, add Comment with all Moddifiers, Extends, Interfaces
+            // Modifiers: XX, XX, 
+            // Extends: XX
+            // Interfaces: XX
+            //###########
+            
+            // Build comments
+            return strCmts + new CodeBase().buildCode(new CodeBase().readFile("§mainType"), dict);
+            */
+        }
     }
 }

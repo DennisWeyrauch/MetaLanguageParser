@@ -11,3 +11,7 @@ MetaLanguageParser/bin/Debug/debug
 /MetaLanguageParser/#devDoc_
 /MetaLanguageParser/lang/java/unused/raw
 /MetaLanguageParser/bin/Debug/bin/roslyn/Please download the Roslyn CodeCompiler and insert it here.txt
+/MetaLanguageParser/bin/Debug/oldCode
+/MetaLanguageParser/bin/Debug/PartsLog
+/MetaLanguageParser/bin/Debug/___
+*.xml_copy

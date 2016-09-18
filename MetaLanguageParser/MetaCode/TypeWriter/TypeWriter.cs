@@ -15,8 +15,6 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 		protected System.CodeDom.Compiler.IndentedTextWriter writer;
 		protected static System.Reflection.Assembly codeAsm;
 
-
-
         /// <summary>
         /// Will create a new TypeWriter Object of the given language. ##
         /// If found, compiles into assembly and executes custom TypeWriter; ##
@@ -24,21 +22,24 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
         /// </summary>
         /// <param name="lang"></param>
         /// <returns></returns>
-        /// <remarks>Might look like much overhead, but it already existed for MetaCode, so it's mostly reused</remarks>
-		public static TypeWriter Factory(string lang){
+        /// <remarks>Might look like much overhead, but it already existed for MetaCode, so it's mostly reused
+        /// APPENDNOT: I should really look after smt to make this reuseable. Made it as equal as possible.</remarks>
+		public static TypeWriter Factory(string lang)
+        {
             Console.WriteLine("Checking TypeWriter directory...");
             string path = "MetaCode/TypeWriter";
-            string lib = "TWLib.dll";
+            string libName = "TWLib";
+            string lib = $"{libName}.dll";
             string libPath = path+"/"+lib;
 
             bool exists = File.Exists(libPath);
-            FileInfo libFile = (exists) ? new FileInfo(libPath) : null;
+            FileInfo libFile = null;
+            try { libFile = (exists) ? new FileInfo(libPath) : null; } catch (FileNotFoundException) { exists = false; }
 
-            //var fileDict = readAnyFile(linkPath); // Use later for "Languages to compile".txt
             var fileDict = new Dictionary<string,string>(){{lang,""}};
             var dirFiles = Directory.EnumerateFiles(path);
             var fileList = new List<string>();
-			string fileName = "";
+            string fileName = "";
             bool found = false;
 
             foreach (var item in dirFiles) {
@@ -46,14 +47,75 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
                 Tokenize.Tokenizer.fixEncodingErrors(item);
                 string file = fi.Name.Substring(0,fi.Name.Length-fi.Extension.Length);
                 if(file.ToLower().Equals(lang)) fileName = file;
-				if (fileDict.ContainsKey(file.ToLower())) {
+                if (fileDict.ContainsKey(file.ToLower())) {
                     found = true;
                     fileList.Add(File.ReadAllText(item));
                     if (exists && libFile.LastWriteTime < fi.LastWriteTime) exists = false;
-					break; // Since only one now
+                    break; // Since only one now
                 }
             }
-            if(!found) {
+
+            MetaData.switchDictDirection(true);
+
+            if (!found) {
+                Console.WriteLine("WARNING: Could not find appropriate TypeWriter !");
+                return new Dummy();
+            }
+            
+            if (exists) {
+                Console.WriteLine($"Loading last recent Library ({fileName})...");
+                codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
+            } else {
+                Console.WriteLine($"Compiling new {libName}...");
+                //fileList.Add($"public class X {{ public static int cnt = {fileList.Count}; }}");
+                codeAsm = Common.Reflection.Reflection.getAssembly(fileList, true, lib);
+                if (codeAsm != null) {
+                    File.Delete(libPath + "_old");
+                    try {
+                        File.Replace(lib, libPath, libPath + "_old");
+                    } catch (IOException) {
+                        File.Delete(libPath);
+                        File.Move(lib, libPath);
+                    }
+                } else {
+                    Console.WriteLine("Could not create Assembly!");
+                    if (File.Exists(libPath)) {
+                        Console.WriteLine("Loading Backup Lib !");
+                        codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
+                    } else return null;
+                }
+            }
+
+            return (TypeWriter) codeAsm.GetType("MetaLanguageParser.MetaCode.TypeWriter."+fileName).GetConstructor(Type.EmptyTypes).Invoke(null);
+        }
+        public static TypeWriter Factory2(string lang)
+        {
+            Console.WriteLine("Checking TypeWriter directory...");
+            string path = "MetaCode/TypeWriter";
+            string lib = "TWLib.dll";
+            string libPath = path+"/"+lib;
+
+            bool exists = File.Exists(libPath);
+            FileInfo libFile = (exists) ? new FileInfo(libPath) : null;
+            
+            var dirFiles = Directory.EnumerateFiles(path);
+            var fileList = new List<string>();
+            string fileName = "";
+            bool found = false;
+
+            foreach (var item in dirFiles) {
+                FileInfo fi = new FileInfo(item);
+                Tokenize.Tokenizer.fixEncodingErrors(item);
+                string file = fi.Name.Substring(0,fi.Name.Length-fi.Extension.Length);
+                if (lang.Equals(file.ToLower())) {
+                    found = true;
+                    fileName = file;
+                    fileList.Add(File.ReadAllText(item));
+                    if (exists && libFile.LastWriteTime < fi.LastWriteTime) exists = false;
+                    break; // Since only one now
+                }
+            }
+            if (!found) {
                 Console.WriteLine("WARNING: Could not find appropriate TypeWriter !");
                 return new Dummy();
             }
@@ -64,7 +126,6 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
                 codeAsm = System.Reflection.Assembly.LoadFrom(libFile.FullName);
             } else {
                 Console.WriteLine("Compiling new TWLib...");
-                //fileList.Add($"public class X {{ public static int cnt = {fileList.Count}; }}");
                 codeAsm = Common.Reflection.Reflection.getAssembly(fileList, true, lib);
                 if (codeAsm != null) {
                     File.Delete(libPath + "_old");
@@ -77,15 +138,9 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 
             //fileDict.Remove("AddType");
             //kwDict.Add("§addType", AddType.parse);
-            return (TypeWriter) codeAsm.GetType("MetaLanguageParser.MetaCode.TypeWriter."+fileName).GetConstructor(Type.EmptyTypes).Invoke(null);
-
-            /*foreach (var item in fileDict) {
-                tempType = codeAsm.GetType("MetaLanguageParser.MetaCode.TypeWriter."+item.Key);
-                var del = tempType.GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel));
-                kwDict.Add(item.Value, (CodeDel) del);
-                //kwDict.Add(item.Value, (CodeDel)(codeAsm.GetType("MetaLanguageParser.MetaCode." + item.Key)).GetMethod("parse", Common.Reflection.Reflection.LookupAll).CreateDelegate(typeof(CodeDel)));
-            }//*/
-		}
+            return (TypeWriter)codeAsm.GetType("MetaLanguageParser.MetaCode.TypeWriter." + fileName).GetConstructor(Type.EmptyTypes).Invoke(null);
+            
+        }
 
         #region Abstract Methods
         public string writeTypes(Dictionary<string, TypeData> typeDict){
@@ -120,52 +175,62 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
         public abstract void writeMethod(MethodData data, bool isEntry);
         /** Write Shortcuts **/
         #endregion
-
-
-        Dictionary<string,string> modifiers = new Dictionary<string,string>();
+            
         string seperator = " ";
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mods"></param>
-        /// <param name="seperator"></param>
+        /// <summary>Search any match of keywords found in both <paramref name="mods"/> and <see cref="TypeData.modifiers"/>, and write the translated form.</summary>
+        /// <param name="data"><see cref="TypeData"/> reference</param>
+        /// <param name="mods">The array of strings to lookout for.</param>
+        /// <param name="seperator">String to write inbetween hits.</param>
+        /// <param name="addSep">Flag controling seperator output.</param>
         /// <returns>Value indicating whether or not strings were written,</returns>
-        protected bool writeModifiers(TypeData data, string[] mods, string seperator, bool first = true)
+        protected bool writeModifiers(TypeData data, string[] mods, string seperator, bool addSep = false)
         {
             var mod = data.getModifiers();
             string key;
             this.seperator = seperator;
             foreach (var item in mods) {
                 if (!mod.Contains(item)) continue;
-                if (first) first = false; else writer.Write(seperator);
-                if (!modifiers.TryGetValue(item, out key)) key = $"__{item}__";
+                if (addSep) writer.Write(seperator); else addSep = true;
+                if (!KEYWORD.modDict.TryGetValue(item, out key)) key = $"__{item}__";
                 writer.Write(key);
             }
-            return first;
+            return addSep;
         }
 
-        protected void writeModifier(string kw)
-        {
-            string key;
-            if (!modifiers.TryGetValue(kw, out key)) key = $"__{kw}__";
-            writer.Write(key);
-        }
+        /// <summary>
+        /// Write DIctTranslated form of given string.
+        /// </summary>
+        /// <param name="kw">Keyword to use</param>
+        protected void writeModifier(string kw) => writeModifier(kw, "{0}");
 
         protected void writeModifier(string kw, string format)
         {
             string key;
-            if (!modifiers.TryGetValue(kw, out key)) key = $"__{kw}__";
+            if (!KEYWORD.modDict.TryGetValue(kw, out key)) key = $"__{kw}__";
             writer.Write(string.Format(format, key));
         }
 
-        protected void writeMode(TypeData data, bool state)
+        /// <summary>
+        /// Write the TypeMode (class, interface, struct, enum
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="addSep"></param>
+        protected void writeMode(TypeData data, bool addSep)
         {
             var mode = data.getMode();
-            var dict = MetaData.TypeModes;
-            if (state) writer.Write(seperator);
-            writer.Write(dict[mode]);
+            if (addSep) writer.Write(seperator);
+            writer.Write(MetaData.TypeModes[mode]);
         }
+
+        protected void writeList<T>(List<T> list, string sep, bool startWithSep = false)
+        {
+            foreach (var item in list) {
+                if (startWithSep) writer.Write(seperator); else startWithSep = true;
+                writer.Write(item);
+            }
+        }
+
 
 
         protected void NewLine() => writer.WriteLine();
@@ -231,19 +296,6 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
             writer.Write(str);
             //Program.printer($"CodeBlock_{cnt++}_2-after", str);
         }
-
-		
-        protected void WriteLineInc(string s)
-        {
-            writer.Write(s);
-            writer.Indent++;
-            writer.WriteLine();
-        }
-        protected void WriteLineDec(string s)
-        {
-            writer.Write(s);
-            writer.Indent--;
-            writer.WriteLine();
-        }
+        
     }
 }

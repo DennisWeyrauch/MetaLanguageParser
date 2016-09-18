@@ -2,18 +2,18 @@
 ## Scope & Access Modifiers ##
 §§modifier
 ## Scope
-public	public
-private	private
-Assembly	assembly
+public	Public
+private	Private
+Assembly	Friend
 ## Family+Assembly: Derived classes inside the assembly
-Internal	internal
-##Protected / Derived classes
-Family	protected
+Internal	ProtectedFriend
+##Protected / Derived
+Family		Protected
 ##Either Derived or same assembly
-Shared	shared
+#Shared	
 
 ## Modifiers
-static	static
+static	Shared
 #abstract
 #final
 #readonly
@@ -24,13 +24,9 @@ static	static
 
 ## Type Mode ##
 §§tmode
-# Encapsulated DataObject #
-class	class
-# Abstract Template Type #
+class	Class
 interface	interface
-# User-defined Valuetype #
 struct	struct
-# Enumeration (List of Name-value Pairs / Flags)
 enum	enum
 
 ## Other keywords ##

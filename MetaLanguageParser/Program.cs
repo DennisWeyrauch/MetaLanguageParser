@@ -15,7 +15,7 @@ namespace MetaLanguageParser
         /// </summary>
         public static bool printParts = true;
         public static bool catchedErrors = false;
-        public static bool suppressError = false;
+        public static bool suppressError = true;
 
         public static void printer(string name, string output)
         {
@@ -71,15 +71,14 @@ namespace MetaLanguageParser
         static void Main(string[] args)
         {
             string code, codeFile;
-            code = (args.Length != 0) ? args[0] : Languages.CSharp.ToString().ToLower();
+            code = (args.Length != 0) ? args[0] : Languages.VBNet.ToString().ToLower();
 
             codeFile = (args.Length > 1) ? args[1] : "codefile.txt";
 
             Logger.resetLog();
+            Resources.ResourceReader.readConfiguration(code);
             if (args.Length == 0) {
                 Move_DevToDebug();
-                Console.WriteLine("Reading Configuration...");
-                Resources.ResourceReader.readConfiguration(code);
                 new MetaLanguageParser.Parser().execute(codeFile, code);
             } else {
 
@@ -92,7 +91,7 @@ namespace MetaLanguageParser
                     //throw;
                 }/**/
                 catch (Exception e) {
-                    Console.Out.Write(e.Message);
+                    Console.Out.WriteLine(e.Message);
                     Logger.logException(e);
                     if (args?.Length == 0) throw;
                     else Console.WriteLine($"Build was not successful. Look into {Logger.path} for details.");

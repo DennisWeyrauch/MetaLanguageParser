@@ -60,4 +60,11 @@ Some paper coding for proper TypeAdding (mostly cause Modifiers)
 -Later-
 PseudoCodification of above.... mah, do it proper from the start (Need to implement missing new things)
 ## 2016-09-16
-Finalized third and last step: Added Full TypeWriter
+Finalized third and last step: Added TypeWriter Support to add own Functionality as to how Types should be written
+## 2016-09-17
+Modifiers.
+## 2016-09-18
+I couldn't. So now it's really finished. It had still some serious bugs
+Arbitary Modifiers can now be added (and are actually read, instead of only the MetaKeys like yesterday)
+Dummy TW does now print all Modifiers that are found in order (translated ofc), then the Mode, then Name, then Methods.
+Also added Alias KeyWords to Linker
