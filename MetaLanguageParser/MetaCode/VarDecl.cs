@@ -17,7 +17,17 @@ namespace MetaLanguageParser.MetaCode
             // §vardecl({$$Type$$, $$name_n$$, ...});
             // §vardecl({$$Type1$$, ...}, {$$Type2$$, ...}, ...);
             var list = getList();
-            list.assertC("§vardecl").assertC('(');
+
+            //list.assertC("§vardecl").assertC('(');
+            pos++;
+            list.assertC('(');
+
+            /*try {
+                list.assertC("§vardecl");
+            }catch (Exception) {
+                list.assertC("§vd");
+            }//*/
+            //list.assertC("§vardecl"); list.assertC('(');
             /// Multi Declaration
             MetaType type;
             if (list.isCurrent('{')) { //

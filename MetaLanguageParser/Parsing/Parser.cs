@@ -96,7 +96,12 @@ namespace MetaLanguageParser
             Type tempType;
             kwDict = new Dictionary<string, CodeDel>();
 #warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
             //fileDict.Remove("AddType"); kwDict.Add("§addType", AddType.parse);
+            //fileDict.Remove("VarDecl"); kwDict.Add("§vardecl", VarDecl.parse); kwDict.Add("§vd", VarDecl.parse);
+
+
+
             int errors = 0;
             foreach (var item in fileDict) {
                 tempType = codeAsm.GetType("MetaLanguageParser.MetaCode."+item.Key);
@@ -251,16 +256,18 @@ namespace MetaLanguageParser
             while (true) {
                 try {
                     elem = list.getCurrent();
+                    if (elem.EqualsChar(';')) pos++;
                     // Valid Statements: §vardecl, §assign, §pre/postinc/dec, §call, and keywords
-                    if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
+                    else if (kw.Contains(elem)) writer.Write(ce.parse(ref eb, ref pos));
                     else if (kwDict.TryGetValue(elem, out myfunc)) {
-                        if (elem.Equals("§comment")) {
-                            elem = myfunc(ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                        /*if (elem.Equals("§comment") || elem.Equals("§c")) {
+                            elem = myfunc(ref pos);
                             if (elem.IsNotNOE()) writer.InnerWriter.WriteLine(elem);
-                        } else {
-                            elem = myfunc(ref pos);//writer.Write(myfunc(ref eb, ref pos));
+                        } else {//*/
+                            elem = myfunc(ref pos);
                             if (elem.IsNotNOE()) writer.WriteLine(elem);
-                        }
+                        //}
+
                     } else if (list.isAtEnd(terminator)) {
                         //if (list.isClosure()) list.Index++;
                         elem = output.ToString();
@@ -275,6 +282,7 @@ namespace MetaLanguageParser
                         throw;
                     }
                     list.printError();
+                    if (terminator.IsNotNOE()) Logger.logData($"{terminator} expected, but End-Of-File found!");
                     hasThrown = true;
                     writer.Write("<<<ERROR>>>");
                     list.skipBalanced('{', '}');

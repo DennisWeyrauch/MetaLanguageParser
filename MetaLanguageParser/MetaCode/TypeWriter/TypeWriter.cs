@@ -147,11 +147,14 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 			string result;
             StringWriter output = new StringWriter();
             writer = new System.CodeDom.Compiler.IndentedTextWriter(output, SYMBOL.Indent);
-			
+
+            MetaData.setDicts();
+
             var sb = new StringBuilder( );
 			foreach (var item in typeDict) {
                 Console.WriteLine($"Writing: {item.Value.debugDisplay()}...");
 				writeType(item.Value);
+                writer.WriteLine();
             }
 			result = output.ToString();
             writer?.Dispose();
@@ -257,8 +260,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
         {
             writer.Indent--;
             writer.WriteLine();
-            writer.Write(SYMBOL.Block_Close);
-            writer.WriteLine();
+            writer.WriteLine(SYMBOL.Block_Close);
         }
 
         /// <summary> Decrease Indent, Write Newline, <see cref="SYMBOL.Block_Close"/> + <paramref name="suffix"/>, Newline</summary>

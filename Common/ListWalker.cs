@@ -163,10 +163,11 @@ namespace Common
             int cnt = 1;
             string elem = "";
 #warning CUSTOM:: Parameterlist-Seperator, Closure-Opening/Terminator
-            while (cnt > 0 && !isEOF()) {
+            while (!isEOF() && cnt > 0) {
                 elem = getNext();
                 if (elem.EqualsChar(open)) cnt++;
                 else if (elem.EqualsChar(close)) cnt--;
+                if(elem.EqualsChar(';') || elem.StartsWith("§")) break;
             }
 
         }

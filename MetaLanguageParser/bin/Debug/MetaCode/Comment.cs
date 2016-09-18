@@ -15,7 +15,8 @@ namespace MetaLanguageParser.MetaCode
         internal static string parse(ref int pos)
         {
             var list = getList();
-            list.assertC("§comment").assertC("(");
+            pos++;
+            list.assertC("(");
             string elem = list[pos++];
             string name = elem.Substring(1, elem.Length-2);
             list.assertC(")");

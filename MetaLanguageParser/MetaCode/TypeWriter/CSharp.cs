@@ -42,7 +42,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 			/*/if(data.dtor != null) writeDtor(data.dtor);/*/writer.Write("/* Dtor */");//*/
 			NewLine();
 			writeMethods(data.getMethods());
-			NewLine();
+			//NewLine();
 			// Nested Types
 			CloseBlock();
 		}
@@ -89,8 +89,7 @@ namespace MetaLanguageParser.MetaCode.TypeWriter
 		public override void writeMethods(List<MethodData> dataList) {
 			NewLine();
 			foreach(var meth in dataList){
-				writer.WriteLine(meth.ToString(this));
-				
+				writer.Write(meth.ToString(this));
 			}
 		}
 		

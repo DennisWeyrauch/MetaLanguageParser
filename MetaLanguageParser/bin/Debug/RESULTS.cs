@@ -1,5 +1,5 @@
 /* Added comments, testing out multilude of DataTypes */
-__public__class Program {
+public00 class Program {
 	/* Fields */
 	/* Prop */
 	/* Cctor */
@@ -8,16 +8,7 @@ __public__class Program {
 	
 	public static void main(string[] args) {
 		int j = 0;
-		sbyte b;
-		short s;
-		int i;
-		long l;
-		short s2;
-		long l2;
-		bool if = true;
-		bool else = false;
-		char c = 'c';
-		string str = "Text";
+		int i = 7;
 		_MISSING_Ratiopharm dsas;
 		
 		if ((i < 15) & (i > 0)) {
@@ -33,6 +24,21 @@ __public__class Program {
 		}
 	}
 	
-	
-
 }
+
+class myClass {
+	/* Fields */
+	/* Prop */
+	/* Cctor */
+	/* Cctor */
+	/* Dtor */
+	
+	public static void main(string[] args) {
+		int i = 0;
+		
+		/* Inner Method Comments! */
+		System.Console.Write(i)
+	}
+	
+}
+

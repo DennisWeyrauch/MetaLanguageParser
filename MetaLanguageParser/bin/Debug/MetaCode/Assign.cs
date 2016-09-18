@@ -16,7 +16,8 @@ namespace MetaLanguageParser.MetaCode
         internal static string parse(ref int pos)
         {
             var list = getList();
-            list.assertC("§assign").assertC("(");
+            pos++;
+            list.assertC("(");
             string name = list[pos++];
             list.assertC(")").assertC("(");
             string value = readExpression();
