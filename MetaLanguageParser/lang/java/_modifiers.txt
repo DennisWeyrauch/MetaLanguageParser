@@ -1,9 +1,9 @@
-### ReadMode: KEY --> Value string appearing in code
+﻿### ReadMode: KEY --> Value string appearing in code
 ## Scope & Access Modifiers ##
 §§modifier
 ## Scope
-public	public
-private	private
+Public	public
+Private	private
 #Assembly
 #Internal	##Family+Assembly: Derived classes inside the assembly
 #Family	##Protected / Derived

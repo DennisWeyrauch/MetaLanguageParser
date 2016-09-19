@@ -1,5 +1,5 @@
 /* Added comments, testing out multilude of DataTypes */
- Program {
+public class Program {
 	/* Fields */
 	/* Prop */
 	/* Ctor */
@@ -8,16 +8,7 @@
 	
 	public static void main(String[] args) {
 		int j = 0;
-		byte b;
-		short s;
-		int i;
-		long l;
-		short s2;
-		long l2;
-		boolean if = true;
-		boolean else = false;
-		char c = 'c';
-		String str = "Text";
+		int i = 7;
 		_MISSING_Ratiopharm dsas;
 		
 		if ((i < 15) & (i > 0)) {
@@ -35,3 +26,21 @@
 	
 
 }
+
+class myClass {
+	/* Fields */
+	/* Prop */
+	/* Ctor */
+	/* Cctor */
+	/* Dtor */
+	
+	public static void main(String[] args) {
+		int i = 0;
+		
+		/* Inner Method Comments! */
+		System.out.print(i)
+	}
+	
+
+}
+

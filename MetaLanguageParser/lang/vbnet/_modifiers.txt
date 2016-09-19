@@ -2,14 +2,11 @@
 ## Scope & Access Modifiers ##
 §§modifier
 ## Scope
-public	Public
-private	Private
+Public	Public
+Private	Private
 Assembly	Friend
-## Family+Assembly: Derived classes inside the assembly
 Internal	ProtectedFriend
-##Protected / Derived
 Family		Protected
-##Either Derived or same assembly
 #Shared	
 
 ## Modifiers

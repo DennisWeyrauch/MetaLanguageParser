@@ -1,6 +1,0 @@
-while (> i 0) {
-    $$write(i)$$
-}
-while (> i 0) {
-    $$write(i)$$
-}

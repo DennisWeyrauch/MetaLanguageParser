@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<dictionary>
-  <entry name="FileSuffix">cs</entry>
-  <entry name="Block_Init">{</entry>
-  <entry name="Block_Close">}</entry>
-  <entry name="Statement_Close">;</entry>
-</dictionary>
-<item>\s*<key>\s*<string>([^<]*)</string>\s*</key>\s*<value>\s*<string>([^<]*)</string>\s*</value>\s*</item>
-<entry name="$1">$2</entry>
